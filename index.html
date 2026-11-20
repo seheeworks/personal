@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex,nofollow">
+<title>AFPK 모듈1 O/X · 50문항</title>
+<style>
+:root{
+  --o:#16a34a; --o-bg:#eaf7ef; --o-line:#bfe6cd;
+  --x:#dc2626; --x-bg:#fdeceb; --x-line:#f4c8c6;
+  --ink:#111827; --sub:#6b7280; --line:#e5e7eb; --bg:#f5f6f8;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",system-ui,sans-serif;
+  font-size:16px;line-height:1.5;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom));
+}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+
+/* ---------- 상단 고정 바 ---------- */
+header{
+  position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.95);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--line);
+  padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
+}
+.row{display:flex;align-items:center;gap:10px}
+.stat{display:flex;flex-direction:column;line-height:1.12;min-width:62px}
+.stat b{font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat small{font-size:11px;color:var(--sub);font-weight:600}
+.stat.acc b{color:#0f766e}
+.spacer{flex:1}
+.btn{
+  border:1px solid var(--line);background:#fff;border-radius:10px;
+  padding:9px 11px;font-size:13px;font-weight:700;color:#374151;
+  transition:background .12s,border-color .12s;
+}
+.btn:active{background:#f3f4f6}
+.btn.armed{background:#111827;color:#fff;border-color:#111827}
+.filters{
+  display:flex;gap:6px;overflow-x:auto;margin-top:9px;padding-bottom:1px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.filters::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;
+  padding:8px 13px;font-size:13.5px;font-weight:700;color:#4b5563;white-space:nowrap;
+}
+.chip.on{background:#111827;color:#fff;border-color:#111827}
+.chip .n{font-weight:600;opacity:.55;margin-left:3px;font-variant-numeric:tabular-nums}
+
+/* ---------- 카드 모드 ---------- */
+main{padding:12px 12px 0;max-width:520px;margin:0 auto}
+#cardView{display:flex;flex-direction:column;gap:10px}
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:16px 16px 14px;display:flex;flex-direction:column;gap:14px;
+  min-height:calc(100vh - 260px);min-height:calc(100dvh - 260px);
+  box-shadow:0 1px 2px rgba(16,24,40,.05);
+  will-change:transform;
+}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tag{background:#eef2f7;color:#334155;border-radius:6px;padding:4px 9px;font-size:12.5px;font-weight:800;letter-spacing:.01em}
+.ino{font-size:13.5px;color:var(--sub);font-weight:700;font-variant-numeric:tabular-nums}
+.stem{
+  margin:0;flex:1;font-size:20px;line-height:1.6;font-weight:700;
+  letter-spacing:-.015em;word-break:keep-all;overflow-wrap:anywhere;
+}
+.fb{display:none;border-radius:13px;padding:13px 14px;font-size:17px;line-height:1.55}
+.fb.show{display:block;animation:pop .16s ease-out}
+.fb.ok{background:var(--o-bg);border:1px solid var(--o-line)}
+.fb.no{background:var(--x-bg);border:1px solid var(--x-line)}
+.fb .v{margin:0 0 5px;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.fb.ok .v{color:#15803d}
+.fb.no .v{color:#b91c1c}
+.fb .e{margin:0;color:#1f2937;word-break:keep-all}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+.oxrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ox{
+  height:84px;border-radius:16px;border:2px solid var(--line);background:#fff;
+  font-size:34px;font-weight:900;color:#a9b0bc;letter-spacing:.02em;
+  transition:transform .08s ease,background .12s,border-color .12s,color .12s;
+}
+.ox:active{transform:scale(.97)}
+.ox.o.on{background:var(--o);border-color:var(--o);color:#fff}
+.ox.x.on{background:var(--x);border-color:var(--x);color:#fff}
+.ox.correct-hint{border-color:var(--o);color:var(--o);background:#f3fbf6}
+.ox.dim{opacity:.45}
+
+.nav{display:grid;grid-template-columns:76px 1fr 76px;gap:10px;align-items:center}
+.nav button{
+  height:58px;border-radius:14px;border:1px solid var(--line);background:#fff;
+  font-size:18px;font-weight:800;color:#374151;
+}
+.nav button:active{background:#f3f4f6}
+.nav .pos{
+  text-align:center;font-size:14.5px;font-weight:800;color:var(--sub);
+  font-variant-numeric:tabular-nums;
+}
+.hint{text-align:center;font-size:12.5px;color:#9ca3af;margin:2px 0 0;font-weight:600}
+.empty{
+  background:#fff;border:1px dashed var(--line);border-radius:16px;
+  padding:34px 18px;text-align:center;color:var(--sub);font-size:16px;font-weight:600;
+}
+
+/* ---------- 목록 모드 ---------- */
+#listView{display:none;flex-direction:column;gap:0}
+#listView.on{display:flex}
+.item{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:13px 14px;margin-bottom:10px;
+}
+.ihead{display:flex;align-items:center;gap:7px}
+.item .istem{margin:8px 0 11px;font-size:19px;line-height:1.6;font-weight:700;letter-spacing:-.015em;word-break:keep-all}
+.ibtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mini{
+  height:58px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
+  font-size:24px;font-weight:900;color:#a9b0bc;
+}
+.mini:active{transform:scale(.98)}
+.mini.o.on{background:var(--o);border-color:var(--o);color:#fff}
+.mini.x.on{background:var(--x);border-color:var(--x);color:#fff}
+.mini.correct-hint{border-color:var(--o);color:var(--o);background:#f3fbf6}
+.mini.dim{opacity:.45}
+.ifb{display:none;margin-top:10px;border-radius:10px;padding:12px 12px;font-size:16.5px;line-height:1.55}
+.ifb.show{display:block}
+.ifb.ok{background:var(--o-bg);border:1px solid var(--o-line)}
+.ifb.no{background:var(--x-bg);border:1px solid var(--x-line)}
+.ifb .v{margin:0 0 4px;font-weight:800;font-size:17px}
+.ifb.ok .v{color:#15803d}
+.ifb.no .v{color:#b91c1c}
+.ifb .e{margin:0;color:#1f2937}
+@media (min-width:560px){ .stem{font-size:21px} .item .istem{font-size:20px} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="row">
+    <div class="stat"><b id="prog">0 / 50</b><small>진행</small></div>
+    <div class="stat acc"><b id="acc">–</b><small>정답률</small></div>
+    <div class="spacer"></div>
+    <button class="btn" id="modeBtn">목록 보기</button>
+    <button class="btn" id="resetBtn">초기화</button>
+  </div>
+  <nav class="filters" id="filters" aria-label="과목 필터"></nav>
+</header>
+
+<main>
+  <section id="cardView">
+    <div class="card" id="card">
+      <div class="meta">
+        <span class="tag" id="tag">개론·윤리</span>
+        <span class="ino" id="ino">No.1</span>
+      </div>
+      <p class="stem" id="stem"></p>
+      <div class="fb" id="fb">
+        <p class="v" id="vb"></p>
+        <p class="e" id="ex"></p>
+      </div>
+      <div class="oxrow">
+        <button class="ox o" id="btnO" data-a="O" aria-label="O 정답">O</button>
+        <button class="ox x" id="btnX" data-a="X" aria-label="X 정답">X</button>
+      </div>
+    </div>
+    <div class="nav">
+      <button id="prev" aria-label="이전 문항">◀</button>
+      <div class="pos" id="pos">1 / 50</div>
+      <button id="next" aria-label="다음 문항">▶</button>
+    </div>
+    <p class="hint">카드를 좌우로 밀어도 넘어갑니다</p>
+    <div class="empty" id="empty" hidden></div>
+  </section>
+
+  <section id="listView" aria-label="전체 목록"></section>
+</main>
+
+<script id="data" type="application/json">
+[
+{"id":1,"s":"intro","q":"가계수지상태지표는 월 총지출을 월 순수입으로 나누어 계산하며, 이때 월 총지출에는 저축과 투자액이 포함되지 않는다.","a":"O","e":"월 총지출 = 변동지출 + 고정지출이다. 대출원금 상환·적금·펀드 같은 저축·투자액은 지출로 보지 않으므로 분자에서 빠진다."},
+{"id":2,"s":"intro","q":"비상예비자금지표는 현금성자산을 월 순수입으로 나누어 계산하고, 적정 수준은 3~6개월분이다.","a":"X","e":"분모는 월 순수입이 아니라 월 총지출이다. 현금성자산(CD 90일 이하 등)을 3~6개월치 고정지출+변동지출로 나눈다."},
+{"id":3,"s":"intro","q":"소비성부채비율의 분모는 월 총수입이고, 주거관련부채비율의 분모는 월 순수입이다.","a":"X","e":"반대다. 소비성부채비율 = 소비성부채상환액 ÷ 월 순수입, 주거관련부채비율 = 주거관련부채상환액 ÷ 월 총수입. 주거 관련은 이자 소득공제 때문에 세금을 계산한 총수입을 쓴다."},
+{"id":4,"s":"intro","q":"주거관련부채비율과 총부채상환비율은 모두 월 총수입을 분모로 한다.","a":"O","e":"주거관련부채상환액, 총부채상환액을 각각 월 총수입으로 나눈다. 분모가 월 순수입인 것은 소비성부채비율 하나뿐이다."},
+{"id":5,"s":"intro","q":"재무설계 프로세스 3단계는 고객의 재무상태 분석 및 평가로, 개인재무제표 작성과 분석, 생애목적자금 분석이 이 단계에서 이루어진다.","a":"O","e":"1단계 관계 정립·계약 → 2단계 정보 수집·목표 파악 → 3단계 분석·평가 → 4단계 제안서 작성·제시 → 5단계 실행 → 6단계 모니터링."},
+{"id":6,"s":"intro","q":"재무설계사와 고객의 계약 체결은 고객 정보를 수집하고 목표를 파악한 뒤인 2단계에서 이루어진다.","a":"X","e":"계약은 1단계인 고객과의 관계 정립 및 계약에서 업무수행범위를 설명하고 체결한다. 2단계는 정보 수집과 목표·기대수준 파악이다."},
+{"id":7,"s":"intro","q":"생애주기 중 사회초년기의 대표적인 재무관심사는 자녀교육자금 마련과 주택 확장이다.","a":"X","e":"그것은 자녀성장기의 관심사다. 사회초년기는 주거자금 마련, 학자금대출 상환, 본인 결혼자금, 소비지출관리, 저축·투자관리, 부채관리, 위험관리다."},
+{"id":8,"s":"intro","q":"윤리원칙 중 이해상충 관리의 원칙은 고객 이익 우선의 원칙을 실질적으로 실현하는 핵심 장치로, 특정 금융상품 추천에 따른 수수료를 사전에 공개하는 것을 포함한다.","a":"O","e":"이해상충 가능성은 사전에 고지하고, 수수료 등 이해관계를 공개한 뒤 고객에게 가장 유리한 선택을 제안해야 한다."},
+{"id":9,"s":"intro","q":"자격 결격사유에는 파산자로서 복권되지 아니한 자 또는 파산신청 후 5년이 지나지 아니한 자가 포함된다.","a":"O","e":"파산 5년, 금고 이상의 형 3년(신념에 따른 위법행위는 1년), 집행유예 1년, 음주운전·마약 벌금 1년, 파면·해임·자격취소 3년, 자격·직무·업무정지 1년 순으로 외운다."},
+{"id":10,"s":"intro","q":"금융소비자보호법상 6대 판매규제는 전문금융소비자에게도 전부 적용된다.","a":"X","e":"전문금융소비자에게는 적합성원칙, 적정성원칙, 설명의무와 청약철회권이 적용되지 않는다. 불공정영업행위 금지, 부당권유 금지, 광고규제와 위법계약해지권만 적용된다."},
+
+{"id":11,"s":"retire","q":"2026년 기준 국민연금 보험료율은 9.5%이고, 40년 가입 기준 소득대체율은 43%이다.","a":"O","e":"보험료율은 2033년 13%까지 매년 0.5%포인트씩 오른다. 사업장가입자는 사업주와 반반 부담하고, 지역·임의가입자는 전액 본인 부담이다."},
+{"id":12,"s":"retire","q":"조기노령연금은 최대 5년까지 앞당길 수 있고, 1년 앞당길 때마다 7.2%씩 감액된다.","a":"X","e":"조기 감액은 1년당 6%다(5년이면 30% 감액, 70% 수령). 1년당 7.2%는 노령연금 연기 가산률이다."},
+{"id":13,"s":"retire","q":"노령연금 연기제도는 수급연령부터 5년의 기간 이내에서 신청할 수 있고 신청 횟수에 제한이 없으며, 1년 늦출 때마다 7.2%씩 가산된다.","a":"O","e":"최대 5년 연기하면 136% 수준이 된다. 조기노령연금은 최대 5년, 1년당 6% 감액과 짝으로 외운다."},
+{"id":14,"s":"retire","q":"1965~1966년생의 노령연금 수급개시연령은 65세이다.","a":"X","e":"1965~1966년생은 64세이고, 1969년생 이후가 65세다(1953~1956년생 61세, 1957~1960년생 62세, 1961~1964년생 63세)."},
+{"id":15,"s":"retire","q":"분할연금은 혼인기간이 5년 이상인 배우자가 이혼하고 수급개시연령에 도달한 경우, 해당 연금액의 2분의 1을 받을 수 있다.","a":"O","e":"이혼, 수급개시연령 도달, 혼인기간 5년 이상의 세 요건을 모두 갖추어야 한다. 배우자의 노령연금액 중 혼인기간에 해당하는 부분의 절반이다."},
+{"id":16,"s":"retire","q":"반환일시금을 반납하려면 최대 12개월까지만 허용된다.","a":"X","e":"최대 24개월까지 반납할 수 있고 이자는 1년 만기 정기예금 이자율을 적용한다. 납부예외자도 반납할 수 있고, 60세 이후에도 가입 중이면 신청할 수 있다."},
+{"id":17,"s":"retire","q":"유족연금은 가입기간이 20년 이상이면 기본연금액의 60%에 부양가족연금액을 더해 지급한다.","a":"O","e":"10년 미만 40%, 10년 이상 20년 미만 50%, 20년 이상 60%다. 장애연금 1급 100%, 2급 80%, 3급 60%와 함께 숫자로 외운다."},
+{"id":18,"s":"retire","q":"장애연금 4급은 기본연금액의 60%를 연금으로 지급한다.","a":"X","e":"3급이 기본연금액의 60% 연금이고, 4급은 기본연금액의 225%를 일시보상금으로 받는다(1급 100%, 2급 80%)."},
+{"id":19,"s":"retire","q":"국민연금과 직역연금의 공적연금 연계는 연계대상기간 10년이 필요하고, 군인연금과 연계하는 경우에는 20년이 필요하다.","a":"O","e":"연계기간이 1년 미만이면 일시금으로 지급한다. 임의계속가입기간은 연계대상기간에는 포함되지 않지만 연계급여의 연금액 산정에는 포함된다."},
+{"id":20,"s":"retire","q":"DB형 퇴직연금은 무주택자인 가입자가 주택을 구입할 때 중도인출할 수 있다.","a":"X","e":"DB형은 중도인출이 금지된다. 주택구입, 전세금·보증금 부담, 6개월 이상 요양, 파산·개인회생 등은 DC형·IRP에서 담보제공과 중도인출이 가능한 사유다."},
+{"id":21,"s":"retire","q":"연금계좌 세액공제 한도는 연금저축 600만 원(IRP·DC 포함 시 900만 원)이고, ISA 만기자금을 연금계좌로 이전하면 전환금액의 10%(300만 원 한도)를 추가로 공제한다.","a":"O","e":"공제율은 종합소득 4,500만 원(근로소득만 있으면 총급여 5,500만 원) 이하 15%, 초과 12%이고 지방소득세는 별도다."},
+{"id":22,"s":"retire","q":"ISA 만기자금을 연금계좌로 이전할 때는 전환금액의 20%, 500만 원 한도로 세액공제를 추가로 받을 수 있다.","a":"X","e":"전환금액의 10%, 300만 원 한도다. 이 한도를 더하면 연금계좌 세액공제 한도는 최대 1,200만 원까지 늘어난다."},
+{"id":23,"s":"retire","q":"사적연금을 연금으로 수령할 때 연간 1,500만 원을 넘는 금액은 종합과세되거나 15% 분리과세를 선택할 수 있다.","a":"O","e":"1,500만 원 이하는 연령별 5%·4%·3%(종신형 3%)로 분리과세된다. 이연퇴직소득은 퇴직소득세율의 70%(11년차부터 60%, 21년차부터 50%)로 과세된다."},
+{"id":24,"s":"retire","q":"주택연금은 부부 중 1인 이상이 55세 이상이고 부부합산 주택 공시가격이 12억 원 이하인 경우 가입할 수 있다.","a":"O","e":"부부 모두 사망할 때까지 지급하고 소득공제는 200만 원 한도다. 우대방식은 기초연금 수급자이면서 2.5억 원 미만 1주택인 경우 대상이 된다."},
+{"id":25,"s":"retire","q":"기초연금은 만 65세 이상 노인 전원에게 소득 수준과 관계없이 지급된다.","a":"X","e":"65세 이상 노인의 약 70%에게 선정기준액(소득인정액) 이하인 경우 지급한다. 직역연금 수급자와 그 배우자는 원칙적으로 제외된다."},
+
+{"id":26,"s":"real","q":"부동성 때문에 부동산 활동과 시장이 국지화되고 현장답사가 필요하며, 부동산중개업이 제도화되는 근거가 된다.","a":"O","e":"부동산 활동에서 가장 중요한 것은 입지설정인데, 그 이유도 토지의 부동성 때문이다."},
+{"id":27,"s":"real","q":"토지의 부증성 때문에 토지의 공급곡선은 완전 탄력적으로 나타난다.","a":"X","e":"부증성 때문에 공급곡선이 완전 비탄력적 또는 매우 비탄력적이 된다. 토지부족이 지가 상승의 원인이 되고 토지 이용이 집약화된다."},
+{"id":28,"s":"real","q":"토지의 개별성 때문에 일물일가의 법칙이 그대로 적용된다.","a":"X","e":"개별성 때문에 비대체성이 생겨 일물일가의 법칙 적용이 배제된다. 물리적으로 완전히 동일한 토지는 존재하지 않는다."},
+{"id":29,"s":"real","q":"금리 인하와 소득수준 증가는 부동산 수요를 늘리는 요인이고, 건축기술의 발달과 공급자 수의 증가는 공급을 늘리는 요인이다.","a":"O","e":"대체재 가격 상승, 부동산 조세 세율 완화, 규제 완화도 수요 증가 요인이다. 반대로 자재·인건비 등 건축비 상승은 공급 감소 요인이다."},
+{"id":30,"s":"real","q":"물권은 대체로 강행규정이고 물건에 대한 지배권으로 절대권·배타성을 가지며, 채권에 대해 우선한다.","a":"O","e":"채권은 대체로 임의규정이고 특정인에 대한 요구권인 상대권으로 배타성이 없어 채권 상호 간에는 평등주의가 적용된다."},
+{"id":31,"s":"real","q":"지목은 1필지 1목의 원칙이 예외 없이 적용되어, 과수원이나 목장용지의 일부가 주택으로 쓰이더라도 반드시 지목을 변경해야 한다.","a":"X","e":"과수원, 목장용지, 묘지의 일부가 주택이나 시설관리사무소 등으로 쓰이는 면적은 그 목에 따른다. 이것이 1필1목 원칙의 예외다."},
+{"id":32,"s":"real","q":"해지는 계약을 처음부터 없었던 것으로 되돌리는 소급효가 있어 원상복구의무가 발생한다.","a":"X","e":"소급효와 원상복구의무는 해제(매매 등 1회성 거래)다. 해지는 장래효로 계약관계를 소멸시켜 청산의무가 생긴다(임대차 등 계속적 거래)."},
+{"id":33,"s":"real","q":"재건축은 재개발과 달리 재건축진단을 실시하고 개발부담금이 부과되며, 세입자 대책은 없다.","a":"O","e":"재개발은 진단 없음, 개발부담금 없음, 세입자 대책 있음이다. 재개발은 정비기반시설이 열악하고 건축물이 노후·불량한 지역이 대상이다."},
+{"id":34,"s":"real","q":"자기관리 부동산투자회사(일반 REITs)는 명목회사이고, 위탁관리 부동산투자회사는 실체회사이다.","a":"X","e":"반대다. 자기관리는 임직원을 상근으로 두고 직접 운용하는 실체회사, 위탁관리는 자산관리회사에 위탁하는 명목회사다. 기업구조조정 REITs도 명목회사다."},
+{"id":35,"s":"real","q":"경매의 매수신청 보증금은 최저매각가격의 10%, 공매는 입찰가격의 10%이며, 공매는 1천만 원을 넘으면 분할납부할 수 있다.","a":"O","e":"경매는 법원 기일입찰, 공매는 온비드 기간입찰이다. 공매는 인도명령 제도가 없어 명도소송만 가능하고, 명도책임은 유입재산이 한국자산관리공사, 수탁재산이 매도인, 압류·국유재산이 매수인이다."},
+{"id":36,"s":"real","q":"주택임대차의 대항력은 주택의 인도와 주민등록(전입신고)을 마친 다음 날 0시부터 생긴다.","a":"O","e":"인도나 전입 중 하나만으로는 부족하다. 우선변제권은 여기에 확정일자를 더해야 하고, 최우선변제권은 대항요건만 갖추면 된다."},
+{"id":37,"s":"real","q":"우선변제권은 대항요건과 확정일자를 갖추어야 생기고, 최우선변제권의 한도는 주택가액의 2분의 1이다.","a":"O","e":"최우선변제는 대항요건만 갖추면 보증금 중 일정액을 후순위 권리자나 다른 채권자보다 먼저 변제받는다. 한도는 주택가액의 2분의 1이다."},
+{"id":38,"s":"real","q":"임차인의 계약갱신요구권은 기간 만료 6개월 전부터 2개월 전까지 행사할 수 있고, 횟수 제한 없이 반복해서 행사할 수 있다.","a":"X","e":"갱신요구권은 1회만 행사할 수 있고 갱신 기간은 2년이다. 2기 이상 차임 연체나 임대인·직계존비속의 실거주 같은 정당한 사유가 있으면 거절할 수 있다."},
+
+{"id":39,"s":"inherit","q":"상속결격이 되려면 상속인이 자신이 상속으로 이익을 얻는다는 인식까지 가지고 있어야 한다.","a":"X","e":"그런 인식은 필요 없다. 고의로 상속의 선순위·동순위자나 피상속인·그 배우자를 살해하거나 살해하려 하면 결격이고, 상해의 고의만 있어도 사망에 이르게 하면 결격이다. 낙태도 상속결격이다."},
+{"id":40,"s":"inherit","q":"대습상속은 상속인이 상속을 포기한 경우에도 인정된다.","a":"X","e":"대습상속은 선사망, 상속결격, 동시사망의 추정 때만 인정되고 상속포기는 포함되지 않는다. 상속포기는 채권자 취소의 대상도 되지 않는다."},
+{"id":41,"s":"inherit","q":"대습상속에서 피대습자의 배우자가 대습상속인이 되려면 피대습자가 피상속인보다 먼저 사망한 경우여야 한다.","a":"O","e":"배우자는 피대습자가 상속개시 전에 사망한 경우에만 대습상속인이 된다. 직계비속은 대습상속과 유류분이 인정되지만, 형제자매와 4촌 이내 방계혈족은 인정되지 않는다."},
+{"id":42,"s":"inherit","q":"상속의 승인과 포기는 상속개시가 있음을 안 날부터 3개월 내에 해야 하고, 한정승인이나 포기를 한 뒤에는 그 기간 안이라도 취소할 수 없다.","a":"O","e":"기간을 넘기면 단순승인으로 본다. 포기는 가정법원에 신고하고, 조건부 포기나 일부 포기는 허용되지 않는다."},
+{"id":43,"s":"inherit","q":"특별한정승인은 상속인이 중대한 과실로 채무초과 사실을 알지 못한 경우에도 인정된다.","a":"X","e":"중대한 과실이 없어야 하고, 안 날부터 3개월 내 가정법원에 신고해야 한다. 미성년자는 성년이 된 뒤 그 사실을 안 날부터 3개월 내에 신청할 수 있다."},
+{"id":44,"s":"inherit","q":"비밀증서에 의한 유언은 봉서 표면에 기재된 날로부터 5일 내에 확정일자를 받아야 하고, 구수증서에 의한 유언은 급박한 사유가 종료한 날로부터 7일 내에 법원에 검인을 신청해야 한다.","a":"O","e":"비밀증서 5일, 구수증서 7일로 외운다. 공정증서와 구수증서를 제외한 유언은 사망 후 검인을 받아야 하지만, 검인 절차의 유무는 유언의 효력에 영향을 주지 않는다."},
+{"id":45,"s":"inherit","q":"형제자매도 유류분 권리자로서 법정상속분의 3분의 1을 유류분으로 청구할 수 있다.","a":"X","e":"형제자매의 유류분은 폐지되었다. 배우자와 직계비속은 법정상속분의 2분의 1, 직계존속은 3분의 1이다."},
+{"id":46,"s":"inherit","q":"유류분 산정의 기초재산은 적극적 상속재산에 증여재산을 더하고 상속채무를 뺀 금액이다.","a":"O","e":"유류분 부족액 = 기초재산 × 유류분 비율 - 특별수익 - 순상속액. 반환 순서는 유증, 증여 순이고 기여분은 반환 대상이 아니다."},
+{"id":47,"s":"inherit","q":"유류분 반환청구권은 상속개시와 반환할 증여·유증이 있음을 안 때부터 1년, 상속이 개시된 때부터 10년의 소멸시효가 적용된다.","a":"O","e":"기여분은 유류분 반환 대상이 아니고, 유류분은 상속개시 전에 미리 포기할 수 없다."},
+{"id":48,"s":"inherit","q":"상속세 일괄공제 5억 원은 배우자가 단독으로 상속하는 경우에도 적용할 수 있다.","a":"X","e":"배우자 단독 상속에는 일괄공제를 적용할 수 없다. 배우자상속공제는 최소 5억에서 최대 30억, 자녀공제는 1인당 5천만 원, 기초공제는 2억 원이다."},
+{"id":49,"s":"inherit","q":"증여재산공제는 배우자 6억 원, 성인 자녀 5천만 원(미성년 자녀 2천만 원), 기타 친족 1천만 원이며, 혼인·출산 공제는 별도로 1억 원씩 공제된다.","a":"O","e":"증여재산공제는 10년 합산 기준이고, 혼인·출산 공제는 기간 제한 없이 수증자별 1억 원 한도다. 수증자가 비거주자이면 증여재산공제가 적용되지 않는다."},
+{"id":50,"s":"inherit","q":"계약자와 피보험자가 모두 피상속인이고 수익자가 자녀인 생명보험금은 증여세 과세 대상이다.","a":"X","e":"상속세 과세 대상이다. 계약자 본인·피보험자 배우자·수익자 자녀면 증여세, 계약자 배우자·피보험자 본인·수익자 배우자면 세금이 없다."}
+]
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  var Q = JSON.parse(document.getElementById("data").textContent);
+  var byId = {};
+  Q.forEach(function(q){ byId[q.id] = q; });
+
+  var SUB = { intro:"개론·윤리", retire:"은퇴", real:"부동산", inherit:"상속" };
+  var FILTERS = [
+    {k:"all",     label:"전체"},
+    {k:"intro",   label:"개론·윤리"},
+    {k:"retire",  label:"은퇴"},
+    {k:"real",    label:"부동산"},
+    {k:"inherit", label:"상속"},
+    {k:"wrong",   label:"틀린 문제만"},
+    {k:"todo",    label:"안 푼 문제만"}
+  ];
+  var KEY = "afpk-m1-ox-v1";
+
+  var st = { ans:{}, filter:"all", mode:"card", cur:Q[0].id };
+  var snap = null;
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return;
+      var o = JSON.parse(raw);
+      if(!o || typeof o !== "object") return;
+      if(o.ans && typeof o.ans === "object"){
+        Object.keys(o.ans).forEach(function(k){
+          var id = parseInt(k,10);
+          var v = o.ans[k];
+          if(byId[id] && (v === "O" || v === "X")) st.ans[id] = v;
+        });
+      }
+      if(typeof o.filter === "string" && FILTERS.some(function(f){return f.k===o.filter;})) st.filter = o.filter;
+      if(o.mode === "list" || o.mode === "card") st.mode = o.mode;
+      if(byId[o.cur]) st.cur = o.cur;
+    }catch(e){ /* 저장값이 깨졌으면 무시하고 새로 시작 */ }
+  }
+
+  function save(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify({ans:st.ans, filter:st.filter, mode:st.mode, cur:st.cur}));
+    }catch(e){ /* 저장 불가 환경(사생활 모드 등)에서도 앱은 동작 */ }
+  }
+
+  function buildSnap(){
+    if(st.filter === "wrong"){
+      snap = Q.filter(function(q){ return st.ans[q.id] && st.ans[q.id] !== q.a; }).map(function(q){ return q.id; });
+    }else if(st.filter === "todo"){
+      snap = Q.filter(function(q){ return !st.ans[q.id]; }).map(function(q){ return q.id; });
+    }else{
+      snap = null;
+    }
+  }
+
+  function list(){
+    if(snap) return snap.map(function(id){ return byId[id]; });
+    if(st.filter === "all") return Q.slice();
+    return Q.filter(function(q){ return q.s === st.filter; });
+  }
+
+  function currentQ(){
+    var L = list();
+    for(var i=0;i<L.length;i++){ if(L[i].id === st.cur) return L[i]; }
+    return L.length ? L[0] : null;
+  }
+
+  var $ = function(id){ return document.getElementById(id); };
+  var progEl=$("prog"), accEl=$("acc"), filtersEl=$("filters"), modeBtn=$("modeBtn"), resetBtn=$("resetBtn");
+  var cardView=$("cardView"), cardEl=$("card"), tagEl=$("tag"), inoEl=$("ino"), stemEl=$("stem");
+  var fbEl=$("fb"), vbEl=$("vb"), exEl=$("ex"), btnO=$("btnO"), btnX=$("btnX");
+  var posEl=$("pos"), prevBtn=$("prev"), nextBtn=$("next"), emptyEl=$("empty");
+  var listView=$("listView");
+
+  /* ---------- 필터 칩 구성 ---------- */
+  FILTERS.forEach(function(f){
+    var b = document.createElement("button");
+    b.className = "chip";
+    b.type = "button";
+    b.dataset.f = f.k;
+    b.innerHTML = f.label + '<span class="n"></span>';
+    b.addEventListener("click", function(){ setFilter(f.k); });
+    filtersEl.appendChild(b);
+  });
+
+  function chipCounts(){
+    var wrong = 0, todo = 0;
+    Q.forEach(function(q){
+      if(!st.ans[q.id]) todo++;
+      else if(st.ans[q.id] !== q.a) wrong++;
+    });
+    return {wrong:wrong, todo:todo};
+  }
+
+  function paintChips(){
+    var c = chipCounts();
+    Array.prototype.forEach.call(filtersEl.children, function(b){
+      var k = b.dataset.f;
+      b.classList.toggle("on", k === st.filter);
+      var n = b.querySelector(".n");
+      if(k === "wrong") n.textContent = c.wrong ? String(c.wrong) : "";
+      else if(k === "todo") n.textContent = c.todo ? String(c.todo) : "";
+    });
+  }
+
+  /* ---------- 헤더 ---------- */
+  function paintHead(){
+    var L = list();
+    var answered = L.filter(function(q){ return st.ans[q.id]; }).length;
+    progEl.textContent = answered + " / " + L.length;
+
+    var done = Q.filter(function(q){ return st.ans[q.id]; });
+    if(!done.length){
+      accEl.textContent = "–";
+    }else{
+      var ok = done.filter(function(q){ return st.ans[q.id] === q.a; }).length;
+      accEl.textContent = Math.round(ok / done.length * 100) + "%";
+    }
+    paintChips();
+  }
+
+  /* ---------- 카드 모드 ---------- */
+  function paintCard(){
+    var L = list();
+    if(!L.length){
+      cardEl.hidden = true;
+      prevBtn.disabled = nextBtn.disabled = true;
+      posEl.textContent = "–";
+      emptyEl.hidden = false;
+      emptyEl.textContent = st.filter === "todo"
+        ? "안 푼 문제가 없습니다. 50문항을 모두 풀었어요."
+        : "틀린 문제가 없습니다.";
+      return;
+    }
+    cardEl.hidden = false;
+    emptyEl.hidden = true;
+    prevBtn.disabled = nextBtn.disabled = false;
+
+    var i = 0;
+    for(var k=0;k<L.length;k++){ if(L[k].id === st.cur){ i = k; break; } }
+    if(L[i].id !== st.cur){ st.cur = L[i].id; save(); }
+
+    var q = L[i];
+    var a = st.ans[q.id];
+
+    tagEl.textContent = SUB[q.s];
+    inoEl.textContent = "No." + q.id;
+    stemEl.textContent = q.q;
+    posEl.textContent = (i+1) + " / " + L.length;
+
+    fbEl.className = a ? ("fb show " + (a === q.a ? "ok" : "no")) : "fb";
+    if(a){
+      var good = (a === q.a);
+      vbEl.textContent = good ? "정답입니다" : ("오답입니다 · 정답은 " + q.a);
+      vbEl.className = "v" + (good ? " ok" : " no");
+      exEl.textContent = q.e;
+    }
+
+    btnO.className = "ox o";
+    btnX.className = "ox x";
+    if(a){
+      if(a === "O") btnO.classList.add("on"); else btnX.classList.add("on");
+      if(a !== q.a){
+        if(q.a === "O"){ btnO.classList.add("correct-hint"); btnX.classList.add("dim"); }
+        else { btnX.classList.add("correct-hint"); btnO.classList.add("dim"); }
+      }
+    }
+  }
+
+  /* ---------- 목록 모드 ---------- */
+  function buildList(){
+    var L = list();
+    listView.innerHTML = "";
+    if(!L.length){
+      var d = document.createElement("div");
+      d.className = "empty";
+      d.textContent = st.filter === "todo" ? "안 푼 문제가 없습니다." : "틀린 문제가 없습니다.";
+      listView.appendChild(d);
+      return;
+    }
+    var frag = document.createDocumentFragment();
+    L.forEach(function(q, idx){
+      var art = document.createElement("article");
+      art.className = "item";
+      art.dataset.id = String(q.id);
+
+      var head = document.createElement("div");
+      head.className = "ihead";
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = SUB[q.s];
+      var no = document.createElement("span");
+      no.className = "ino";
+      no.textContent = "No." + q.id + " · " + (idx+1) + "/" + L.length;
+      head.appendChild(tag); head.appendChild(no);
+
+      var p = document.createElement("p");
+      p.className = "istem";
+      p.textContent = q.q;
+
+      var btns = document.createElement("div");
+      btns.className = "ibtns";
+      ["O","X"].forEach(function(v){
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "mini " + (v === "O" ? "o" : "x");
+        b.dataset.a = v;
+        b.textContent = v;
+        btns.appendChild(b);
+      });
+
+      var fbv = document.createElement("div");
+      fbv.className = "ifb";
+      var vv = document.createElement("p"); vv.className = "v";
+      var ee = document.createElement("p"); ee.className = "e";
+      fbv.appendChild(vv); fbv.appendChild(ee);
+
+      art.appendChild(head); art.appendChild(p); art.appendChild(btns); art.appendChild(fbv);
+      frag.appendChild(art);
+      paintItem(art, q);
+    });
+    listView.appendChild(frag);
+  }
+
+  function paintItem(art, q){
+    var a = st.ans[q.id];
+    Array.prototype.forEach.call(art.querySelectorAll(".mini"), function(b){
+      b.classList.remove("on","correct-hint","dim");
+      if(!a) return;
+      if(b.dataset.a === a) b.classList.add("on");
+      if(a !== q.a){
+        if(b.dataset.a === q.a) b.classList.add("correct-hint");
+        else b.classList.add("dim");
+      }
+    });
+    var fbv = art.querySelector(".ifb");
+    var vv = fbv.querySelector(".v");
+    var ee = fbv.querySelector(".e");
+    if(a){
+      var good = (a === q.a);
+      fbv.className = "ifb show " + (good ? "ok" : "no");
+      vv.textContent = good ? "정답입니다" : ("오답 · 정답은 " + q.a);
+      ee.textContent = q.e;
+    }else{
+      fbv.className = "ifb";
+      vv.textContent = "";
+      ee.textContent = "";
+    }
+  }
+
+  /* ---------- 액션 ---------- */
+  function answer(id, choice){
+    if(choice !== "O" && choice !== "X") return;
+    st.ans[id] = choice;
+    save();
+    if(st.mode === "list"){
+      var art = listView.querySelector('.item[data-id="' + id + '"]');
+      if(art) paintItem(art, byId[id]);
+    }else{
+      paintCard();
+    }
+    paintHead();
+    if(navigator.vibrate){
+      try{ navigator.vibrate(st.ans[id] === byId[id].a ? 12 : [10,40,10]); }catch(e){}
+    }
+  }
+
+  function move(step){
+    var L = list();
+    if(!L.length) return;
+    var i = 0;
+    for(var k=0;k<L.length;k++){ if(L[k].id === st.cur){ i = k; break; } }
+    var j = i + step;
+    if(j < 0) j = 0;
+    if(j > L.length-1) j = L.length-1;
+    st.cur = L[j].id;
+    save();
+    if(st.mode === "card"){
+      cardEl.style.transition = "transform .12s ease";
+      cardEl.style.transform = "";
+      paintCard();
+    }
+  }
+
+  function setFilter(k){
+    st.filter = k;
+    buildSnap();
+    var L = list();
+    if(L.length) st.cur = L[0].id;   /* 필터를 바꾸면 그 목록의 첫 문항부터 */
+    save();
+    render();
+  }
+
+  function disarm(){
+    resetBtn.classList.remove("armed");
+    resetBtn.textContent = "초기화";
+    armed = false;
+    if(armTimer){ clearTimeout(armTimer); armTimer = null; }
+  }
+  var armed = false, armTimer = null;
+
+  function render(){
+    paintHead();
+    if(st.mode === "list"){
+      cardView.hidden = true;
+      listView.classList.add("on");
+      modeBtn.textContent = "카드 보기";
+      buildList();
+    }else{
+      cardView.hidden = false;
+      listView.classList.remove("on");
+      modeBtn.textContent = "목록 보기";
+      paintCard();
+    }
+  }
+
+  /* ---------- 이벤트 ---------- */
+  btnO.addEventListener("click", function(){
+    var q = currentQ(); if(!q) return; answer(q.id, "O");
+  });
+  btnX.addEventListener("click", function(){
+    var q = currentQ(); if(!q) return; answer(q.id, "X");
+  });
+  prevBtn.addEventListener("click", function(){ move(-1); });
+  nextBtn.addEventListener("click", function(){ move(1); });
+
+  listView.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".mini") : null;
+    if(!b) return;
+    var art = b.closest(".item");
+    if(!art) return;
+    answer(parseInt(art.dataset.id, 10), b.dataset.a);
+  });
+
+  modeBtn.addEventListener("click", function(){
+    st.mode = (st.mode === "card") ? "list" : "card";
+    save();
+    render();
+    if(st.mode === "list"){
+      var art = listView.querySelector('.item[data-id="' + st.cur + '"]');
+      if(art && art.scrollIntoView) art.scrollIntoView({block:"center"});
+    }
+  });
+
+  resetBtn.addEventListener("click", function(){
+    if(!armed){
+      armed = true;
+      resetBtn.classList.add("armed");
+      resetBtn.textContent = "다시 눌러 초기화";
+      armTimer = setTimeout(disarm, 3000);
+      return;
+    }
+    st.ans = {};
+    st.cur = Q[0].id;
+    buildSnap();
+    save();
+    disarm();
+    render();
+  });
+
+  /* 스와이프 (카드 모드) */
+  var sx=0, sy=0, tracking=false, swiped=false;
+  cardEl.addEventListener("touchstart", function(e){
+    if(e.touches.length !== 1) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    tracking = true; swiped = false;
+    cardEl.style.transition = "none";
+  }, {passive:true});
+
+  cardEl.addEventListener("touchmove", function(e){
+    if(!tracking || e.touches.length !== 1) return;
+    var dx = e.touches[0].clientX - sx;
+    var dy = e.touches[0].clientY - sy;
+    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8){
+      swiped = true;
+      cardEl.style.transform = "translateX(" + (dx * 0.3) + "px)";
+    }
+  }, {passive:true});
+
+  cardEl.addEventListener("touchend", function(e){
+    if(!tracking) return;
+    tracking = false;
+    var t = e.changedTouches[0];
+    var dx = t.clientX - sx, dy = t.clientY - sy;
+    cardEl.style.transition = "transform .16s ease";
+    cardEl.style.transform = "";
+    if(swiped && Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)){
+      move(dx < 0 ? 1 : -1);
+    }
+  }, {passive:true});
+
+  cardEl.addEventListener("touchcancel", function(){
+    tracking = false;
+    cardEl.style.transition = "transform .16s ease";
+    cardEl.style.transform = "";
+  }, {passive:true});
+
+  document.addEventListener("keydown", function(e){
+    if(st.mode !== "card") return;
+    if(e.key === "ArrowRight"){ move(1); }
+    else if(e.key === "ArrowLeft"){ move(-1); }
+  });
+
+  /* ---------- 시작 ---------- */
+  load();
+  buildSnap();
+  render();
+})();
+</script>
+</body>
+</html>
