@@ -3,655 +3,584 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#F2F4F6">
 <meta name="robots" content="noindex,nofollow">
-<title>AFPK 모듈1 O/X · 50문항</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>AFPK 전범위 O/X</title>
 <style>
 :root{
-  --o:#16a34a; --o-bg:#eaf7ef; --o-line:#bfe6cd;
-  --x:#dc2626; --x-bg:#fdeceb; --x-line:#f4c8c6;
-  --ink:#111827; --sub:#6b7280; --line:#e5e7eb; --bg:#f5f6f8;
+  --blue:#3182F6; --blue-deep:#1B64DA;
+  --green:#03B26C; --green-soft:#F0FBF6;
+  --coral:#F04452; --coral-soft:#FEF2F3;
+  --ink:#191F28; --sub:#8B95A1; --sub2:#4E5968;
+  --bg:#F2F4F6;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none !important}
-html{ -webkit-text-size-adjust:100%; }
+html,body{height:100%}
+html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--bg);color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",system-ui,sans-serif;
-  font-size:16px;line-height:1.5;
-  padding-bottom:calc(20px + env(safe-area-inset-bottom));
+  font-size:17px;line-height:1.5;overflow:hidden;
 }
-button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation;border:0;background:none;color:inherit}
+.app{display:flex;flex-direction:column;height:100%;max-width:540px;margin:0 auto}
 
-/* ---------- 상단 고정 바 ---------- */
-header{
-  position:sticky;top:0;z-index:20;
-  background:rgba(255,255,255,.95);
-  -webkit-backdrop-filter:saturate(180%) blur(14px);
-  backdrop-filter:saturate(180%) blur(14px);
-  border-bottom:1px solid var(--line);
-  padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
-}
-.row{display:flex;align-items:center;gap:10px}
-.stat{display:flex;flex-direction:column;line-height:1.12;min-width:62px}
-.stat b{font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-.stat small{font-size:11px;color:var(--sub);font-weight:600}
-.stat.acc b{color:#0f766e}
-.spacer{flex:1}
-.btn{
-  border:1px solid var(--line);background:#fff;border-radius:10px;
-  padding:9px 11px;font-size:13px;font-weight:700;color:#374151;
-  transition:background .12s,border-color .12s;
-}
-.btn:active{background:#f3f4f6}
-.btn.armed{background:#111827;color:#fff;border-color:#111827}
-.filters{
-  display:flex;gap:6px;overflow-x:auto;margin-top:9px;padding-bottom:1px;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none;
-}
-.filters::-webkit-scrollbar{display:none}
-.chip{
-  flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;
-  padding:8px 13px;font-size:13.5px;font-weight:700;color:#4b5563;white-space:nowrap;
-}
-.chip.on{background:#111827;color:#fff;border-color:#111827}
-.chip .n{font-weight:600;opacity:.55;margin-left:3px;font-variant-numeric:tabular-nums}
+/* ---------- 헤더 ---------- */
+header{padding:calc(8px + env(safe-area-inset-top)) 16px 4px;flex:0 0 auto}
+.title{margin:0 0 8px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.title em{font-style:normal;color:var(--blue-deep)}
+.modrow{display:flex;gap:8px;align-items:stretch}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#E3E8EE;border-radius:14px;padding:4px;flex:1}
+.seg button{height:50px;border-radius:11px;font-size:18px;font-weight:600;color:var(--sub2);transition:background .15s,color .15s,box-shadow .15s}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(25,31,40,.10)}
+.iconbtn{width:50px;flex:0 0 50px;border-radius:14px;background:#fff;font-size:22px;line-height:1;
+  box-shadow:0 1px 4px rgba(25,31,40,.06)}
+.iconbtn.on{background:#FFF4E0;color:#FF9F00}
+.shuffle{width:54px;flex:0 0 54px;border-radius:14px;background:#fff;font-size:24px;line-height:1;box-shadow:0 1px 4px rgba(25,31,40,.06)}
+.shuffle:active{background:#E9EDF2}
+.tools{display:flex;gap:7px;align-items:stretch;margin-top:8px}
+.vseg{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#E3E8EE;border-radius:14px;padding:4px}
+.vseg button{height:42px;border-radius:11px;font-size:16px;font-weight:600;color:var(--sub2);transition:background .15s,color .15s,box-shadow .15s}
+.vseg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(25,31,40,.10)}
+.chip{flex:0 0 auto;padding:0 13px;border-radius:14px;background:#fff;
+  font-size:16px;font-weight:600;color:var(--sub2);white-space:nowrap;
+  display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(25,31,40,.05)}
+.chip.on{background:var(--ink);color:#fff}
 
-/* ---------- 카드 모드 ---------- */
-main{padding:12px 12px 0;max-width:520px;margin:0 auto}
-#cardView{display:flex;flex-direction:column;gap:10px}
+/* ---------- 카드 ---------- */
+main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset-bottom))}
+.pane{height:100%}
 .card{
-  background:#fff;border:1px solid var(--line);border-radius:18px;
-  padding:16px 16px 14px;display:flex;flex-direction:column;gap:14px;
-  min-height:calc(100vh - 260px);min-height:calc(100dvh - 260px);
-  box-shadow:0 1px 2px rgba(16,24,40,.05);
-  will-change:transform;
+  height:100%;display:flex;flex-direction:column;
+  background:#fff;border-radius:24px;padding:18px 18px 14px;
+  box-shadow:0 2px 16px rgba(25,31,40,.05);will-change:transform,opacity;
 }
-.meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.tag{background:#eef2f7;color:#334155;border-radius:6px;padding:4px 9px;font-size:12.5px;font-weight:800;letter-spacing:.01em}
-.ino{font-size:13.5px;color:var(--sub);font-weight:700;font-variant-numeric:tabular-nums}
-.stem{
-  margin:0;flex:1;font-size:20px;line-height:1.6;font-weight:700;
-  letter-spacing:-.015em;word-break:keep-all;overflow-wrap:anywhere;
-}
-.fb{display:none;border-radius:13px;padding:13px 14px;font-size:17px;line-height:1.55}
-.fb.show{display:block;animation:pop .16s ease-out}
-.fb.ok{background:var(--o-bg);border:1px solid var(--o-line)}
-.fb.no{background:var(--x-bg);border:1px solid var(--x-line)}
-.fb .v{margin:0 0 5px;font-size:18px;font-weight:800;letter-spacing:-.01em}
-.fb.ok .v{color:#15803d}
-.fb.no .v{color:#b91c1c}
-.fb .e{margin:0;color:#1f2937;word-break:keep-all}
-@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.card.in-next{animation:inNext .22s ease-out both}
+.card.in-prev{animation:inPrev .22s ease-out both}
+.card.nudge{animation:nudge .18s ease-out both}
+@keyframes inNext{from{opacity:.35;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes inPrev{from{opacity:.35;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes nudge{0%,100%{transform:none}35%{transform:translateX(-8px)}70%{transform:translateX(8px)}}
 
-.oxrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ox{
-  height:84px;border-radius:16px;border:2px solid var(--line);background:#fff;
-  font-size:34px;font-weight:900;color:#a9b0bc;letter-spacing:.02em;
-  transition:transform .08s ease,background .12s,border-color .12s,color .12s;
-}
-.ox:active{transform:scale(.97)}
-.ox.o.on{background:var(--o);border-color:var(--o);color:#fff}
-.ox.x.on{background:var(--x);border-color:var(--x);color:#fff}
-.ox.correct-hint{border-color:var(--o);color:var(--o);background:#f3fbf6}
-.ox.dim{opacity:.45}
+.cardTop{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.badge{background:#EBF2FE;color:var(--blue-deep);border-radius:9px;padding:6px 10px;
+  font-size:16px;font-weight:600;letter-spacing:-.01em;max-width:84%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.star{margin-left:auto;width:44px;height:44px;margin-top:-8px;margin-right:-8px;border-radius:12px;font-size:26px;line-height:1;color:#C9CFD6}
+.star.on{color:#FFB020}
+.star:active{background:#F4F6F9}
 
-.nav{display:grid;grid-template-columns:76px 1fr 76px;gap:10px;align-items:center}
-.nav button{
-  height:58px;border-radius:14px;border:1px solid var(--line);background:#fff;
-  font-size:18px;font-weight:800;color:#374151;
-}
-.nav button:active{background:#f3f4f6}
-.nav .pos{
-  text-align:center;font-size:14.5px;font-weight:800;color:var(--sub);
-  font-variant-numeric:tabular-nums;
-}
-.hint{text-align:center;font-size:12.5px;color:#9ca3af;margin:2px 0 0;font-weight:600}
-.empty{
-  background:#fff;border:1px dashed var(--line);border-radius:16px;
-  padding:34px 18px;text-align:center;color:var(--sub);font-size:16px;font-weight:600;
-}
+.stem{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  margin:16px 0 14px;font-size:23px;line-height:1.58;font-weight:400;
+  letter-spacing:-.02em;word-break:keep-all;overflow-wrap:anywhere;color:var(--ink)}
+.stem::-webkit-scrollbar{width:0}
+.kw{color:var(--blue-deep);font-weight:500}
 
-/* ---------- 목록 모드 ---------- */
-#listView{display:none;flex-direction:column;gap:0}
-#listView.on{display:flex}
-.item{
-  background:#fff;border:1px solid var(--line);border-radius:14px;
-  padding:13px 14px;margin-bottom:10px;
+.fb{flex:0 0 auto;display:none;border-radius:18px;padding:14px 16px;margin:0 0 14px}
+.fb.show{display:block;animation:pop .18s ease-out both}
+.fb.ok{background:var(--green-soft)}
+.fb.no{background:var(--coral-soft)}
+.fb .v{margin:0 0 4px;font-size:18px;font-weight:700;letter-spacing:-.01em}
+.fb.ok .v{color:#009E60}
+.fb.no .v{color:#E13B49}
+.fb .e{margin:0;font-size:19.5px;line-height:1.55;font-weight:400;color:#333D4B;word-break:keep-all;overflow-wrap:anywhere}
+@keyframes pop{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+
+.oxrow{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ox{height:100px;border-radius:20px;background:#F2F4F6;color:#4E5968;
+  font-size:40px;font-weight:400;letter-spacing:.02em;
+  transition:transform .08s ease,background .12s,color .12s,box-shadow .12s}
+.ox:active{transform:scale(.98)}
+.ox.hint{background:#fff;color:var(--green);box-shadow:inset 0 0 0 3px var(--green)}
+.ox.ok{background:var(--green);color:#fff}
+.ox.no{background:var(--coral);color:#fff}
+.ox.faded{background:#F7F8FA;color:#C2C8CF}
+
+.nav{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.nav button{height:58px;border-radius:16px;background:#F2F4F6;color:#333D4B;font-size:17px;font-weight:600;
+  display:flex;align-items:center;justify-content:center}
+.nav button:active{background:#E7EBF0}
+.nav button:disabled{color:#C2C8CF}
+
+.card.empty .stem{display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:18px;line-height:1.6;color:var(--sub);font-weight:500;padding:0 10px}
+.card.empty .oxrow,.card.empty .nav,.card.empty .fb{display:none}
+.card.empty .star{visibility:hidden}
+
+/* ---------- 여러 개 보기 ---------- */
+.list{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;padding-bottom:8px}
+.list::-webkit-scrollbar{width:0}
+.li{background:#fff;border-radius:22px;padding:18px 18px 16px;box-shadow:0 2px 14px rgba(25,31,40,.05)}
+.liTop{display:flex;align-items:center;margin-bottom:8px}
+.liBadge{background:#EBF2FE;color:var(--blue-deep);border-radius:8px;padding:5px 9px;font-size:16px;font-weight:600;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.liStem{margin:0 0 14px;font-size:22px;line-height:1.55;font-weight:400;letter-spacing:-.02em;word-break:keep-all;overflow-wrap:anywhere}
+.liOx{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.liBtn{height:56px;border-radius:14px;background:#F2F4F6;color:#4E5968;font-size:24px;font-weight:400}
+.liBtn.ok{background:var(--green);color:#fff}
+.liBtn.no{background:var(--coral);color:#fff}
+.liBtn.hint{background:#fff;color:var(--green);box-shadow:inset 0 0 0 3px var(--green)}
+.liFb{margin-top:12px;border-radius:14px;padding:12px 14px}
+.liFb.ok{background:var(--green-soft)}
+.liFb.no{background:var(--coral-soft)}
+.liFb b{display:block;font-size:16.5px;font-weight:700;margin-bottom:3px}
+.liFb.ok b{color:#009E60}
+.liFb.no b{color:#E13B49}
+.liFb p{margin:0;font-size:19px;line-height:1.55;font-weight:400;color:#333D4B;word-break:keep-all}
+.emptyList{background:#fff;border-radius:22px;padding:40px 20px;text-align:center;color:var(--sub);font-size:18px;font-weight:500;line-height:1.6}
+
+@media (max-height:720px){
+  .stem{font-size:22px;line-height:1.55;margin:12px 0 10px}
+  .ox{height:86px}
+  .nav button{height:52px}
+  .nav{margin-top:10px}
+  .title{font-size:17px;margin-bottom:6px}
+  .seg button{height:46px}
+  .tools{margin-top:6px}
 }
-.ihead{display:flex;align-items:center;gap:7px}
-.item .istem{margin:8px 0 11px;font-size:19px;line-height:1.6;font-weight:700;letter-spacing:-.015em;word-break:keep-all}
-.ibtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mini{
-  height:58px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
-  font-size:24px;font-weight:900;color:#a9b0bc;
-}
-.mini:active{transform:scale(.98)}
-.mini.o.on{background:var(--o);border-color:var(--o);color:#fff}
-.mini.x.on{background:var(--x);border-color:var(--x);color:#fff}
-.mini.correct-hint{border-color:var(--o);color:var(--o);background:#f3fbf6}
-.mini.dim{opacity:.45}
-.ifb{display:none;margin-top:10px;border-radius:10px;padding:12px 12px;font-size:16.5px;line-height:1.55}
-.ifb.show{display:block}
-.ifb.ok{background:var(--o-bg);border:1px solid var(--o-line)}
-.ifb.no{background:var(--x-bg);border:1px solid var(--x-line)}
-.ifb .v{margin:0 0 4px;font-weight:800;font-size:17px}
-.ifb.ok .v{color:#15803d}
-.ifb.no .v{color:#b91c1c}
-.ifb .e{margin:0;color:#1f2937}
-@media (min-width:560px){ .stem{font-size:21px} .item .istem{font-size:20px} }
 </style>
 </head>
 <body>
-
-<header>
-  <div class="row">
-    <div class="stat"><b id="prog">0 / 50</b><small>진행</small></div>
-    <div class="stat acc"><b id="acc">–</b><small>정답률</small></div>
-    <div class="spacer"></div>
-    <button class="btn" id="modeBtn">목록 보기</button>
-    <button class="btn" id="resetBtn">초기화</button>
-  </div>
-  <nav class="filters" id="filters" aria-label="과목 필터"></nav>
-</header>
-
-<main>
-  <section id="cardView">
-    <div class="card" id="card">
-      <div class="meta">
-        <span class="tag" id="tag">개론·윤리</span>
-        <span class="ino" id="ino">No.1</span>
+<div class="app">
+  <header>
+    <h1 class="title">AFPK <em>전범위</em> O/X</h1>
+    <div class="modrow">
+      <div class="seg" id="seg">
+        <button type="button" id="seg1" class="on">모듈 1</button>
+        <button type="button" id="seg2">모듈 2</button>
       </div>
-      <p class="stem" id="stem"></p>
-      <div class="fb" id="fb">
-        <p class="v" id="vb"></p>
-        <p class="e" id="ex"></p>
-      </div>
-      <div class="oxrow">
-        <button class="ox o" id="btnO" data-a="O" aria-label="O 정답">O</button>
-        <button class="ox x" id="btnX" data-a="X" aria-label="X 정답">X</button>
-      </div>
+      <button type="button" class="iconbtn" id="chipStar" aria-label="별표한 문제만">★</button>
+      <button type="button" class="shuffle" id="shuffle" aria-label="섞기">🔀</button>
     </div>
-    <div class="nav">
-      <button id="prev" aria-label="이전 문항">◀</button>
-      <div class="pos" id="pos">1 / 50</div>
-      <button id="next" aria-label="다음 문항">▶</button>
+    <div class="tools">
+      <div class="vseg" id="vseg">
+        <button type="button" id="viewOne" class="on">한 개 보기</button>
+        <button type="button" id="viewMany">여러 개 보기</button>
+      </div>
+      <button type="button" class="chip" id="chipWrong">틀린 것만</button>
     </div>
-    <p class="hint">카드를 좌우로 밀어도 넘어갑니다</p>
-    <div class="empty" id="empty" hidden></div>
-  </section>
+  </header>
 
-  <section id="listView" aria-label="전체 목록"></section>
-</main>
+  <main>
+    <section class="pane" id="onePane">
+      <article class="card" id="card">
+        <div class="cardTop">
+          <span class="badge" id="badge"></span>
+          <button type="button" class="star" id="star" aria-label="별표">☆</button>
+        </div>
+        <p class="stem" id="stem"></p>
+        <div class="fb" id="fb" role="status" aria-live="polite">
+          <p class="v" id="fbTitle"></p>
+          <p class="e" id="fbBody"></p>
+        </div>
+        <div class="oxrow">
+          <button type="button" class="ox" id="btnO" aria-label="O">O</button>
+          <button type="button" class="ox" id="btnX" aria-label="X">X</button>
+        </div>
+        <div class="nav">
+          <button type="button" id="btnPrev">◀ 이전</button>
+          <button type="button" id="btnNext">다음 ▶</button>
+        </div>
+      </article>
+    </section>
 
-<script id="data" type="application/json">
-[
-{"id":1,"s":"intro","q":"가계수지상태지표는 월 총지출을 월 순수입으로 나누어 계산하며, 이때 월 총지출에는 저축과 투자액이 포함되지 않는다.","a":"O","e":"월 총지출 = 변동지출 + 고정지출이다. 대출원금 상환·적금·펀드 같은 저축·투자액은 지출로 보지 않으므로 분자에서 빠진다."},
-{"id":2,"s":"intro","q":"비상예비자금지표는 현금성자산을 월 순수입으로 나누어 계산하고, 적정 수준은 3~6개월분이다.","a":"X","e":"분모는 월 순수입이 아니라 월 총지출이다. 현금성자산(CD 90일 이하 등)을 3~6개월치 고정지출+변동지출로 나눈다."},
-{"id":3,"s":"intro","q":"소비성부채비율의 분모는 월 총수입이고, 주거관련부채비율의 분모는 월 순수입이다.","a":"X","e":"반대다. 소비성부채비율 = 소비성부채상환액 ÷ 월 순수입, 주거관련부채비율 = 주거관련부채상환액 ÷ 월 총수입. 주거 관련은 이자 소득공제 때문에 세금을 계산한 총수입을 쓴다."},
-{"id":4,"s":"intro","q":"주거관련부채비율과 총부채상환비율은 모두 월 총수입을 분모로 한다.","a":"O","e":"주거관련부채상환액, 총부채상환액을 각각 월 총수입으로 나눈다. 분모가 월 순수입인 것은 소비성부채비율 하나뿐이다."},
-{"id":5,"s":"intro","q":"재무설계 프로세스 3단계는 고객의 재무상태 분석 및 평가로, 개인재무제표 작성과 분석, 생애목적자금 분석이 이 단계에서 이루어진다.","a":"O","e":"1단계 관계 정립·계약 → 2단계 정보 수집·목표 파악 → 3단계 분석·평가 → 4단계 제안서 작성·제시 → 5단계 실행 → 6단계 모니터링."},
-{"id":6,"s":"intro","q":"재무설계사와 고객의 계약 체결은 고객 정보를 수집하고 목표를 파악한 뒤인 2단계에서 이루어진다.","a":"X","e":"계약은 1단계인 고객과의 관계 정립 및 계약에서 업무수행범위를 설명하고 체결한다. 2단계는 정보 수집과 목표·기대수준 파악이다."},
-{"id":7,"s":"intro","q":"생애주기 중 사회초년기의 대표적인 재무관심사는 자녀교육자금 마련과 주택 확장이다.","a":"X","e":"그것은 자녀성장기의 관심사다. 사회초년기는 주거자금 마련, 학자금대출 상환, 본인 결혼자금, 소비지출관리, 저축·투자관리, 부채관리, 위험관리다."},
-{"id":8,"s":"intro","q":"윤리원칙 중 이해상충 관리의 원칙은 고객 이익 우선의 원칙을 실질적으로 실현하는 핵심 장치로, 특정 금융상품 추천에 따른 수수료를 사전에 공개하는 것을 포함한다.","a":"O","e":"이해상충 가능성은 사전에 고지하고, 수수료 등 이해관계를 공개한 뒤 고객에게 가장 유리한 선택을 제안해야 한다."},
-{"id":9,"s":"intro","q":"자격 결격사유에는 파산자로서 복권되지 아니한 자 또는 파산신청 후 5년이 지나지 아니한 자가 포함된다.","a":"O","e":"파산 5년, 금고 이상의 형 3년(신념에 따른 위법행위는 1년), 집행유예 1년, 음주운전·마약 벌금 1년, 파면·해임·자격취소 3년, 자격·직무·업무정지 1년 순으로 외운다."},
-{"id":10,"s":"intro","q":"금융소비자보호법상 6대 판매규제는 전문금융소비자에게도 전부 적용된다.","a":"X","e":"전문금융소비자에게는 적합성원칙, 적정성원칙, 설명의무와 청약철회권이 적용되지 않는다. 불공정영업행위 금지, 부당권유 금지, 광고규제와 위법계약해지권만 적용된다."},
-
-{"id":11,"s":"retire","q":"2026년 기준 국민연금 보험료율은 9.5%이고, 40년 가입 기준 소득대체율은 43%이다.","a":"O","e":"보험료율은 2033년 13%까지 매년 0.5%포인트씩 오른다. 사업장가입자는 사업주와 반반 부담하고, 지역·임의가입자는 전액 본인 부담이다."},
-{"id":12,"s":"retire","q":"조기노령연금은 최대 5년까지 앞당길 수 있고, 1년 앞당길 때마다 7.2%씩 감액된다.","a":"X","e":"조기 감액은 1년당 6%다(5년이면 30% 감액, 70% 수령). 1년당 7.2%는 노령연금 연기 가산률이다."},
-{"id":13,"s":"retire","q":"노령연금 연기제도는 수급연령부터 5년의 기간 이내에서 신청할 수 있고 신청 횟수에 제한이 없으며, 1년 늦출 때마다 7.2%씩 가산된다.","a":"O","e":"최대 5년 연기하면 136% 수준이 된다. 조기노령연금은 최대 5년, 1년당 6% 감액과 짝으로 외운다."},
-{"id":14,"s":"retire","q":"1965~1966년생의 노령연금 수급개시연령은 65세이다.","a":"X","e":"1965~1966년생은 64세이고, 1969년생 이후가 65세다(1953~1956년생 61세, 1957~1960년생 62세, 1961~1964년생 63세)."},
-{"id":15,"s":"retire","q":"분할연금은 혼인기간이 5년 이상인 배우자가 이혼하고 수급개시연령에 도달한 경우, 해당 연금액의 2분의 1을 받을 수 있다.","a":"O","e":"이혼, 수급개시연령 도달, 혼인기간 5년 이상의 세 요건을 모두 갖추어야 한다. 배우자의 노령연금액 중 혼인기간에 해당하는 부분의 절반이다."},
-{"id":16,"s":"retire","q":"반환일시금을 반납하려면 최대 12개월까지만 허용된다.","a":"X","e":"최대 24개월까지 반납할 수 있고 이자는 1년 만기 정기예금 이자율을 적용한다. 납부예외자도 반납할 수 있고, 60세 이후에도 가입 중이면 신청할 수 있다."},
-{"id":17,"s":"retire","q":"유족연금은 가입기간이 20년 이상이면 기본연금액의 60%에 부양가족연금액을 더해 지급한다.","a":"O","e":"10년 미만 40%, 10년 이상 20년 미만 50%, 20년 이상 60%다. 장애연금 1급 100%, 2급 80%, 3급 60%와 함께 숫자로 외운다."},
-{"id":18,"s":"retire","q":"장애연금 4급은 기본연금액의 60%를 연금으로 지급한다.","a":"X","e":"3급이 기본연금액의 60% 연금이고, 4급은 기본연금액의 225%를 일시보상금으로 받는다(1급 100%, 2급 80%)."},
-{"id":19,"s":"retire","q":"국민연금과 직역연금의 공적연금 연계는 연계대상기간 10년이 필요하고, 군인연금과 연계하는 경우에는 20년이 필요하다.","a":"O","e":"연계기간이 1년 미만이면 일시금으로 지급한다. 임의계속가입기간은 연계대상기간에는 포함되지 않지만 연계급여의 연금액 산정에는 포함된다."},
-{"id":20,"s":"retire","q":"DB형 퇴직연금은 무주택자인 가입자가 주택을 구입할 때 중도인출할 수 있다.","a":"X","e":"DB형은 중도인출이 금지된다. 주택구입, 전세금·보증금 부담, 6개월 이상 요양, 파산·개인회생 등은 DC형·IRP에서 담보제공과 중도인출이 가능한 사유다."},
-{"id":21,"s":"retire","q":"연금계좌 세액공제 한도는 연금저축 600만 원(IRP·DC 포함 시 900만 원)이고, ISA 만기자금을 연금계좌로 이전하면 전환금액의 10%(300만 원 한도)를 추가로 공제한다.","a":"O","e":"공제율은 종합소득 4,500만 원(근로소득만 있으면 총급여 5,500만 원) 이하 15%, 초과 12%이고 지방소득세는 별도다."},
-{"id":22,"s":"retire","q":"ISA 만기자금을 연금계좌로 이전할 때는 전환금액의 20%, 500만 원 한도로 세액공제를 추가로 받을 수 있다.","a":"X","e":"전환금액의 10%, 300만 원 한도다. 이 한도를 더하면 연금계좌 세액공제 한도는 최대 1,200만 원까지 늘어난다."},
-{"id":23,"s":"retire","q":"사적연금을 연금으로 수령할 때 연간 1,500만 원을 넘는 금액은 종합과세되거나 15% 분리과세를 선택할 수 있다.","a":"O","e":"1,500만 원 이하는 연령별 5%·4%·3%(종신형 3%)로 분리과세된다. 이연퇴직소득은 퇴직소득세율의 70%(11년차부터 60%, 21년차부터 50%)로 과세된다."},
-{"id":24,"s":"retire","q":"주택연금은 부부 중 1인 이상이 55세 이상이고 부부합산 주택 공시가격이 12억 원 이하인 경우 가입할 수 있다.","a":"O","e":"부부 모두 사망할 때까지 지급하고 소득공제는 200만 원 한도다. 우대방식은 기초연금 수급자이면서 2.5억 원 미만 1주택인 경우 대상이 된다."},
-{"id":25,"s":"retire","q":"기초연금은 만 65세 이상 노인 전원에게 소득 수준과 관계없이 지급된다.","a":"X","e":"65세 이상 노인의 약 70%에게 선정기준액(소득인정액) 이하인 경우 지급한다. 직역연금 수급자와 그 배우자는 원칙적으로 제외된다."},
-
-{"id":26,"s":"real","q":"부동성 때문에 부동산 활동과 시장이 국지화되고 현장답사가 필요하며, 부동산중개업이 제도화되는 근거가 된다.","a":"O","e":"부동산 활동에서 가장 중요한 것은 입지설정인데, 그 이유도 토지의 부동성 때문이다."},
-{"id":27,"s":"real","q":"토지의 부증성 때문에 토지의 공급곡선은 완전 탄력적으로 나타난다.","a":"X","e":"부증성 때문에 공급곡선이 완전 비탄력적 또는 매우 비탄력적이 된다. 토지부족이 지가 상승의 원인이 되고 토지 이용이 집약화된다."},
-{"id":28,"s":"real","q":"토지의 개별성 때문에 일물일가의 법칙이 그대로 적용된다.","a":"X","e":"개별성 때문에 비대체성이 생겨 일물일가의 법칙 적용이 배제된다. 물리적으로 완전히 동일한 토지는 존재하지 않는다."},
-{"id":29,"s":"real","q":"금리 인하와 소득수준 증가는 부동산 수요를 늘리는 요인이고, 건축기술의 발달과 공급자 수의 증가는 공급을 늘리는 요인이다.","a":"O","e":"대체재 가격 상승, 부동산 조세 세율 완화, 규제 완화도 수요 증가 요인이다. 반대로 자재·인건비 등 건축비 상승은 공급 감소 요인이다."},
-{"id":30,"s":"real","q":"물권은 대체로 강행규정이고 물건에 대한 지배권으로 절대권·배타성을 가지며, 채권에 대해 우선한다.","a":"O","e":"채권은 대체로 임의규정이고 특정인에 대한 요구권인 상대권으로 배타성이 없어 채권 상호 간에는 평등주의가 적용된다."},
-{"id":31,"s":"real","q":"지목은 1필지 1목의 원칙이 예외 없이 적용되어, 과수원이나 목장용지의 일부가 주택으로 쓰이더라도 반드시 지목을 변경해야 한다.","a":"X","e":"과수원, 목장용지, 묘지의 일부가 주택이나 시설관리사무소 등으로 쓰이는 면적은 그 목에 따른다. 이것이 1필1목 원칙의 예외다."},
-{"id":32,"s":"real","q":"해지는 계약을 처음부터 없었던 것으로 되돌리는 소급효가 있어 원상복구의무가 발생한다.","a":"X","e":"소급효와 원상복구의무는 해제(매매 등 1회성 거래)다. 해지는 장래효로 계약관계를 소멸시켜 청산의무가 생긴다(임대차 등 계속적 거래)."},
-{"id":33,"s":"real","q":"재건축은 재개발과 달리 재건축진단을 실시하고 개발부담금이 부과되며, 세입자 대책은 없다.","a":"O","e":"재개발은 진단 없음, 개발부담금 없음, 세입자 대책 있음이다. 재개발은 정비기반시설이 열악하고 건축물이 노후·불량한 지역이 대상이다."},
-{"id":34,"s":"real","q":"자기관리 부동산투자회사(일반 REITs)는 명목회사이고, 위탁관리 부동산투자회사는 실체회사이다.","a":"X","e":"반대다. 자기관리는 임직원을 상근으로 두고 직접 운용하는 실체회사, 위탁관리는 자산관리회사에 위탁하는 명목회사다. 기업구조조정 REITs도 명목회사다."},
-{"id":35,"s":"real","q":"경매의 매수신청 보증금은 최저매각가격의 10%, 공매는 입찰가격의 10%이며, 공매는 1천만 원을 넘으면 분할납부할 수 있다.","a":"O","e":"경매는 법원 기일입찰, 공매는 온비드 기간입찰이다. 공매는 인도명령 제도가 없어 명도소송만 가능하고, 명도책임은 유입재산이 한국자산관리공사, 수탁재산이 매도인, 압류·국유재산이 매수인이다."},
-{"id":36,"s":"real","q":"주택임대차의 대항력은 주택의 인도와 주민등록(전입신고)을 마친 다음 날 0시부터 생긴다.","a":"O","e":"인도나 전입 중 하나만으로는 부족하다. 우선변제권은 여기에 확정일자를 더해야 하고, 최우선변제권은 대항요건만 갖추면 된다."},
-{"id":37,"s":"real","q":"우선변제권은 대항요건과 확정일자를 갖추어야 생기고, 최우선변제권의 한도는 주택가액의 2분의 1이다.","a":"O","e":"최우선변제는 대항요건만 갖추면 보증금 중 일정액을 후순위 권리자나 다른 채권자보다 먼저 변제받는다. 한도는 주택가액의 2분의 1이다."},
-{"id":38,"s":"real","q":"임차인의 계약갱신요구권은 기간 만료 6개월 전부터 2개월 전까지 행사할 수 있고, 횟수 제한 없이 반복해서 행사할 수 있다.","a":"X","e":"갱신요구권은 1회만 행사할 수 있고 갱신 기간은 2년이다. 2기 이상 차임 연체나 임대인·직계존비속의 실거주 같은 정당한 사유가 있으면 거절할 수 있다."},
-
-{"id":39,"s":"inherit","q":"상속결격이 되려면 상속인이 자신이 상속으로 이익을 얻는다는 인식까지 가지고 있어야 한다.","a":"X","e":"그런 인식은 필요 없다. 고의로 상속의 선순위·동순위자나 피상속인·그 배우자를 살해하거나 살해하려 하면 결격이고, 상해의 고의만 있어도 사망에 이르게 하면 결격이다. 낙태도 상속결격이다."},
-{"id":40,"s":"inherit","q":"대습상속은 상속인이 상속을 포기한 경우에도 인정된다.","a":"X","e":"대습상속은 선사망, 상속결격, 동시사망의 추정 때만 인정되고 상속포기는 포함되지 않는다. 상속포기는 채권자 취소의 대상도 되지 않는다."},
-{"id":41,"s":"inherit","q":"대습상속에서 피대습자의 배우자가 대습상속인이 되려면 피대습자가 피상속인보다 먼저 사망한 경우여야 한다.","a":"O","e":"배우자는 피대습자가 상속개시 전에 사망한 경우에만 대습상속인이 된다. 직계비속은 대습상속과 유류분이 인정되지만, 형제자매와 4촌 이내 방계혈족은 인정되지 않는다."},
-{"id":42,"s":"inherit","q":"상속의 승인과 포기는 상속개시가 있음을 안 날부터 3개월 내에 해야 하고, 한정승인이나 포기를 한 뒤에는 그 기간 안이라도 취소할 수 없다.","a":"O","e":"기간을 넘기면 단순승인으로 본다. 포기는 가정법원에 신고하고, 조건부 포기나 일부 포기는 허용되지 않는다."},
-{"id":43,"s":"inherit","q":"특별한정승인은 상속인이 중대한 과실로 채무초과 사실을 알지 못한 경우에도 인정된다.","a":"X","e":"중대한 과실이 없어야 하고, 안 날부터 3개월 내 가정법원에 신고해야 한다. 미성년자는 성년이 된 뒤 그 사실을 안 날부터 3개월 내에 신청할 수 있다."},
-{"id":44,"s":"inherit","q":"비밀증서에 의한 유언은 봉서 표면에 기재된 날로부터 5일 내에 확정일자를 받아야 하고, 구수증서에 의한 유언은 급박한 사유가 종료한 날로부터 7일 내에 법원에 검인을 신청해야 한다.","a":"O","e":"비밀증서 5일, 구수증서 7일로 외운다. 공정증서와 구수증서를 제외한 유언은 사망 후 검인을 받아야 하지만, 검인 절차의 유무는 유언의 효력에 영향을 주지 않는다."},
-{"id":45,"s":"inherit","q":"형제자매도 유류분 권리자로서 법정상속분의 3분의 1을 유류분으로 청구할 수 있다.","a":"X","e":"형제자매의 유류분은 폐지되었다. 배우자와 직계비속은 법정상속분의 2분의 1, 직계존속은 3분의 1이다."},
-{"id":46,"s":"inherit","q":"유류분 산정의 기초재산은 적극적 상속재산에 증여재산을 더하고 상속채무를 뺀 금액이다.","a":"O","e":"유류분 부족액 = 기초재산 × 유류분 비율 - 특별수익 - 순상속액. 반환 순서는 유증, 증여 순이고 기여분은 반환 대상이 아니다."},
-{"id":47,"s":"inherit","q":"유류분 반환청구권은 상속개시와 반환할 증여·유증이 있음을 안 때부터 1년, 상속이 개시된 때부터 10년의 소멸시효가 적용된다.","a":"O","e":"기여분은 유류분 반환 대상이 아니고, 유류분은 상속개시 전에 미리 포기할 수 없다."},
-{"id":48,"s":"inherit","q":"상속세 일괄공제 5억 원은 배우자가 단독으로 상속하는 경우에도 적용할 수 있다.","a":"X","e":"배우자 단독 상속에는 일괄공제를 적용할 수 없다. 배우자상속공제는 최소 5억에서 최대 30억, 자녀공제는 1인당 5천만 원, 기초공제는 2억 원이다."},
-{"id":49,"s":"inherit","q":"증여재산공제는 배우자 6억 원, 성인 자녀 5천만 원(미성년 자녀 2천만 원), 기타 친족 1천만 원이며, 혼인·출산 공제는 별도로 1억 원씩 공제된다.","a":"O","e":"증여재산공제는 10년 합산 기준이고, 혼인·출산 공제는 기간 제한 없이 수증자별 1억 원 한도다. 수증자가 비거주자이면 증여재산공제가 적용되지 않는다."},
-{"id":50,"s":"inherit","q":"계약자와 피보험자가 모두 피상속인이고 수익자가 자녀인 생명보험금은 증여세 과세 대상이다.","a":"X","e":"상속세 과세 대상이다. 계약자 본인·피보험자 배우자·수익자 자녀면 증여세, 계약자 배우자·피보험자 본인·수익자 배우자면 세금이 없다."}
-]
-</script>
+    <section class="pane" id="manyPane" hidden>
+      <div class="list" id="list"></div>
+    </section>
+  </main>
+</div>
 
 <script>
 (function(){
   "use strict";
+  var KEY = "afpk-all-ox-v1";
+  var Q = [{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무설계의 개념","ans":"O","html":"<span class=\"kw\">재무설계</span>는 <span class=\"kw\">재무적 목표</span>뿐 아니라 <span class=\"kw\">비재무적 목표</span>까지 다루며, <span class=\"kw\">재테크와는 본질적으로 다르다</span>.","explain":"<span class=\"kw\">재무설계</span>는 목표 설정부터 실행·모니터링까지 <span class=\"kw\">전 과정</span>을 설계하고, 재테크는 수익을 추구하는 수단이라는 점에서 구분된다.","id":"q1"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"자격 갱신","ans":"X","html":"<span class=\"kw\">AFPK 자격</span>의 유효기간은 <span class=\"kw\">3년</span>이고, 갱신에 필요한 학점은 <span class=\"kw\">20학점</span>(윤리 2학점)이다.","explain":"<span class=\"kw\">유효기간</span>은 <span class=\"kw\">2년</span>이다. 20학점·윤리 2학점 조건은 맞다.","id":"q2"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무상태표","ans":"O","html":"<span class=\"kw\">재무상태표</span>는 <span class=\"kw\">일정 시점</span>의 재무상태를 <span class=\"kw\">시가평가</span>로 표시하며, <span class=\"kw\">공적연금</span>은 재무상태표에 포함하지 않는다.","explain":"<span class=\"kw\">재무상태표</span>는 특정 시점의 자산·부채·순자산을 공정한 시장가격으로 평가하며, 공적연금 수급권은 <span class=\"kw\">평가 대상에서 제외</span>한다.","id":"q3"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"자산의 가치평가","ans":"X","html":"<span class=\"kw\">저축성보험</span>은 <span class=\"kw\">재무상태표</span>에 <span class=\"kw\">납입원금</span>으로 평가한다.","explain":"저축성보험은 납입원금이 <span class=\"kw\">아니라</span> <span class=\"kw\">작성일 현재의 해약환급금</span>으로 평가한다.","id":"q4"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무비율","ans":"O","html":"<span class=\"kw\">비상예비자금지표</span>는 <span class=\"kw\">현금성자산 ÷ 월 총지출</span>로 계산하며, <span class=\"kw\">3~6개월</span>분을 적정 수준으로 본다.","explain":"비상예비자금은 3~<span class=\"kw\">6개월</span>치 <span class=\"kw\">고정지출+변동지출</span>에 해당하는 금액을 현금성자산으로 확보하는 것이 기준이다.","id":"q5"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무비율","ans":"X","html":"<span class=\"kw\">가계수지상태지표</span>는 <span class=\"kw\">월 총지출 ÷ 월 총수입</span>으로 계산한다.","explain":"분모는 월 총수입이 <span class=\"kw\">아니라</span> <span class=\"kw\">월 순수입</span>이다.","id":"q6"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"부채 적정성","ans":"O","html":"<span class=\"kw\">소비성부채비율</span>의 분모는 <span class=\"kw\">월 순수입</span>이지만, 주거관련부채비율과 총부채상환비율의 분모는 <span class=\"kw\">월 총수입</span>이다.","explain":"<span class=\"kw\">주거관련부채</span>는 이자상환액이 소득공제 대상이 될 수 있어 <span class=\"kw\">세금 계산 전 총수입</span>을 분모로 쓴다.","id":"q7"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"현금흐름표","ans":"X","html":"<span class=\"kw\">재무비율</span> 계산에서 <span class=\"kw\">저축 및 투자금액</span>은 <span class=\"kw\">월 총지출에 포함</span>한다.","explain":"월 총지출은 변동지출+<span class=\"kw\">고정지출</span>이며 <span class=\"kw\">저축·투자액은 포함하지 않는다</span>.","id":"q8"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무설계 프로세스","ans":"O","html":"<span class=\"kw\">재무설계</span> <span class=\"kw\">1단계</span>는 고객과의 <span class=\"kw\">관계 정립 및 계약</span> 단계로, <span class=\"kw\">업무수행범위</span>와 이해상충 가능성을 명확히 안내한다.","explain":"<span class=\"kw\">1단계</span>의 핵심은 서비스 범위·역할·이해상충 안내와 <span class=\"kw\">신뢰관계 구축</span>이다.","id":"q9"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무설계 프로세스","ans":"X","html":"<span class=\"kw\">2단계</span> 고객 정보 수집 단계에서는 <span class=\"kw\">재무적 정보만</span> 수집하고 비재무적 정보는 다루지 않는다.","explain":"<span class=\"kw\">2단계</span>에서는 재무적 정보와 함께 <span class=\"kw\">비재무적 정보</span>(가치관·기대수준 등)를 모두 수집한다.","id":"q10"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"윤리원칙","ans":"O","html":"윤리원칙 중 <span class=\"kw\">이해상충 관리의 원칙</span>은 <span class=\"kw\">고객 이익 우선의 원칙</span>을 실질적으로 실현하는 핵심 장치다.","explain":"수수료 등 <span class=\"kw\">이해상충</span> 가능성을 <span class=\"kw\">사전에 공개</span>하고 고객에게 가장 유리한 선택을 제안하는 것이 이 원칙이다.","id":"q11"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"윤리원칙","ans":"X","html":"<span class=\"kw\">비밀유지의 원칙</span>은 <span class=\"kw\">예외가 전혀 없이</span> 고객 정보를 제공해서는 안 된다는 원칙이다.","explain":"법령에 따른 요구나 <span class=\"kw\">자기 방어권</span> 행사 등 예외적으로 정보 제공이 <span class=\"kw\">허용</span>되는 경우가 있다.","id":"q12"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"결격사유","ans":"O","html":"파산자로서 복권되지 않았거나 <span class=\"kw\">파산신청 후 5년</span>이 지나지 않은 자는 재무설계사 <span class=\"kw\">결격사유</span>에 해당한다.","explain":"파산 관련 결격은 <span class=\"kw\">복권 여부</span>와 <span class=\"kw\">5년</span> 경과 여부로 판단한다.","id":"q13"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"결격사유","ans":"X","html":"금고 이상의 형의 <span class=\"kw\">집행유예</span>를 선고받고 그 기간이 경과한 후 <span class=\"kw\">3년</span>이 지나지 않은 자가 <span class=\"kw\">결격사유</span>다.","explain":"집행유예 기간 경과 후 <span class=\"kw\">1년</span>이 지나지 않은 자가 결격사유다(금고 이상 실형은 <span class=\"kw\">3년</span>).","id":"q14"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"금융소비자보호","ans":"O","html":"금융소비자보호법상 <span class=\"kw\">적합성·적정성 원칙</span>은 <span class=\"kw\">전문금융소비자</span>에게는 적용되지 않는다.","explain":"<span class=\"kw\">전문금융소비자에게</span>는 <span class=\"kw\">설명의무·불공정영업행위금지·부당권유·위법계약해지권</span>만 적용된다.","id":"q15"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"금융소비자보호","ans":"X","html":"<span class=\"kw\">전문금융소비자</span>도 모든 금융상품에 대해 <span class=\"kw\">청약철회권</span>을 행사할 수 있다.","explain":"청약철회권은 <span class=\"kw\">일반금융소비자</span>에게 <span class=\"kw\">인정</span>되는 권리다.","id":"q16"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"채무자 구제제도","ans":"O","html":"<span class=\"kw\">신용회복위원회</span>의 채무조정은 <span class=\"kw\">보증인</span>에게 <span class=\"kw\">동일한 효력</span>이 미치지만, 법원의 개인회생·파산에서는 인정되지 않는다.","explain":"<span class=\"kw\">보증인 피해</span>를 줄이려면 <span class=\"kw\">신용회복위원회</span> 제도가 유리하다.","id":"q17"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"채무자 구제제도","ans":"X","html":"법원의 <span class=\"kw\">개인회생</span>은 총채무액이 <span class=\"kw\">15억 원</span>을 넘으면 신청할 수 없다.","explain":"개인회생 총채무액 한도는 <span class=\"kw\">25억 원</span>(담보 15억·무담보 10억)이다. 15억은 <span class=\"kw\">신용회복위원회</span> 채무조정 한도다.","id":"q18"},{"module":1,"subject":"은퇴설계","topic":"국민연금 보험료","ans":"O","html":"<span class=\"kw\">국민연금</span>의 <span class=\"kw\">보험료율은 9.5%</span>이고, 40년 가입 기준 <span class=\"kw\">소득대체율은 43%</span>이다.","explain":"보험료율은 매년 <span class=\"kw\">0.5%</span>p 올라 <span class=\"kw\">2033년 13%</span>가 된다.","id":"q19"},{"module":1,"subject":"은퇴설계","topic":"조기노령연금","ans":"X","html":"<span class=\"kw\">조기노령연금</span>은 최대 <span class=\"kw\">10년</span>까지 앞당겨 받을 수 있고, 1년당 <span class=\"kw\">6%</span>씩 감액된다.","explain":"앞당길 수 있는 기간은 최대 <span class=\"kw\">5년</span>이다(<span class=\"kw\">1년</span>당 6% 감액은 맞다).","id":"q20"},{"module":1,"subject":"은퇴설계","topic":"노령연금 연기","ans":"O","html":"<span class=\"kw\">노령연금</span>연기제도는 <span class=\"kw\">5년</span> 이내에서 신청할 수 있고 <span class=\"kw\">신청횟수 제한이 없으며</span>, 1년당 <span class=\"kw\">7.2%</span>씩 가산된다.","explain":"수급연령 도달일부터 <span class=\"kw\">5년</span> 이내에서 <span class=\"kw\">나눠 신청</span>할 수 있다.","id":"q21"},{"module":1,"subject":"은퇴설계","topic":"수급개시연령","ans":"X","html":"노령연금 <span class=\"kw\">수급개시연령</span>은 <span class=\"kw\">1969년생 이후</span> 출생자도 <span class=\"kw\">60세</span>다.","explain":"<span class=\"kw\">1969년</span>생 이후는 <span class=\"kw\">65세</span>다. 60세는 1952년생 이전 출생자 기준이다.","id":"q22"},{"module":1,"subject":"은퇴설계","topic":"분할연금","ans":"O","html":"분할연금은 <span class=\"kw\">혼인기간 5년 이상</span>이고 <span class=\"kw\">수급개시연령</span>에 도달한 뒤 이혼한 경우 <span class=\"kw\">연금액의 1/2</span>을 받는다.","explain":"이혼·수급개시연령 도달·혼인기간 <span class=\"kw\">5년</span> 이상이 <span class=\"kw\">3대 요건</span>이다.","id":"q23"},{"module":1,"subject":"은퇴설계","topic":"유족연금","ans":"X","html":"유족연금은 가입기간이 <span class=\"kw\">10년 이상 20년 미만</span>이면 <span class=\"kw\">기본연금액</span>의 <span class=\"kw\">40%</span>다.","explain":"10~<span class=\"kw\">20년</span> 미만은 <span class=\"kw\">50%</span>다(10년 미만 40%, 20년 이상 60%).","id":"q24"},{"module":1,"subject":"은퇴설계","topic":"장애연금","ans":"O","html":"장애연금 <span class=\"kw\">4급</span>은 <span class=\"kw\">기본연금액</span>의 <span class=\"kw\">225%</span>를 <span class=\"kw\">일시보상금</span>으로 지급한다.","explain":"<span class=\"kw\">1급</span> 100%, 2급 80%, 3급 60%는 연금, 4급만 <span class=\"kw\">일시금</span>이다.","id":"q25"},{"module":1,"subject":"은퇴설계","topic":"중복급여 조정","ans":"X","html":"노령연금과 유족연금이 중복되면 <span class=\"kw\">유족연금을 선택</span>해 <span class=\"kw\">노령연금 + 유족연금의 30%</span>를 받는다.","explain":"<span class=\"kw\">노령연금을 선택</span>할 때 노령연금+유족연금의 <span class=\"kw\">30%</span>이고, 유족연금을 선택하면 유족연금만 받는다.","id":"q26"},{"module":1,"subject":"은퇴설계","topic":"공적연금 연계","ans":"O","html":"<span class=\"kw\">공적연금 연계</span>는 <span class=\"kw\">10년</span>(군인연금은 20년)이며, <span class=\"kw\">임의계속가입기간</span>은 연계대상기간에는 빠지지만 연금액 산정에는 포함된다.","explain":"<span class=\"kw\">연계대상기간</span>과 급여산정기간을 <span class=\"kw\">구분</span>하는 것이 포인트다.","id":"q27"},{"module":1,"subject":"은퇴설계","topic":"크레딧","ans":"X","html":"<span class=\"kw\">실업크레딧</span>은 구직급여 수급자가 보험료의 <span class=\"kw\">50%</span>를 부담하고 <span class=\"kw\">24개월</span>까지 지원된다.","explain":"본인부담은 <span class=\"kw\">25%</span>, 지원 한도는 <span class=\"kw\">12개월</span>이다.","id":"q28"},{"module":1,"subject":"은퇴설계","topic":"출산크레딧","ans":"O","html":"2026년 이후 <span class=\"kw\">출산크레딧</span>은 <span class=\"kw\">1자녀 12개월</span>, 2자녀 24개월, 3자녀 이상은 <span class=\"kw\">1명당 18개월</span>에 <span class=\"kw\">상한이 없다</span>.","explain":"<span class=\"kw\">2025년</span> 이전 출생 자녀는 3자녀 이상 가산 상한이 <span class=\"kw\">50개월</span>이었다.","id":"q29"},{"module":1,"subject":"은퇴설계","topic":"추후납부","ans":"X","html":"국민연금 <span class=\"kw\">추후납부</span>는 <span class=\"kw\">10년(120개월)</span>까지 가능하다.","explain":"<span class=\"kw\">10년 미만(119개월)</span> 범위에서 최대 <span class=\"kw\">60회</span> 분납할 수 있다.","id":"q30"},{"module":1,"subject":"은퇴설계","topic":"기초연금","ans":"O","html":"<span class=\"kw\">기초연금</span>은 <span class=\"kw\">65세 이상</span> 노인의 <span class=\"kw\">70%</span>에게 지급되고, <span class=\"kw\">부부 감액 20%</span>가 적용된다.","explain":"소득 하위 <span class=\"kw\">70%</span>를 대상으로 하며, 부부가 함께 받으면 <span class=\"kw\">20% 감액</span>된다.","id":"q31"},{"module":1,"subject":"은퇴설계","topic":"주택연금","ans":"X","html":"<span class=\"kw\">주택연금</span>은 <span class=\"kw\">60세 이상</span>이면 가입할 수 있다.","explain":"<span class=\"kw\">가입 연령</span>은 <span class=\"kw\">55세 이상</span>이다.","id":"q32"},{"module":1,"subject":"은퇴설계","topic":"주택연금","ans":"O","html":"<span class=\"kw\">주택연금</span>은 <span class=\"kw\">부부 모두 사망</span>할 때까지 지급되고, 이자비용은 <span class=\"kw\">소득공제 200만 원</span> 한도로 공제된다.","explain":"<span class=\"kw\">평생 지급</span>되는 <span class=\"kw\">종신형</span>이 기본 구조다.","id":"q33"},{"module":1,"subject":"은퇴설계","topic":"퇴직연금","ans":"X","html":"<span class=\"kw\">DB형</span> 퇴직연금은 근로자가 <span class=\"kw\">중도인출</span>을 자유롭게 할 수 있다.","explain":"<span class=\"kw\">DB형</span>은 <span class=\"kw\">중도인출이 금지</span>된다.","id":"q34"},{"module":1,"subject":"은퇴설계","topic":"퇴직연금","ans":"O","html":"<span class=\"kw\">DC형</span>은 <span class=\"kw\">근로자가 운용책임</span>을 지고 <span class=\"kw\">추가납입</span>이 가능하며, 위험자산은 <span class=\"kw\">집합투자</span> 방법으로만 투자할 수 있다.","explain":"<span class=\"kw\">상장·비상장 주식</span>은 <span class=\"kw\">직접투자가 금지</span>된다.","id":"q35"},{"module":1,"subject":"은퇴설계","topic":"IRP","ans":"X","html":"<span class=\"kw\">IRP</span>는 <span class=\"kw\">1개 금융회사</span>에 <span class=\"kw\">여러 개</span> 계좌를 개설할 수 있다.","explain":"<span class=\"kw\">여러 금융회사</span>에 개설할 수 있지만 <span class=\"kw\">1개 회사에는 1개</span>만 가능하다.","id":"q36"},{"module":1,"subject":"은퇴설계","topic":"연금계좌 세액공제","ans":"O","html":"<span class=\"kw\">연금계좌 세액공제</span>는 총급여 <span class=\"kw\">5,500만 원 이하</span>면 <span class=\"kw\">900만 원</span>까지 <span class=\"kw\">15%</span> 공제된다.","explain":"<span class=\"kw\">5,500만</span> 원 초과는 900만 원 한도에 <span class=\"kw\">12%</span>가 적용된다(연금저축 단독은 600만 원).","id":"q37"},{"module":1,"subject":"은퇴설계","topic":"ISA 전환","ans":"X","html":"<span class=\"kw\">ISA 만기</span> 전환금액의 세액공제는 전환금액의 <span class=\"kw\">5%(200만 원 한도)</span>다.","explain":"<span class=\"kw\">전환금액</span>의 <span class=\"kw\">10%(300만 원 한도)</span>가 추가 공제된다.","id":"q38"},{"module":1,"subject":"은퇴설계","topic":"연금수령한도","ans":"O","html":"<span class=\"kw\">연금수령한도</span>는 <span class=\"kw\">연금계좌평가액</span> ÷ <span class=\"kw\">(11 - 연금수령연차)</span> × 120%로 계산한다.","explain":"한도를 넘겨 인출하면 초과분은 <span class=\"kw\">기타소득세 15%</span>로 <span class=\"kw\">과세</span>된다.","id":"q39"},{"module":1,"subject":"은퇴설계","topic":"연금저축","ans":"X","html":"<span class=\"kw\">연금저축</span>은 <span class=\"kw\">가입 후 5년</span>이 지나면 <span class=\"kw\">50세</span>부터 연금으로 수령할 수 있다.","explain":"가입 후 <span class=\"kw\">5년</span> 경과 + <span class=\"kw\">55세 이후</span>가 연금수령 요건이다.","id":"q40"},{"module":1,"subject":"부동산설계","topic":"토지의 자연적 특성","ans":"O","html":"토지의 <span class=\"kw\">부동성</span> 때문에 부동산 시장이 <span class=\"kw\">국지화</span>되고 <span class=\"kw\">현장답사</span>가 필요하며, 부동산중개업 제도화의 근거가 된다.","explain":"<span class=\"kw\">부동산활동</span>에서 가장 중요한 <span class=\"kw\">입지설정</span>이 필요한 이유도 부동성이다.","id":"q41"},{"module":1,"subject":"부동산설계","topic":"토지의 자연적 특성","ans":"X","html":"토지의 <span class=\"kw\">부증성</span> 때문에 <span class=\"kw\">감가상각이 배제</span>된다.","explain":"감가상각 배제는 <span class=\"kw\">영속성</span>의 효과다. 부증성은 <span class=\"kw\">공급곡선을 비탄력적</span>으로 만든다.","id":"q42"},{"module":1,"subject":"부동산설계","topic":"토지의 자연적 특성","ans":"O","html":"토지의 <span class=\"kw\">개별성</span>으로 <span class=\"kw\">비대체성</span>을 갖고 <span class=\"kw\">일물일가의 법칙</span>이 배제된다.","explain":"<span class=\"kw\">물리적</span>으로 완전히 같은 토지는 <span class=\"kw\">존재하지 않는다</span>.","id":"q43"},{"module":1,"subject":"부동산설계","topic":"수요·공급 변화","ans":"X","html":"금리가 <span class=\"kw\">인하</span>되면 부동산 수요가 <span class=\"kw\">감소</span>한다.","explain":"<span class=\"kw\">금리 인하</span>는 자금조달 비용을 낮춰 수요를 <span class=\"kw\">증가</span>시킨다.","id":"q44"},{"module":1,"subject":"부동산설계","topic":"보유세 효과","ans":"O","html":"주택 보유세가 강화되면 임대주택 <span class=\"kw\">공급이 감소</span>해 <span class=\"kw\">임대료가 상승</span>한다.","explain":"<span class=\"kw\">자가 수요</span>는 줄고 <span class=\"kw\">임대 공급</span>도 줄어 주택가격 하락·임대료 상승이 나타난다.","id":"q45"},{"module":1,"subject":"부동산설계","topic":"물권과 채권","ans":"X","html":"<span class=\"kw\">물권</span>은 대체로 임의규정이고, <span class=\"kw\">채권</span>은 대체로 강행규정이다.","explain":"반대다. 물권은 <span class=\"kw\">강행규정</span>, 채권은 <span class=\"kw\">임의규정</span>이 지배한다.","id":"q46"},{"module":1,"subject":"부동산설계","topic":"지목","ans":"O","html":"<span class=\"kw\">지목</span> 부호는 <span class=\"kw\">초성</span>으로 사용하는 것이 원칙이고, <span class=\"kw\">장·차·천·원</span>은 예외로 제외된다.","explain":"<span class=\"kw\">지목 부호</span>는 <span class=\"kw\">초성</span>이 원칙이고, 공장용지·주차장·하천·유원지가 <span class=\"kw\">예외</span>다.","id":"q47"},{"module":1,"subject":"부동산설계","topic":"경매와 공매","ans":"O","html":"<span class=\"kw\">공매</span>의 입찰보증금은 <span class=\"kw\">입찰가격의 10%</span>이고, <span class=\"kw\">1천만 원</span> 초과 시 분할납부할 수 있다.","explain":"<span class=\"kw\">경매</span>는 <span class=\"kw\">최저매각가격의 10%</span>를 보증금으로 낸다.","id":"q48"},{"module":1,"subject":"부동산설계","topic":"경매와 공매","ans":"X","html":"<span class=\"kw\">공매</span>는 <span class=\"kw\">인도명령</span>을 받은 뒤 <span class=\"kw\">명도소송</span>을 진행한다.","explain":"<span class=\"kw\">공매</span>에는 <span class=\"kw\">인도명령 제도가 없고</span> 명도소송만 가능하다.","id":"q49"},{"module":1,"subject":"부동산설계","topic":"해제와 해지","ans":"O","html":"계약 <span class=\"kw\">해제</span>는 <span class=\"kw\">소급효</span>와 원상복구의무, <span class=\"kw\">해지</span>는 장래효와 청산의무를 갖는다.","explain":"<span class=\"kw\">1회성 거래</span>(매매)는 해제, <span class=\"kw\">계속적 거래</span>(임대차)는 해지가 적용된다.","id":"q50"},{"module":1,"subject":"부동산설계","topic":"주택임대차보호법","ans":"X","html":"주택임대차 <span class=\"kw\">대항력</span>은 인도와 전입신고를 마치면 <span class=\"kw\">즉시</span> 발생한다.","explain":"<span class=\"kw\">인도+전입신고</span>를 마친 <span class=\"kw\">다음 날 0시</span>부터 발생한다.","id":"q51"},{"module":1,"subject":"부동산설계","topic":"계약 갱신","ans":"X","html":"<span class=\"kw\">계약갱신요구권</span>은 기간 종료 <span class=\"kw\">3개월 전부터 1개월 전</span>까지 행사할 수 있다.","explain":"<span class=\"kw\">6개월 전부터 2개월 전</span>까지 행사하며, <span class=\"kw\">1회</span>에 한해 요구할 수 있다.","id":"q52"},{"module":1,"subject":"부동산설계","topic":"차임 증감","ans":"X","html":"<span class=\"kw\">차임</span> 증액 청구는 약정 차임의 <span class=\"kw\">20분의 1</span>을 초과할 수 있고, <span class=\"kw\">6개월</span>이 지나면 다시 청구할 수 있다.","explain":"20분의 1을 <span class=\"kw\">초과할 수 없고</span>, 증액 후 <span class=\"kw\">1년 이내</span>에는 다시 청구할 수 없다.","id":"q53"},{"module":1,"subject":"부동산설계","topic":"보증금 전환","ans":"O","html":"주택 <span class=\"kw\">보증금</span>의 월차임 전환률은 <span class=\"kw\">연 10%</span> 또는 <span class=\"kw\">기준금리 + 2%</span> 중 <span class=\"kw\">낮은 비율</span>로 제한된다.","explain":"상가건물은 <span class=\"kw\">연 12%</span> 또는 기준금리×<span class=\"kw\">4.5배</span> 중 낮은 비율이다.","id":"q54"},{"module":1,"subject":"부동산설계","topic":"상가건물임대차보호법","ans":"X","html":"<span class=\"kw\">상가건물임대차보호법</span>은 서울특별시의 경우 <span class=\"kw\">보증금 5억 원</span> 이하인 임대차에 적용된다.","explain":"<span class=\"kw\">서울</span>은 <span class=\"kw\">9억 원</span> 이하다.","id":"q55"},{"module":1,"subject":"부동산설계","topic":"재개발과 재건축","ans":"O","html":"<span class=\"kw\">재개발</span>은 세입자 대책이 있고 개발부담금이 <span class=\"kw\">없지만</span>, <span class=\"kw\">재건축</span>은 재건축진단을 실시하고 <span class=\"kw\">개발부담금을 부과</span>한다.","explain":"<span class=\"kw\">재건축</span>은 정비기반시설이 <span class=\"kw\">양호</span>한 공동주택 밀집지역에서 진행된다.","id":"q56"},{"module":1,"subject":"부동산설계","topic":"재개발과 재건축","ans":"X","html":"<span class=\"kw\">재건축</span> 조합설립은 <span class=\"kw\">구분소유자 100분의 70 이상</span>과 <span class=\"kw\">토지면적 2분의 1</span> 이상의 동의로 이루어진다.","explain":"재건축은 <span class=\"kw\">토지면적 100분의 70 이상</span> + 각 동 과반수 동의가 필요하다. 2분의 1은 <span class=\"kw\">재개발</span> 기준이다.","id":"q57"},{"module":1,"subject":"부동산설계","topic":"리츠","ans":"O","html":"<span class=\"kw\">자기관리</span> 부동산투자회사(일반 REITs)는 <span class=\"kw\">실체회사</span>이고, 위탁관리·기업구조조정 <span class=\"kw\">리츠</span>는 <span class=\"kw\">명목회사</span>다.","explain":"<span class=\"kw\">자기관리</span>는 임직원을 상근으로 두고 <span class=\"kw\">직접 운용</span>한다.","id":"q58"},{"module":1,"subject":"부동산설계","topic":"생활형 숙박시설","ans":"X","html":"<span class=\"kw\">생활형 숙박시설</span>은 <span class=\"kw\">주택법</span>의 적용을 받고 <span class=\"kw\">주택 수에 포함</span>된다.","explain":"<span class=\"kw\">건축법</span> 적용을 받는 숙박시설이며 주택 수에 <span class=\"kw\">포함</span>되지 않는다.","id":"q59"},{"module":1,"subject":"부동산설계","topic":"건축허가","ans":"O","html":"<span class=\"kw\">건축허가</span>는 받은 날부터 <span class=\"kw\">2년</span> 안에 착수해야 하고, 정당한 사유가 있으면 <span class=\"kw\">1년</span> 범위에서 연장할 수 있다.","explain":"<span class=\"kw\">21층 이상</span> 또는 연면적 <span class=\"kw\">10만㎡ 이상</span>은 특별시장·광역시장 허가 대상이다.","id":"q60"},{"module":1,"subject":"상속설계","topic":"상속결격","ans":"O","html":"<span class=\"kw\">상속결격</span>에서 상해로 사망에 이르게 한 경우 <span class=\"kw\">상해의 고의</span>만 있으면 되고, <span class=\"kw\">상속에 유리하다는 인식</span>은 필요 없다.","explain":"<span class=\"kw\">살해·살해 미수</span>는 고의만 있으면 되고, <span class=\"kw\">낙태</span>도 상속결격에 해당한다.","id":"q61"},{"module":1,"subject":"상속설계","topic":"상속결격","ans":"X","html":"<span class=\"kw\">낙태</span>는 <span class=\"kw\">상속결격 사유</span>에 해당하지 않는다.","explain":"<span class=\"kw\">낙태</span>도 <span class=\"kw\">상속결격</span>에 해당한다.","id":"q62"},{"module":1,"subject":"상속설계","topic":"대습상속","ans":"X","html":"<span class=\"kw\">대습상속</span>은 <span class=\"kw\">상속을 포기한 자</span>의 직계비속에게도 인정된다.","explain":"대습상속 요건은 <span class=\"kw\">선사망·상속결격·동시사망 추정</span>이며, 상속포기는 <span class=\"kw\">포함</span>되지 않는다.","id":"q63"},{"module":1,"subject":"상속설계","topic":"대습상속","ans":"O","html":"<span class=\"kw\">대습상속</span>에서 <span class=\"kw\">피대습자의 배우자</span>는 피대습자가 <span class=\"kw\">피상속인보다 먼저 사망</span>한 경우에만 인정된다.","explain":"<span class=\"kw\">배우자</span>의 대습상속은 <span class=\"kw\">선사망</span> 요건을 엄격히 본다.","id":"q64"},{"module":1,"subject":"상속설계","topic":"상속포기","ans":"X","html":"<span class=\"kw\">상속포기</span>는 <span class=\"kw\">채권자 취소</span>의 대상이 된다.","explain":"<span class=\"kw\">상속포기</span>는 <span class=\"kw\">채권자 취소 대상이 되지 않는다</span>.","id":"q65"},{"module":1,"subject":"상속설계","topic":"승인과 포기","ans":"O","html":"상속의 승인·포기 고려기간은 상속개시를 안 날부터 <span class=\"kw\">3개월</span>이고, <span class=\"kw\">한정승인·포기</span>는 고려기간 내에도 <span class=\"kw\">취소할 수 없다</span>.","explain":"<span class=\"kw\">고려기간</span> 내에는 <span class=\"kw\">철회</span>가 제한된다.","id":"q66"},{"module":1,"subject":"상속설계","topic":"법정단순승인","ans":"X","html":"<span class=\"kw\">장례비용</span>을 지출하면 <span class=\"kw\">법정단순승인</span>이 된다.","explain":"<span class=\"kw\">장례비용</span>은 상속재산의 <span class=\"kw\">처분행위에 해당하지 않는다</span>.","id":"q67"},{"module":1,"subject":"상속설계","topic":"유언의 방식","ans":"O","html":"<span class=\"kw\">비밀증서</span>는 봉서 표면 기재일부터 <span class=\"kw\">5일</span> 내 확정일자를, <span class=\"kw\">구수증서</span>는 급박한 사유 종료일부터 <span class=\"kw\">7일</span> 내 검인을 신청한다.","explain":"구수증서는 <span class=\"kw\">다른 방식의 유언이 불가능한 경우</span>에만 예외적으로 <span class=\"kw\">허용</span>된다.","id":"q68"},{"module":1,"subject":"상속설계","topic":"유언의 검인","ans":"X","html":"유언은 법원의 <span class=\"kw\">검인</span>을 받지 않으면 <span class=\"kw\">효력이 없다</span>.","explain":"<span class=\"kw\">검인 절차</span>의 유무는 유언의 <span class=\"kw\">효력에 영향을 주지 않는다</span>.","id":"q69"},{"module":1,"subject":"상속설계","topic":"유류분","ans":"O","html":"<span class=\"kw\">유류분</span> 비율은 배우자·직계비속 <span class=\"kw\">1/2</span>, 직계존속 <span class=\"kw\">1/3</span>이며 <span class=\"kw\">형제자매</span>는 대상에서 제외된다.","explain":"<span class=\"kw\">형제자매 유류분</span>은 <span class=\"kw\">법 개정으로 폐지</span>되었다.","id":"q70"},{"module":1,"subject":"상속설계","topic":"유류분 반환","ans":"X","html":"<span class=\"kw\">유류분 반환</span>청구권은 사실을 안 때부터 <span class=\"kw\">3년</span>, 상속개시부터 <span class=\"kw\">10년</span>의 소멸시효가 적용된다.","explain":"안 때부터 <span class=\"kw\">1년</span>, 상속개시부터 <span class=\"kw\">10년</span>이다.","id":"q71"},{"module":1,"subject":"상속설계","topic":"유류분 산정","ans":"O","html":"<span class=\"kw\">유류분</span> 산정의 기초재산은 <span class=\"kw\">상속재산 + 증여재산 − 상속채무</span>로 계산한다.","explain":"공동상속인에 대한 증여는 <span class=\"kw\">기간 제한 없이</span> <span class=\"kw\">가산</span>된다.","id":"q72"},{"module":1,"subject":"상속설계","topic":"간주상속재산","ans":"O","html":"<span class=\"kw\">간주상속재산</span>에는 생명·손해보험금, 신탁재산, 퇴직금이 포함되지만 법령에 따른 <span class=\"kw\">유족연금</span>은 포함되지 않는다.","explain":"<span class=\"kw\">법령</span>에 따른 <span class=\"kw\">유족연금 등은 제외</span>된다.","id":"q73"},{"module":1,"subject":"상속설계","topic":"추정상속재산","ans":"O","html":"<span class=\"kw\">추정상속재산</span>은 상속개시 전 <span class=\"kw\">1년 이내 2억 원</span>, <span class=\"kw\">2년 이내 5억 원</span>을 기준으로 한다.","explain":"용도가 입증된 금액과 <span class=\"kw\">Min(처분금액×20%, 2억)</span>은 <span class=\"kw\">차감</span>한다.","id":"q74"},{"module":1,"subject":"상속설계","topic":"상속세 신고","ans":"X","html":"<span class=\"kw\">상속세</span> 신고기한은 상속개시일이 속한 달의 말일부터 <span class=\"kw\">3개월</span>이다.","explain":"상속세는 <span class=\"kw\">6개월</span>(비거주자 등 9개월)이다. 3개월은 <span class=\"kw\">증여세</span> 신고기한이다.","id":"q75"},{"module":1,"subject":"상속설계","topic":"상속공제","ans":"O","html":"<span class=\"kw\">일괄공제</span>는 5억 원이며, <span class=\"kw\">배우자 단독상속</span>인 경우에는 적용할 수 없다.","explain":"<span class=\"kw\">일괄공제</span>와 <span class=\"kw\">기초공제+인적공제</span> 중 유리한 방법을 선택한다.","id":"q76"},{"module":1,"subject":"상속설계","topic":"배우자상속공제","ans":"X","html":"<span class=\"kw\">배우자상속공제</span>는 최소 5억 원에서 최대 <span class=\"kw\">50억 원</span>까지 가능하다.","explain":"<span class=\"kw\">배우자상속공제</span>의 최대 한도는 <span class=\"kw\">30억 원</span>이다.","id":"q77"},{"module":1,"subject":"상속설계","topic":"증여재산공제","ans":"O","html":"<span class=\"kw\">증여재산공제</span>는 배우자 <span class=\"kw\">6억 원</span>, 직계존속 <span class=\"kw\">5천만 원</span>(미성년 자녀 2천만 원), 기타 친족 <span class=\"kw\">1천만 원</span>이다.","explain":"<span class=\"kw\">혼인·출산공제</span>는 기간 제한 없이 수증자별 <span class=\"kw\">1억 원</span>이 추가된다.","id":"q78"},{"module":1,"subject":"상속설계","topic":"재산 평가","ans":"X","html":"상속·증여재산의 <span class=\"kw\">평가기간</span>은 증여의 경우 평가기준일 <span class=\"kw\">전 6개월·후 6개월</span>이다.","explain":"증여는 전 <span class=\"kw\">6개월</span>·<span class=\"kw\">후 3개월</span>이다(상속은 전·후 각 6개월).","id":"q79"},{"module":1,"subject":"상속설계","topic":"보험금 과세","ans":"X","html":"<span class=\"kw\">계약자</span>와 피보험자가 모두 배우자이고 <span class=\"kw\">수익자</span>가 자녀인 보험은 피보험자 사망 시 <span class=\"kw\">상속세</span>가 과세된다.","explain":"계약자(배우자)가 생존하므로 <span class=\"kw\">증여세</span>가 <span class=\"kw\">과세</span>된다.","id":"q80"},{"module":2,"subject":"위험관리와 보험설계","topic":"위태의 종류","ans":"O","html":"빙판길 운전·주유소에서 담배는 <span class=\"kw\">물리적 위태</span>, 부정직·보험사기는 <span class=\"kw\">도덕적 위태</span>에 해당한다.","explain":"정신적 위태는 부주의·무관심처럼 <span class=\"kw\">고의가 없는</span> 상태이며, 넓은 의미에서 도덕적 위태에 <span class=\"kw\">포함</span>된다.","id":"q81"},{"module":2,"subject":"위험관리와 보험설계","topic":"위태의 종류","ans":"X","html":"<span class=\"kw\">도덕적 위태</span>에는 고의성이 없는 <span class=\"kw\">부주의나 무관심</span>이 포함된다.","explain":"부주의·무관심은 <span class=\"kw\">정신적 위태</span>다. 도덕적 위태는 부정직·사기 등 <span class=\"kw\">고의</span>가 전제된다.","id":"q82"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험의 원리","ans":"O","html":"보험제도의 기본원리는 <span class=\"kw\">대수의 법칙</span>, <span class=\"kw\">수지상등의 원칙</span>, 급부·반대급부의 원칙이다.","explain":"<span class=\"kw\">손해보험</span>에는 이에 더해 <span class=\"kw\">실손보상(이득금지)의 원칙</span>이 적용된다.","id":"q83"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험계약의 무효","ans":"X","html":"사망보험은 계약 당시 피보험자가 <span class=\"kw\">15세 미만</span>이면 <span class=\"kw\">예외 없이 무효</span>다.","explain":"<span class=\"kw\">심신박약자</span>가 <span class=\"kw\">의사능력이 있는 경우</span>나 단체보험 피보험자는 유효할 수 있다.","id":"q84"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험계약의 취소","ans":"O","html":"약관 부본 미교부, 중요내용 미설명, <span class=\"kw\">청약서 자필서명</span> 누락이 있으면 <span class=\"kw\">3개월</span> 내에 계약을 <span class=\"kw\">취소</span>할 수 있다.","explain":"<span class=\"kw\">이 세 가지</span>가 실무상 <span class=\"kw\">3대 기본 지키기</span>다.","id":"q85"},{"module":2,"subject":"위험관리와 보험설계","topic":"부활","ans":"X","html":"실효된 보험계약은 <span class=\"kw\">5년</span> 이내에 <span class=\"kw\">부활</span>할 수 있다.","explain":"<span class=\"kw\">부활</span>은 <span class=\"kw\">3년</span> 이내에 약정이자와 함께 신청한다.","id":"q86"},{"module":2,"subject":"위험관리와 보험설계","topic":"계약유지 제도","ans":"O","html":"<span class=\"kw\">감액완납</span>은 보험금을 감액하고 보장기간은 유지하며, <span class=\"kw\">연장정기</span>는 보험금은 같고 보장기간을 단축하며 둘 다 해약환급금을 지급하지 않는다.","explain":"<span class=\"kw\">두 제</span>도 모두 <span class=\"kw\">보험료 미납</span> 시 활용된다.","id":"q87"},{"module":2,"subject":"위험관리와 보험설계","topic":"소멸시효","ans":"X","html":"보험금 청구권의 <span class=\"kw\">소멸시효</span>는 <span class=\"kw\">2년</span>이다.","explain":"보험금·해약환급금·보험료 반환 청구권의 <span class=\"kw\">소멸시효</span>는 모두 <span class=\"kw\">3년</span>이다.","id":"q88"},{"module":2,"subject":"위험관리와 보험설계","topic":"고지의무","ans":"O","html":"<span class=\"kw\">고지의무</span>를 위반해도 <span class=\"kw\">계약 체결 후 3년</span>이 지나거나 <span class=\"kw\">보장개시일부터 2년</span> 동안 지급사유가 없으면 해지할 수 없다.","explain":"진단계약은 <span class=\"kw\">2년</span>이 <span class=\"kw\">1년</span>으로 단축된다.","id":"q89"},{"module":2,"subject":"위험관리와 보험설계","topic":"사기 계약","ans":"X","html":"<span class=\"kw\">사기</span>에 의한 보험계약은 <span class=\"kw\">3년</span> 이내에 취소할 수 있다.","explain":"사기 계약은 보장개시일부터 <span class=\"kw\">5년</span> 이내(안 날부터 <span class=\"kw\">1개월</span>) 취소할 수 있다.","id":"q90"},{"module":2,"subject":"위험관리와 보험설계","topic":"주택화재보험","ans":"O","html":"<span class=\"kw\">주택화재보험</span>은 보험가입금액이 보험가액의 <span class=\"kw\">80%</span> 미만이면 <span class=\"kw\">비례보상</span>한다.","explain":"<span class=\"kw\">80% Co-Insurance</span>로 계산해 <span class=\"kw\">비례보상</span>한다.","id":"q91"},{"module":2,"subject":"위험관리와 보험설계","topic":"배상책임보험","ans":"X","html":"<span class=\"kw\">배상책임보험</span>에도 <span class=\"kw\">보험가액</span>·중복보험·초과보험 개념이 있다.","explain":"<span class=\"kw\">배상책임보험</span>에는 세 개념이 모두 <span class=\"kw\">없다</span>.","id":"q92"},{"module":2,"subject":"위험관리와 보험설계","topic":"자동복원제도","ans":"O","html":"<span class=\"kw\">자동복원제도</span>는 지급보험금이 보험가입금액의 <span class=\"kw\">80% 미만</span>이면 잔여기간의 보험가입금액을 <span class=\"kw\">감액하지 않는다</span>.","explain":"<span class=\"kw\">일반손해보험</span>으로 설계하면 사고 후 <span class=\"kw\">가입금액이 차감</span>된다.","id":"q93"},{"module":2,"subject":"위험관리와 보험설계","topic":"자동차 의무보험","ans":"X","html":"<span class=\"kw\">자동차 의무보험</span>의 <span class=\"kw\">대물보상</span>은 1사고당 <span class=\"kw\">1억 원</span> 한도로 보상한다.","explain":"<span class=\"kw\">대물</span>은 <span class=\"kw\">2천만 원</span> 한도이고, 대인배상Ⅰ은 1인당 유한·1사고당 무한이다.","id":"q94"},{"module":2,"subject":"위험관리와 보험설계","topic":"교통사고처리특례법","ans":"X","html":"사망사고·뺑소니·<span class=\"kw\">12대 중과실</span> 사고에도 <span class=\"kw\">보험가입 특례</span>가 적용된다.","explain":"<span class=\"kw\">이 세 경우</span>는 형사합의와 관계없이 <span class=\"kw\">형사처벌</span>을 받는다.","id":"q95"},{"module":2,"subject":"위험관리와 보험설계","topic":"자동차손해배상보장법","ans":"O","html":"<span class=\"kw\">자동차손해배상보장법</span>은 <span class=\"kw\">조건부 무과실책임</span>을 채택하고, 입증책임은 <span class=\"kw\">가해자(운행자)</span>에게 있다.","explain":"<span class=\"kw\">민법</span>은 <span class=\"kw\">과실책임</span>·피해자 입증이 원칙이다.","id":"q96"},{"module":2,"subject":"위험관리와 보험설계","topic":"실손의료보험","ans":"X","html":"<span class=\"kw\">실손의료보험</span>의 <span class=\"kw\">비급여</span> 자기부담률은 <span class=\"kw\">20%</span>다.","explain":"급여 <span class=\"kw\">20%</span>, <span class=\"kw\">비급여 30%</span>다.","id":"q97"},{"module":2,"subject":"위험관리와 보험설계","topic":"질병보험","ans":"O","html":"<span class=\"kw\">암보험</span>의 <span class=\"kw\">대기기간은 90일</span>이고, 갱신형은 갱신 후 <span class=\"kw\">대기기간을 두지 않는다</span>.","explain":"<span class=\"kw\">대기기간</span>은 <span class=\"kw\">역선택</span> 방지를 위한 장치다.","id":"q98"},{"module":2,"subject":"위험관리와 보험설계","topic":"노인장기요양보험","ans":"X","html":"<span class=\"kw\">노인장기요양보험</span>은 <span class=\"kw\">시설급여 85%</span>, <span class=\"kw\">재가급여 80%</span>를 지급한다.","explain":"시설 <span class=\"kw\">80%</span>, 재가 <span class=\"kw\">85%</span>다.","id":"q99"},{"module":2,"subject":"위험관리와 보험설계","topic":"제3보험","ans":"O","html":"<span class=\"kw\">제3보험</span>에서 <span class=\"kw\">질병사망</span>은 <span class=\"kw\">특약</span>으로만 담보되고, <span class=\"kw\">보장성</span> 상품으로만 개발할 수 있다.","explain":"<span class=\"kw\">제3보험</span>은 보험업법상 <span class=\"kw\">독립된 보험</span>이다.","id":"q100"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험자대위","ans":"X","html":"<span class=\"kw\">생명보험</span>에도 <span class=\"kw\">보험자대위</span>가 원칙적으로 적용된다.","explain":"<span class=\"kw\">생명보험</span>은 대위가 <span class=\"kw\">적용되지 않는다</span>. 상해보험은 약정이 있으면 가능하다.","id":"q101"},{"module":2,"subject":"위험관리와 보험설계","topic":"장애인전용보험","ans":"O","html":"<span class=\"kw\">장애인전용보장성보험</span>은 세액공제 <span class=\"kw\">100만 원</span>(16.5%)과 보험금 연 <span class=\"kw\">4천만 원</span> 증여세 비과세 혜택이 있다.","explain":"일반 보장성보험(<span class=\"kw\">13.2%</span>)과 <span class=\"kw\">별개 한도</span>로 공제된다.","id":"q102"},{"module":2,"subject":"투자설계","topic":"금융투자상품","ans":"O","html":"이익·손실 회피 목적이 없거나 <span class=\"kw\">실물자산</span>이면 <span class=\"kw\">금융투자상품</span>이 아니며, <span class=\"kw\">원화표시 CD</span>·관리형 신탁은 제외되지만 <span class=\"kw\">변액보험</span>은 해당한다.","explain":"<span class=\"kw\">금융투자상품</span>은 <span class=\"kw\">원금손실 가능성</span>이 있는 권리여야 한다.","id":"q103"},{"module":2,"subject":"투자설계","topic":"고용지표","ans":"X","html":"<span class=\"kw\">실업률</span>은 실업자를 <span class=\"kw\">만 15세 이상 인구</span>로 나누어 계산한다.","explain":"분모는 <span class=\"kw\">경제활동인구</span>다. 고용률의 분모가 만 <span class=\"kw\">15세</span> 이상 인구다.","id":"q104"},{"module":2,"subject":"투자설계","topic":"고용지표","ans":"O","html":"<span class=\"kw\">고용률</span>은 취업자를 <span class=\"kw\">만 15세 이상 인구</span>로 나눈 비율이다.","explain":"<span class=\"kw\">취업률</span>은 취업자 ÷ <span class=\"kw\">경제활동인구</span> = 100 − 실업률이다.","id":"q105"},{"module":2,"subject":"투자설계","topic":"GDP 갭","ans":"O","html":"<span class=\"kw\">GDP 갭</span>이 <span class=\"kw\">양수</span>이면 실제 GDP가 잠재 GDP보다 높아 <span class=\"kw\">경기 과열</span> 상태다.","explain":"<span class=\"kw\">음수이면 생산요소</span>가 <span class=\"kw\">유휴</span> 상태임을 의미한다.","id":"q106"},{"module":2,"subject":"투자설계","topic":"금리와 물가","ans":"X","html":"<span class=\"kw\">물가 상승</span> 시 <span class=\"kw\">실질금리</span>도 함께 상승한다.","explain":"실질금리는 <span class=\"kw\">변동하지 않고</span> 명목금리만 <span class=\"kw\">상승</span>한다.","id":"q107"},{"module":2,"subject":"투자설계","topic":"환율","ans":"O","html":"<span class=\"kw\">환율 상승</span>은 <span class=\"kw\">원화가치 하락</span>(평가절하)을 의미한다.","explain":"<span class=\"kw\">환율</span>이 오르면 같은 달러를 사는 데 <span class=\"kw\">더 많은 원화</span>가 필요하다.","id":"q108"},{"module":2,"subject":"투자설계","topic":"기대수익률","ans":"O","html":"<span class=\"kw\">기대수익률</span>이 요구수익률보다 <span class=\"kw\">높으면</span> <span class=\"kw\">저평가</span> 상태이고 내재가치가 시장가격보다 크다.","explain":"<span class=\"kw\">기대수익률</span>이 낮으면 <span class=\"kw\">고평가</span> 상태다.","id":"q109"},{"module":2,"subject":"투자설계","topic":"자본시장선","ans":"X","html":"<span class=\"kw\">자본시장선(CML)</span>은 <span class=\"kw\">체계적 위험(β)</span>과 기대수익률의 관계를 나타낸다.","explain":"<span class=\"kw\">CML</span>은 <span class=\"kw\">총위험(σ)</span>과의 관계다. β와의 관계는 증권시장선(SML)이다.","id":"q110"},{"module":2,"subject":"투자설계","topic":"증권시장선","ans":"O","html":"<span class=\"kw\">증권시장선</span>(SML)에는 <span class=\"kw\">개별 자산</span>과 <span class=\"kw\">비효율적 포트폴리오</span>도 존재한다.","explain":"<span class=\"kw\">CML</span>은 <span class=\"kw\">효율적 포트폴리오</span>만 위치한다.","id":"q111"},{"module":2,"subject":"투자설계","topic":"상관계수","ans":"X","html":"<span class=\"kw\">상관계수</span>가 <span class=\"kw\">−1</span>에 가까울수록 분산투자 효과가 <span class=\"kw\">작아진다</span>.","explain":"<span class=\"kw\">상관계수 −1</span>에 가까울수록 위험이 줄어 분산효과가 <span class=\"kw\">커진다</span>.","id":"q112"},{"module":2,"subject":"투자설계","topic":"상대가치평가","ans":"O","html":"<span class=\"kw\">PER</span>은 <span class=\"kw\">주가 ÷ EPS</span>, PBR은 <span class=\"kw\">주가 ÷ BPS</span>로 계산한다.","explain":"<span class=\"kw\">PSR</span>은 <span class=\"kw\">주가 ÷ 주당매출액</span>이다.","id":"q113"},{"module":2,"subject":"투자설계","topic":"주식스타일","ans":"X","html":"<span class=\"kw\">가치스타일</span>은 <span class=\"kw\">고PER</span>·고PBR 주식에 투자하는 전략이다.","explain":"<span class=\"kw\">가치스타일</span>은 <span class=\"kw\">저PER</span>·고배당주에 투자한다.","id":"q114"},{"module":2,"subject":"투자설계","topic":"배당할인모형","ans":"X","html":"<span class=\"kw\">고든모형</span>은 배당성장률(g)이 요구수익률(k)보다 <span class=\"kw\">클 때</span> 성립한다.","explain":"<span class=\"kw\">고든모형</span>은 <span class=\"kw\">g가 k보다 작을 때</span>만 성립한다.","id":"q115"},{"module":2,"subject":"투자설계","topic":"채권가격","ans":"O","html":"채권은 수익률이 <span class=\"kw\">하락</span>할 때 가격 <span class=\"kw\">상승 폭</span>이 수익률 상승 시 하락 폭보다 <span class=\"kw\">크다</span>.","explain":"수익률 <span class=\"kw\">하락</span> 시 가격 상승 폭이 더 큰 것을 <span class=\"kw\">볼록성</span>이라 한다.","id":"q116"},{"module":2,"subject":"투자설계","topic":"듀레이션 전략","ans":"X","html":"<span class=\"kw\">금리 상승</span>이 예상되면 <span class=\"kw\">듀레이션을 확대</span>해 손실을 줄인다.","explain":"금리 <span class=\"kw\">상승</span> 시에는 듀레이션을 <span class=\"kw\">축소</span>한다.","id":"q117"},{"module":2,"subject":"투자설계","topic":"펀드 기준가격","ans":"X","html":"<span class=\"kw\">해외주식형 펀드</span>의 <span class=\"kw\">기준가격</span>은 <span class=\"kw\">전일 종가</span>를 반영해 산정한다.","explain":"<span class=\"kw\">해외자산 펀드</span>는 <span class=\"kw\">이틀 전 종가</span>를 반영한다.","id":"q118"},{"module":2,"subject":"투자설계","topic":"ETF","ans":"X","html":"패시브 <span class=\"kw\">ETF</span>의 괴리율은 국내자산 <span class=\"kw\">2%</span>, 해외자산 <span class=\"kw\">1%</span> 이내로 제한된다.","explain":"국내 <span class=\"kw\">1%</span>, 해외 <span class=\"kw\">2%</span>다.","id":"q119"},{"module":2,"subject":"투자설계","topic":"ETF","ans":"O","html":"<span class=\"kw\">액티브 ETF</span>는 기초지수와의 <span class=\"kw\">상관계수 0.7</span> 미만이 <span class=\"kw\">3개월</span> 이상 지속되면 상장폐지 사유가 된다.","explain":"<span class=\"kw\">패시브 ETF</span>의 기준은 <span class=\"kw\">0.9</span>다.","id":"q120"},{"module":2,"subject":"투자설계","topic":"주가연계상품","ans":"O","html":"<span class=\"kw\">ELS</span>는 <span class=\"kw\">예금자보호가 없고</span>, ELD는 <span class=\"kw\">예금자보호</span>가 된다.","explain":"<span class=\"kw\">ELD</span>는 <span class=\"kw\">은행법</span>상 예금으로 취급된다.","id":"q121"},{"module":2,"subject":"투자설계","topic":"자산배분","ans":"O","html":"<span class=\"kw\">전술적 자산배분</span>은 액티브 전략이지만, <span class=\"kw\">리밸런싱</span>은 원래 비중으로 재조정하는 <span class=\"kw\">수동적</span> 성격이다.","explain":"<span class=\"kw\">리밸런싱</span>은 <span class=\"kw\">저점매수·고점매도</span>를 자동 실행한다.","id":"q122"},{"module":2,"subject":"투자설계","topic":"마켓타이밍","ans":"X","html":"<span class=\"kw\">마켓타이밍</span>은 <span class=\"kw\">비교지수</span> 대비 초과수익을 추구하는 전략이다.","explain":"<span class=\"kw\">마켓타이밍</span>은 비교지수 없이 <span class=\"kw\">절대수익률</span>을 추구한다.","id":"q123"},{"module":2,"subject":"투자설계","topic":"대체투자","ans":"O","html":"<span class=\"kw\">대체투자</span>상품은 전통 자산과 <span class=\"kw\">낮은 상관관계</span>를 가지며 <span class=\"kw\">인플레이션 헤지</span>가 가능하다.","explain":"<span class=\"kw\">대체투자</span>는 포트폴리오 <span class=\"kw\">다변화</span> 수단으로 활용된다.","id":"q124"},{"module":2,"subject":"투자설계","topic":"TDF","ans":"X","html":"<span class=\"kw\">TDF</span>는 은퇴가 가까워질수록 <span class=\"kw\">주식 비중을 늘린다</span>.","explain":"<span class=\"kw\">은퇴</span>가 가까워지면 주식 비중을 <span class=\"kw\">줄인다</span>. 그 경로가 글라이드패스다.","id":"q125"},{"module":2,"subject":"투자설계","topic":"헤지펀드","ans":"X","html":"<span class=\"kw\">헤지펀드</span>의 <span class=\"kw\">차익거래전략</span>은 <span class=\"kw\">방향성 전략</span>에 속한다.","explain":"<span class=\"kw\">차익거래·이벤트드리븐</span>은 <span class=\"kw\">비방향성 전략</span>이다.","id":"q126"},{"module":2,"subject":"세금설계","topic":"납세의무 소멸","ans":"O","html":"<span class=\"kw\">소멸시효</span>는 <span class=\"kw\">5년</span>이지만 <span class=\"kw\">5억 원 이상</span>의 국세는 <span class=\"kw\">10년</span>이다.","explain":"납부·충당·부과처분 취소·<span class=\"kw\">제척기간 만료</span>도 <span class=\"kw\">소멸사유</span>에 해당한다.","id":"q127"},{"module":2,"subject":"세금설계","topic":"조세불복","ans":"X","html":"<span class=\"kw\">이의신청</span>은 처분이 있음을 안 날부터 <span class=\"kw\">60일</span> 이내에 제기한다.","explain":"<span class=\"kw\">이의신청</span> 기한은 <span class=\"kw\">90일</span>이다.","id":"q128"},{"module":2,"subject":"세금설계","topic":"조세불복","ans":"X","html":"<span class=\"kw\">이의신청</span>과 <span class=\"kw\">감사원 심사청구</span>를 <span class=\"kw\">동시에</span> 제기할 수 있다.","explain":"<span class=\"kw\">이의신청</span>을 하면 감사원 심사청구는 <span class=\"kw\">제기할 수 없다</span>.","id":"q129"},{"module":2,"subject":"세금설계","topic":"절세와 탈세","ans":"O","html":"<span class=\"kw\">조세회피</span>는 가산세가 부과되지만 <span class=\"kw\">형사처벌</span>은 받지 않는다.","explain":"<span class=\"kw\">탈세</span>는 <span class=\"kw\">조세범처벌법</span>에 따라 형사처벌될 수 있다.","id":"q130"},{"module":2,"subject":"세금설계","topic":"과점주주","ans":"O","html":"과점주주의 제2차 <span class=\"kw\">납세의무</span> 한도는 <span class=\"kw\">징수부족액 × 지분율</span>이고, <span class=\"kw\">상장법인</span>은 제외된다.","explain":"<span class=\"kw\">납세의무자</span>는 납세의무 성립일 현재의 <span class=\"kw\">과점주주</span>다.","id":"q131"},{"module":2,"subject":"세금설계","topic":"소득세 과세원칙","ans":"O","html":"<span class=\"kw\">종합소득</span>세율은 <span class=\"kw\">6~45%</span>의 8단계 초과누진세율이고, 이자·배당소득은 <span class=\"kw\">유형별 포괄주의</span>가 적용된다.","explain":"법인세는 <span class=\"kw\">포괄주의</span>(<span class=\"kw\">순자산증가설</span>)를 채택한다.","id":"q132"},{"module":2,"subject":"세금설계","topic":"결손금","ans":"X","html":"일반 사업소득의 <span class=\"kw\">결손금</span>은 <span class=\"kw\">배당소득</span>부터 공제한다.","explain":"<span class=\"kw\">결손금</span>은 <span class=\"kw\">근로 → 연금 → 기타 → 이자 → 배당</span> 순으로 공제한다.","id":"q133"},{"module":2,"subject":"세금설계","topic":"결손금","ans":"O","html":"<span class=\"kw\">부동산임대업</span>의 <span class=\"kw\">결손금</span>은 다른 소득에서 공제하지 않고 <span class=\"kw\">다음 과세기간으로 이월</span>한다.","explain":"<span class=\"kw\">부동산임대업</span> 결손금은 <span class=\"kw\">일반 사업소득</span>과 달리 이월해서만 공제한다.","id":"q134"},{"module":2,"subject":"세금설계","topic":"기준경비율","ans":"X","html":"<span class=\"kw\">기준경비율</span>은 <span class=\"kw\">복식부기의무자</span>도 <span class=\"kw\">100%</span>를 적용한다.","explain":"<span class=\"kw\">복식부기의무자</span>는 기준경비율의 <span class=\"kw\">50%</span>만 적용한다.","id":"q135"},{"module":2,"subject":"세금설계","topic":"단순경비율","ans":"O","html":"<span class=\"kw\">기준경비율</span> 대상자가 단순경비율로 신고하면 복식부기의무자는 <span class=\"kw\">3.4배</span>, 간편장부대상자는 <span class=\"kw\">2.8배</span>를 소득금액으로 계산한다.","explain":"<span class=\"kw\">단순경비율 대상자</span>는 <span class=\"kw\">기준경비율 신고</span>를 선택할 수 있다.","id":"q136"},{"module":2,"subject":"세금설계","topic":"비과세 근로소득","ans":"O","html":"<span class=\"kw\">자가운전보조금</span> 월 20만 원, <span class=\"kw\">식사대</span> 월 20만 원, 출산·보육수당 월 20만 원은 <span class=\"kw\">비과세</span>다.","explain":"단체보장성보험료는 연 <span class=\"kw\">70만 원</span>까지 <span class=\"kw\">비과세</span>다.","id":"q137"},{"module":2,"subject":"세금설계","topic":"인적공제","ans":"X","html":"<span class=\"kw\">기본공제</span>는 1인당 <span class=\"kw\">100만 원</span>이다.","explain":"<span class=\"kw\">기본공제</span>는 1인당 <span class=\"kw\">150만 원</span>이다.","id":"q138"},{"module":2,"subject":"세금설계","topic":"자녀세액공제","ans":"X","html":"<span class=\"kw\">자녀세액공제</span>는 <span class=\"kw\">6세 이상</span> 자녀를 대상으로 한다.","explain":"<span class=\"kw\">자녀세액공제</span>는 <span class=\"kw\">8세 이상</span> 자녀·손자녀가 대상이다.","id":"q139"},{"module":2,"subject":"세금설계","topic":"인적공제","ans":"X","html":"<span class=\"kw\">부녀자공제</span>와 <span class=\"kw\">한부모공제</span>는 <span class=\"kw\">중복 적용</span>된다.","explain":"<span class=\"kw\">중복</span>되는 경우 <span class=\"kw\">한부모공제만</span> 적용한다.","id":"q140"},{"module":2,"subject":"세금설계","topic":"부가가치세","ans":"O","html":"<span class=\"kw\">부가가치세</span> 일반과세자의 1기 확정신고는 <span class=\"kw\">7월 25일</span>, 2기 확정신고는 <span class=\"kw\">익년 1월 25일</span>까지다.","explain":"<span class=\"kw\">1기 예정신고</span>는 4월 25일, <span class=\"kw\">2기 예정신고</span>는 10월 25일이다.","id":"q141"},{"module":2,"subject":"세금설계","topic":"영세율","ans":"X","html":"<span class=\"kw\">영세율</span> 사업자는 매입세액을 <span class=\"kw\">공제받을 수 없다</span>.","explain":"영세율은 매입세액 <span class=\"kw\">공제가 가능</span>한 완전면세다. 면세가 공제 <span class=\"kw\">불가</span>다.","id":"q142"},{"module":2,"subject":"세금설계","topic":"전자세금계산서","ans":"O","html":"<span class=\"kw\">전자세금계산서</span>는 법인과 직전연도 <span class=\"kw\">공급가액 8천만 원 이상</span>인 개인사업자가 의무 발급한다.","explain":"<span class=\"kw\">전자세금계산서</span> 의무 위반 시 <span class=\"kw\">가산세</span>가 부과된다.","id":"q143"},{"module":2,"subject":"세금설계","topic":"현금영수증","ans":"X","html":"<span class=\"kw\">현금영수증</span>은 건당 <span class=\"kw\">5만 원</span> 이상 거래면 의무 발급되고, 미발급 시 <span class=\"kw\">10%</span> 가산세가 부과된다.","explain":"<span class=\"kw\">10만 원</span> 이상, 미발급 금액의 <span class=\"kw\">20%</span>다.","id":"q144"},{"module":2,"subject":"세금설계","topic":"금융소득 종합과세","ans":"O","html":"<span class=\"kw\">금융소득</span>이 <span class=\"kw\">2천만 원</span>을 넘으면 <span class=\"kw\">Gross-up 10%</span>를 더해 종합과세한다.","explain":"<span class=\"kw\">초과분</span>에만 <span class=\"kw\">기본세율</span>이 적용된다.","id":"q145"},{"module":2,"subject":"세금설계","topic":"대주주","ans":"X","html":"코스닥시장 상장주식의 <span class=\"kw\">대주주 기준</span>은 <span class=\"kw\">1%</span> 또는 50억 원이다.","explain":"코스닥은 <span class=\"kw\">2%</span>다(유가증권 <span class=\"kw\">1%</span>, 코넥스 4%).","id":"q146"},{"module":2,"subject":"세금설계","topic":"양도소득세","ans":"O","html":"1세대 1주택은 <span class=\"kw\">2년 이상 보유</span>하면 비과세되지만, <span class=\"kw\">12억 원 초과</span> 고가주택은 과세되고 <span class=\"kw\">장기보유특별공제</span>는 최대 <span class=\"kw\">80%</span>다.","explain":"<span class=\"kw\">조정대상지역 취득 주택</span>은 <span class=\"kw\">2년 이상 거주</span>도 필요하다.","id":"q147"},{"module":2,"subject":"세금설계","topic":"종합부동산세","ans":"X","html":"<span class=\"kw\">종합부동산세</span> 주택분 과세기준금액은 <span class=\"kw\">1세대 1주택자</span>도 <span class=\"kw\">9억 원</span>이다.","explain":"<span class=\"kw\">1세대 1주택자</span>는 <span class=\"kw\">12억 원</span>이다.","id":"q148"},{"module":2,"subject":"세금설계","topic":"퇴직소득","ans":"O","html":"<span class=\"kw\">퇴직소득</span>은 근속연수로 나눈 뒤 <span class=\"kw\">12를 곱한 환산급여</span>로 과세표준을 계산한다.","explain":"<span class=\"kw\">산출세액</span>도 12로 나눈 뒤 근속연수를 곱해 <span class=\"kw\">연분연승</span>한다.","id":"q149"},{"module":2,"subject":"세금설계","topic":"연금계좌 과세","ans":"X","html":"연금계좌 <span class=\"kw\">인출순서</span>는 <span class=\"kw\">운용수익 → 이연퇴직소득 → 과세제외금액</span>이다.","explain":"연금계좌 <span class=\"kw\">인출순서</span>는 <span class=\"kw\">과세제외금액 → 이연퇴직소득 → 그 외 소득</span>이다.","id":"q150"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무설계의 필요성","ans":"O","html":"<span class=\"kw\">재무설계의 필요성</span>으로 <span class=\"kw\">급격한 고령화</span>, <span class=\"kw\">금융환경의 변화</span>, <span class=\"kw\">소비자 니즈의 변화</span>가 꼽힌다.","explain":"기대수명 <span class=\"kw\">증가</span>와 노후준비 필요, 금융상품 복잡화, <span class=\"kw\">정보 비대칭</span>이 배경이다.","id":"q151"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무설계의 대상","ans":"X","html":"<span class=\"kw\">재무설계의 대상</span>은 <span class=\"kw\">고소득자</span>로 한정된다.","explain":"<span class=\"kw\">재무설계</span>는 <span class=\"kw\">모든 개인</span>을 대상으로 하며, 소득 수준과 무관하다.","id":"q152"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"국내 도입","ans":"O","html":"<span class=\"kw\">2000년 4월</span> 한국FP협회가 창립되었고, <span class=\"kw\">회원관리</span>는 FP협회가, <span class=\"kw\">자격인증·시험</span>은 <span class=\"kw\">한국재무설계협회</span>가 맡는다.","explain":"<span class=\"kw\">회원관리</span>는 FP협회, <span class=\"kw\">자격인증·시험</span>은 재무설계협회다.","id":"q153"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"필요역량","ans":"X","html":"<span class=\"kw\">재무설계</span>사의 필요역량은 <span class=\"kw\">지식·이해·적용·분석·평가</span>의 <span class=\"kw\">5가지</span>다.","explain":"<span class=\"kw\">여기</span>에 <span class=\"kw\">창조</span>가 더해져 6가지다.","id":"q154"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"자산 분류","ans":"O","html":"<span class=\"kw\">현금성자산</span>은 CD 만기 <span class=\"kw\">90일 이하</span>이고, <span class=\"kw\">투자자산</span>에는 변액보험·연금저축·DC·IRP가 들어간다.","explain":"<span class=\"kw\">저축성자산</span>은 <span class=\"kw\">정기예·적금</span>, 저축성보험처럼 만기와 확정 수익이 있는 자산이다.","id":"q155"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"자산 분류","ans":"X","html":"<span class=\"kw\">사용자산</span>에는 자동차·가구와 함께 <span class=\"kw\">투자목적의 미술품</span>이 포함된다.","explain":"투자목적 미술품·골동품은 <span class=\"kw\">기타자산</span>이다. 전세보증금은 <span class=\"kw\">사용자산</span>이다.","id":"q156"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"현금흐름표","ans":"O","html":"<span class=\"kw\">저축여력</span>은 수입 − 변동지출 − 고정지출이고, <span class=\"kw\">추가저축여력</span>은 월수입 − 지출 − 저축·투자액이다.","explain":"<span class=\"kw\">추가저축여력</span>은 <span class=\"kw\">순 현금흐름</span>이라고도 한다.","id":"q157"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"현금흐름표","ans":"X","html":"<span class=\"kw\">현금흐름표</span>의 수입은 <span class=\"kw\">근로소득자는 세전</span>, <span class=\"kw\">개인사업자는 세후</span>로 기록한다.","explain":"반대다. 근로소득자는 <span class=\"kw\">세후</span>, 개인사업자는 <span class=\"kw\">세전</span>으로 기록한다.","id":"q158"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"부채 부담률","ans":"O","html":"<span class=\"kw\">주거관련부채부담률</span>은 주거관련부채 ÷ 총자산, <span class=\"kw\">총부채부담률</span>은 총부채 ÷ 총자산이다.","explain":"<span class=\"kw\">총부채상환비율(DTI)</span>의 분모는 <span class=\"kw\">월 총수입</span>이다.","id":"q159"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"DSR","ans":"X","html":"<span class=\"kw\">DSR</span>의 분자는 <span class=\"kw\">주택담보대출의 연간 원리금</span>만 해당한다.","explain":"<span class=\"kw\">DSR</span>은 <span class=\"kw\">모든 금융회사 대출</span>의 연간 원리금 상환액을 분자로 한다.","id":"q160"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"신용정보","ans":"O","html":"<span class=\"kw\">3개월 이상 연체</span>가 발생하면 <span class=\"kw\">7영업일 이내</span> <span class=\"kw\">연체정보</span>가 등록되고, 상환하면 <span class=\"kw\">즉시 해제</span>된다.","explain":"등록일부터 <span class=\"kw\">90일</span> 내 상환하거나 1천만 원 이하(카드 5백만 원)면 <span class=\"kw\">기록이 삭제</span>된다.","id":"q161"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"신용정보","ans":"X","html":"<span class=\"kw\">금융질서 문란정보</span>는 <span class=\"kw\">10년</span>간 보존된 후 삭제된다.","explain":"<span class=\"kw\">금융질서 문란정보</span>는 <span class=\"kw\">5년</span> 보존 후 삭제된다.","id":"q162"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"행동재무학","ans":"O","html":"<span class=\"kw\">대표성 오류</span>, <span class=\"kw\">닻 내리기 효과</span>, 프레이밍 효과, 심적회계, 소유효과는 <span class=\"kw\">행동재무학</span>의 대표적 편향이다.","explain":"<span class=\"kw\">손실회피</span>·낙관주의 오류·<span class=\"kw\">자기통제 오류</span>도 여기에 속한다.","id":"q163"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"소비자신용","ans":"X","html":"<span class=\"kw\">금융리스</span>는 관리책임이 리스회사에 있고 <span class=\"kw\">중도해지가 자유롭다</span>.","explain":"<span class=\"kw\">금융리스</span>는 <span class=\"kw\">물적금융</span>으로 관리책임이 소비자에게 있고 중도해지가 원칙적으로 제한된다.","id":"q164"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"청약철회","ans":"O","html":"<span class=\"kw\">청약철회</span>는 보장성 상품은 <span class=\"kw\">15일과 30일 중 먼저 도래</span>한 기간, 투자성은 <span class=\"kw\">7일</span>, 대출성은 <span class=\"kw\">14일</span>이다.","explain":"<span class=\"kw\">철회 효과</span>는 <span class=\"kw\">의사표시를 발송한 때</span> 발생한다.","id":"q165"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"위법계약해지권","ans":"X","html":"<span class=\"kw\">위법계약해지권</span>은 위법사실을 안 날부터 <span class=\"kw\">3년</span>, 계약체결일부터 <span class=\"kw\">10년</span> 이내에 행사한다.","explain":"안 날부터 <span class=\"kw\">1년</span>, 계약체결일부터 <span class=\"kw\">5년</span>이다.","id":"q166"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"과징금","ans":"O","html":"과징금은 <span class=\"kw\">적합성·적정성 원칙</span> 위반을 제외한 6대 판매규제 위반에 부과되고, 관련 수입의 <span class=\"kw\">50% 이내</span>다.","explain":"<span class=\"kw\">과징금</span>은 <span class=\"kw\">징벌적 목적</span>을 가진다.","id":"q167"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"소액분쟁","ans":"X","html":"소액분쟁사건 특례는 일반<span class=\"kw\">금융소비자</span>가 신청한 <span class=\"kw\">5천만 원 이하</span> 사건에 적용된다.","explain":"<span class=\"kw\">2천만 원 이하</span>다(<span class=\"kw\">소송이탈금지제도</span>).","id":"q168"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"고객에 대한 의무","ans":"O","html":"재무설계사의 <span class=\"kw\">고객에 대한 의무</span>는 <span class=\"kw\">충실의무·고지의무·진단의무·자문의무·갱신유지의무</span>다.","explain":"<span class=\"kw\">진단의무</span><span class=\"kw\">는 투자자 적합성</span>을 판단하는 의무다.","id":"q169"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"과태료","ans":"X","html":"<span class=\"kw\">과태료</span>는 위반 사항에 따라 <span class=\"kw\">1천만 원·5천만 원·2억 원</span> 이하로 구별된다.","explain":"<span class=\"kw\">과태료</span>는 <span class=\"kw\">1천만 원·3천만 원·1억 원</span> 이하다.","id":"q170"},{"module":1,"subject":"은퇴설계","topic":"인구 지표","ans":"O","html":"<span class=\"kw\">노년부양비</span>는 생산연령인구 100명당 부양할 <span class=\"kw\">고령인구</span>를 나타낸다.","explain":"총부양비는 15~<span class=\"kw\">64세</span> 100명당 <span class=\"kw\">유소년+고령인구</span>다.","id":"q171"},{"module":1,"subject":"은퇴설계","topic":"인구 지표","ans":"X","html":"<span class=\"kw\">노령화지수</span>는 <span class=\"kw\">유소년인구 100명당</span> 고령인구를 나타낸다.","explain":"<span class=\"kw\">노령화지수</span>는 <span class=\"kw\">유소년인구 100명당</span> 고령인구다.","id":"q172"},{"module":1,"subject":"은퇴설계","topic":"노후소득 보장","ans":"O","html":"<span class=\"kw\">국민연금</span>은 <span class=\"kw\">1988년</span>, 개인연금은 1994년, 퇴직연금은 2005년, 기초연금은 <span class=\"kw\">2014년</span> 도입되었다.","explain":"<span class=\"kw\">공무원연금(1960)</span>·사학연금(1975)·<span class=\"kw\">별정우체국연금(1981)</span>이 먼저 시작됐다.","id":"q173"},{"module":1,"subject":"은퇴설계","topic":"소득대체율","ans":"O","html":"국제기구가 권고하는 <span class=\"kw\">소득대체율</span>은 <span class=\"kw\">70~80%</span>이고, 공적연금은 <span class=\"kw\">물가상승률</span>을 반영해 사망할 때까지 지급된다.","explain":"우리나라 <span class=\"kw\">소득대체율</span>은 <span class=\"kw\">43%</span> 수준이다.","id":"q174"},{"module":1,"subject":"은퇴설계","topic":"기초연금","ans":"X","html":"<span class=\"kw\">기초연금</span>은 65세 이상 노인의 <span class=\"kw\">50%</span>에게 지급된다.","explain":"<span class=\"kw\">기초연금</span>은 노인의 <span class=\"kw\">70%</span>에게 지급한다.","id":"q175"},{"module":1,"subject":"은퇴설계","topic":"농지연금","ans":"X","html":"<span class=\"kw\">농지연금</span>은 <span class=\"kw\">55세 이상</span>이고 영농경력 3년 이상이면 가입할 수 있다.","explain":"<span class=\"kw\">60세 이상</span>, 영농경력 <span class=\"kw\">5년 이상</span>이다.","id":"q176"},{"module":1,"subject":"은퇴설계","topic":"농지연금","ans":"O","html":"<span class=\"kw\">농지연금</span>은 담보농지를 <span class=\"kw\">경작하거나 임대</span>할 수 있고, <span class=\"kw\">6억 원</span> 기준 재산세 감면과 월지급금 <span class=\"kw\">300만 원</span> 상한이 있다.","explain":"<span class=\"kw\">주택연금</span>과 달리 <span class=\"kw\">계속 영농</span>이 가능하다.","id":"q177"},{"module":1,"subject":"은퇴설계","topic":"은퇴자산 평가","ans":"X","html":"은퇴자산을 평가할 때 <span class=\"kw\">공적연금</span>도 <span class=\"kw\">은퇴자산에 포함</span>한다.","explain":"<span class=\"kw\">공적연금</span>은 <span class=\"kw\">은퇴자산으로 평가하지 않는다</span>.","id":"q178"},{"module":1,"subject":"은퇴설계","topic":"TDF·TIF","ans":"O","html":"<span class=\"kw\">TDF</span>는 은퇴자산 <span class=\"kw\">축적</span>, <span class=\"kw\">TIF</span>는 은퇴 후 정기적 <span class=\"kw\">인출</span>을 목적으로 한다.","explain":"<span class=\"kw\">TDF</span>는 <span class=\"kw\">글라이드패스</span>를 따라 주식 비중을 줄인다.","id":"q179"},{"module":1,"subject":"은퇴설계","topic":"국민연금 가입","ans":"X","html":"<span class=\"kw\">국민연금 가입</span> 대상은 <span class=\"kw\">18세 이상 65세 미만</span>이다.","explain":"<span class=\"kw\">국민연금 가입</span> 대상은 <span class=\"kw\">18세 이상 60세 미만</span>이다.","id":"q180"},{"module":1,"subject":"은퇴설계","topic":"임의가입","ans":"O","html":"<span class=\"kw\">임의가입자·임의계속가입자</span>는 <span class=\"kw\">6개월 이상</span> 보험료를 체납하면 자격을 잃는다.","explain":"<span class=\"kw\">임의가입자</span>는 60세 이전, <span class=\"kw\">임의계속가입자</span>는 60세에 달한 자다.","id":"q181"},{"module":1,"subject":"은퇴설계","topic":"기본연금액","ans":"X","html":"<span class=\"kw\">기본연금액</span>의 <span class=\"kw\">A값</span>은 소득비례부분, <span class=\"kw\">B값</span>은 균등부분이다.","explain":"A값이 <span class=\"kw\">균등부분</span>, B값이 <span class=\"kw\">소득비례부분</span>이다.","id":"q182"},{"module":1,"subject":"은퇴설계","topic":"유족연금","ans":"O","html":"<span class=\"kw\">유족연금</span>은 배우자인 경우 <span class=\"kw\">3년</span> 동안 지급한 뒤 <span class=\"kw\">55세</span>가 될 때까지 지급이 정지된다.","explain":"<span class=\"kw\">예외사유</span>가 있으면 <span class=\"kw\">정지되지 않는다</span>.","id":"q183"},{"module":1,"subject":"은퇴설계","topic":"사망일시금","ans":"X","html":"<span class=\"kw\">사망일시금</span>의 소멸시효는 <span class=\"kw\">3년</span>이고, 지급대상에서 형제자매는 제외된다.","explain":"소멸시효는 <span class=\"kw\">5년</span>이며 <span class=\"kw\">4촌 이내 방계혈족</span>까지 포함한다.","id":"q184"},{"module":1,"subject":"은퇴설계","topic":"공무원연금","ans":"O","html":"<span class=\"kw\">공무원연금</span>은 기여금·부담금이 각 <span class=\"kw\">9%</span>이고, <span class=\"kw\">10년 이상</span> 재직해야 하며 조기퇴직연금은 1년당 <span class=\"kw\">5%</span> 감액된다.","explain":"납부기간은 <span class=\"kw\">36년</span>, 유족연금은 연금액의 <span class=\"kw\">60%</span>다.","id":"q185"},{"module":1,"subject":"은퇴설계","topic":"군인연금","ans":"X","html":"<span class=\"kw\">군인연금</span>의 기여금·부담금은 각 <span class=\"kw\">9%</span>이고 복무기간은 <span class=\"kw\">25년</span>이다.","explain":"각 <span class=\"kw\">7%</span>, 복무기간 <span class=\"kw\">20년</span>(납부 33년)이다.","id":"q186"},{"module":1,"subject":"은퇴설계","topic":"퇴직급여 지급","ans":"O","html":"<span class=\"kw\">퇴직급여</span>는 원칙적으로 <span class=\"kw\">14일 이내</span> 지급하고, 늦어지면 연 <span class=\"kw\">20%</span>의 지연이자를 붙이며 <span class=\"kw\">대출채권과 상계</span>할 수 없다.","explain":"<span class=\"kw\">지급기한</span>을 넘기면 <span class=\"kw\">지연이자</span>가 발생한다.","id":"q187"},{"module":1,"subject":"은퇴설계","topic":"퇴직금 수령","ans":"X","html":"<span class=\"kw\">55세 미만</span>에 DC·DB형에서 퇴직한 근로자는 퇴직금을 <span class=\"kw\">연금저축계좌</span>로 받을 수 있다.","explain":"<span class=\"kw\">55세</span> 미만은 <span class=\"kw\">IRP 계좌로만</span> 받을 수 있다.","id":"q188"},{"module":1,"subject":"은퇴설계","topic":"DB·DC","ans":"X","html":"<span class=\"kw\">DC형</span>의 적립금 <span class=\"kw\">운용책임</span>은 사용자에게 있다.","explain":"<span class=\"kw\">DC형</span>은 <span class=\"kw\">근로자</span>가 운용책임을 진다(DB는 사용자).","id":"q189"},{"module":1,"subject":"은퇴설계","topic":"디폴트옵션","ans":"O","html":"<span class=\"kw\">디폴트옵션</span>에서 기존가입자는 만기일로부터 <span class=\"kw\">4주</span> 내 운용지시가 없으면 통지 후 <span class=\"kw\">2주</span> 대기, 신규가입자는 최초납입일부터 <span class=\"kw\">2주</span> 내 대기기간 없이 적용된다.","explain":"<span class=\"kw\">Opt-Out</span><span class=\"kw\">하면 언제든 다른 상품</span>으로 운용지시할 수 있다.","id":"q190"},{"module":1,"subject":"은퇴설계","topic":"IRP 납입","ans":"X","html":"<span class=\"kw\">IRP</span> 자기부담금의 연간 납입한도는 <span class=\"kw\">1,200만 원</span>이다.","explain":"<span class=\"kw\">IRP</span> 자기부담금 한도는 <span class=\"kw\">1,800만 원</span>이다.","id":"q191"},{"module":1,"subject":"은퇴설계","topic":"연금계좌 승계","ans":"O","html":"<span class=\"kw\">연금계좌 승계</span>는 <span class=\"kw\">배우자</span>에 한해 <span class=\"kw\">6개월 이내</span>에 할 수 있고, 새로 가입한 것으로 본다.","explain":"<span class=\"kw\">가입일·연금수령연차</span>는 <span class=\"kw\">피상속인 기준</span>을 적용한다.","id":"q192"},{"module":1,"subject":"은퇴설계","topic":"연금계좌 이체","ans":"O","html":"연금수령 요건을 갖춘 뒤 <span class=\"kw\">연금저축</span>과 IRP 사이에서 <span class=\"kw\">전액</span>을 이체하면 <span class=\"kw\">과세이연</span>된다.","explain":"<span class=\"kw\">일부 금액</span>만 이체하면 인출로 보아 <span class=\"kw\">과세</span>된다.","id":"q193"},{"module":1,"subject":"은퇴설계","topic":"연금수령 세율","ans":"X","html":"<span class=\"kw\">연금계좌</span>에서 <span class=\"kw\">70~79세</span>에 연금을 받으면 <span class=\"kw\">5%</span>의 연금소득세가 적용된다.","explain":"70~<span class=\"kw\">79세</span>는 <span class=\"kw\">4%</span>다(55~69세 5%, 80세 이상 3%, 종신형 3%).","id":"q194"},{"module":1,"subject":"부동산설계","topic":"주택의 분류","ans":"O","html":"<span class=\"kw\">다중주택</span>은 3층 이하·660㎡ 이하로 <span class=\"kw\">독립가구가 아니며</span>, <span class=\"kw\">다가구주택</span>은 3층 이하·<span class=\"kw\">19세대 이하</span>다.","explain":"연립주택은 <span class=\"kw\">4층 이하·660㎡ 초과</span>, 다세대는 <span class=\"kw\">4층 이하·660㎡ 이하</span>다.","id":"q195"},{"module":1,"subject":"부동산설계","topic":"주택의 분류","ans":"X","html":"<span class=\"kw\">다가구주택</span>은 3층 이하이면서 <span class=\"kw\">20세대 이상</span>이면 해당한다.","explain":"<span class=\"kw\">다가구주택</span>은 <span class=\"kw\">19세대 이하</span>다.","id":"q196"},{"module":1,"subject":"부동산설계","topic":"공동소유","ans":"O","html":"<span class=\"kw\">합유</span>는 지분 처분에 <span class=\"kw\">전원의 동의</span>가 필요하고, 목적물의 사용·수익은 <span class=\"kw\">합유물 전부</span>에 미친다.","explain":"<span class=\"kw\">공유</span>는 지분 처분이 자유롭고, 총유는 <span class=\"kw\">사원총회 결의</span>가 필요하다.","id":"q197"},{"module":1,"subject":"부동산설계","topic":"등기 순위","ans":"O","html":"<span class=\"kw\">별구(갑구와 을구)</span> 사이의 순위는 <span class=\"kw\">접수번호</span>에 따른다.","explain":"<span class=\"kw\">동구</span> 안에서는 <span class=\"kw\">순위번호</span>에 따른다.","id":"q198"},{"module":1,"subject":"부동산설계","topic":"가등기","ans":"O","html":"<span class=\"kw\">가등기</span> 후 본등기를 하면 본등기의 순위는 <span class=\"kw\">가등기의 순위</span>에 따른다.","explain":"<span class=\"kw\">가등기</span>는 장래의 물권변동 청구권을 <span class=\"kw\">보전</span>하는 등기다.","id":"q199"},{"module":1,"subject":"부동산설계","topic":"경매","ans":"X","html":"<span class=\"kw\">임의경매</span>는 채권자가 <span class=\"kw\">판결</span>을 받아 신청해야 한다.","explain":"<span class=\"kw\">임의경매</span>는 <span class=\"kw\">담보물권</span>에 기해 신청한다. 판결이 필요한 것은 강제경매다.","id":"q200"},{"module":1,"subject":"부동산설계","topic":"재경매·신경매","ans":"X","html":"<span class=\"kw\">신경매</span>는 최저매각가격을 <span class=\"kw\">그대로</span> 두고 진행한다.","explain":"<span class=\"kw\">신경매</span>는 최저매각가격이 <span class=\"kw\">20~30% 하락</span>한다. 재경매가 그대로 진행된다.","id":"q201"},{"module":1,"subject":"부동산설계","topic":"재경매","ans":"O","html":"<span class=\"kw\">재경매</span>는 낙찰자의 대금 미납으로 다시 진행하며, 매수신청보증금을 최저매각가격의 <span class=\"kw\">20~30%</span>로 정한다.","explain":"<span class=\"kw\">미납</span>을 막기 위한 <span class=\"kw\">보증금 인상</span> 장치다.","id":"q202"},{"module":1,"subject":"부동산설계","topic":"보증금 보호","ans":"O","html":"<span class=\"kw\">우선변제권</span>은 <span class=\"kw\">대항력 + 확정일자</span>를 갖춰야 하며, <span class=\"kw\">최우선변제</span> 한도는 주택가액의 <span class=\"kw\">2분의 1</span>이다.","explain":"<span class=\"kw\">최우선변제</span>는 <span class=\"kw\">대항력</span>만 있으면 된다.","id":"q203"},{"module":1,"subject":"부동산설계","topic":"상가임대차","ans":"X","html":"상가건물임대차에서 <span class=\"kw\">묵시적 갱신</span>은 임대인이 기간 종료 <span class=\"kw\">6개월 전부터 2개월 전</span>까지 갱신 거절을 통지하지 않으면 성립한다.","explain":"상가는 <span class=\"kw\">6개월 전부터 1개월 전</span>이다. <span class=\"kw\">2개월</span>은 주택 기준이다.","id":"q204"},{"module":1,"subject":"부동산설계","topic":"상가임대차","ans":"X","html":"상가 <span class=\"kw\">보증금</span>의 월차임 전환률은 <span class=\"kw\">연 12%</span> 또는 기준금리에 <span class=\"kw\">2%</span>를 더한 비율 중 낮은 비율이다.","explain":"<span class=\"kw\">기준금리</span>에 <span class=\"kw\">4.5배수</span>를 곱한 비율과 비교한다.","id":"q205"},{"module":1,"subject":"부동산설계","topic":"특별공급","ans":"O","html":"<span class=\"kw\">신혼부부 특별공급</span>은 혼인기간 <span class=\"kw\">7년 이내</span>, 계속 무주택, 월평균 소득 <span class=\"kw\">140%</span>(맞벌이 160%) 이하를 모두 충족해야 한다.","explain":"<span class=\"kw\">1세대</span>당 <span class=\"kw\">평생 1회</span>로 제한된다.","id":"q206"},{"module":1,"subject":"부동산설계","topic":"특별공급","ans":"X","html":"<span class=\"kw\">노부모부양</span> 특별공급은 만 <span class=\"kw\">60세 이상</span> 직계존속을 <span class=\"kw\">1년 이상</span> 부양하면 된다.","explain":"만 <span class=\"kw\">65세 이상</span>을 <span class=\"kw\">3년 이상</span> 계속 부양해야 한다.","id":"q207"},{"module":1,"subject":"부동산설계","topic":"용도지역","ans":"X","html":"<span class=\"kw\">용도지역</span>은 필요하면 <span class=\"kw\">중복 지정</span>할 수 있다.","explain":"<span class=\"kw\">용도지역</span>은 <span class=\"kw\">중복 지정되지 않는다</span>.","id":"q208"},{"module":1,"subject":"부동산설계","topic":"건폐율·용적률","ans":"O","html":"<span class=\"kw\">건폐율</span>은 대지면적에 대한 건축면적, <span class=\"kw\">용적률</span>은 대지면적에 대한 연면적의 비율이다.","explain":"용적률 계산 시 <span class=\"kw\">주차장·피난시설</span> 등 비주거 면적은 <span class=\"kw\">제외</span>한다.","id":"q209"},{"module":1,"subject":"부동산설계","topic":"건축허가","ans":"X","html":"<span class=\"kw\">건축허가</span> 후 <span class=\"kw\">2년</span> 내 착수하지 않으면 허가를 취소하되, 정당한 사유가 있으면 <span class=\"kw\">2년</span>까지 연장할 수 있다.","explain":"<span class=\"kw\">연장</span>은 <span class=\"kw\">1년</span> 범위에서 가능하다.","id":"q210"},{"module":1,"subject":"부동산설계","topic":"상가 투자","ans":"O","html":"<span class=\"kw\">주주형 상가</span>는 지분을 발행해 소액투자자를 모집하고, 준공 후 <span class=\"kw\">전문 경영인</span>이 운영한 영업이익을 배당한다.","explain":"<span class=\"kw\">주주형 상가</span>는 <span class=\"kw\">매각이 어렵다</span>는 단점이 있다.","id":"q211"},{"module":1,"subject":"부동산설계","topic":"아파트 단지 상가","ans":"X","html":"<span class=\"kw\">아파트 단지 상가</span>는 입주 <span class=\"kw\">초기부터</span> 임대료가 계속 낮아진다.","explain":"<span class=\"kw\">입주 초기</span>에는 높은 임대료를 받지만 <span class=\"kw\">2년 정도</span> 지나면 낮아진다.","id":"q212"},{"module":1,"subject":"부동산설계","topic":"생활형 숙박시설","ans":"X","html":"<span class=\"kw\">생활형 숙박시설</span>을 분양받으려면 <span class=\"kw\">주택청약종합저축</span>이 필요하다.","explain":"주택이 아니므로 청약통장이 <span class=\"kw\">필요 없고</span> 주택 수에도 <span class=\"kw\">포함</span>되지 않는다.","id":"q213"},{"module":1,"subject":"상속설계","topic":"동시사망","ans":"O","html":"동시사망이 추정되면 상호간 <span class=\"kw\">상속권은 인정되지 않지만</span> 상호간 <span class=\"kw\">대습상속</span>은 인정된다.","explain":"<span class=\"kw\">동시사망 추정</span>은 <span class=\"kw\">상속결격</span>과 함께 대습상속 원인이다.","id":"q214"},{"module":1,"subject":"상속설계","topic":"실종선고","ans":"X","html":"<span class=\"kw\">실종선고</span>의 상속개시 시기는 <span class=\"kw\">실종선고일</span>이다.","explain":"민법상 상속개시 시기는 <span class=\"kw\">실종기간이 만료된 때</span>다(보통 <span class=\"kw\">5년</span>, 특별 1년).","id":"q215"},{"module":1,"subject":"상속설계","topic":"상속인 자격","ans":"O","html":"<span class=\"kw\">태아</span>도 상속인이 될 수 있고 <span class=\"kw\">대습상속</span>도 가능하지만, <span class=\"kw\">법인</span>은 상속인이 될 수 없다.","explain":"<span class=\"kw\">상속인</span>은 <span class=\"kw\">자연인</span>이어야 한다.","id":"q216"},{"module":1,"subject":"상속설계","topic":"상속 순위","ans":"O","html":"<span class=\"kw\">친양자</span>는 양친의 성과 본으로 변경되지만 <span class=\"kw\">상속권이 인정되지 않는다</span>.","explain":"<span class=\"kw\">일반양자</span>는 친생부모의 성과 본을 유지하고 <span class=\"kw\">상속권이 인정</span>된다.","id":"q217"},{"module":1,"subject":"상속설계","topic":"공동상속","ans":"O","html":"<span class=\"kw\">공동상속</span>재산의 <span class=\"kw\">보존행위</span>는 각자가 단독으로 할 수 있지만, <span class=\"kw\">관리행위</span>는 법정상속분의 <span class=\"kw\">과반수</span>로 정한다.","explain":"<span class=\"kw\">처분행위</span>는 <span class=\"kw\">전원의 동의</span>가 필요하다.","id":"q218"},{"module":1,"subject":"상속설계","topic":"상속분","ans":"O","html":"동순위 상속인은 <span class=\"kw\">균분</span>하고, 배우자는 <span class=\"kw\">5할</span>을 가산한다.","explain":"<span class=\"kw\">배우자 상속분</span>은 다른 상속인보다 <span class=\"kw\">50% 더</span> 많다.","id":"q219"},{"module":1,"subject":"상속설계","topic":"상속재산 분할","ans":"X","html":"<span class=\"kw\">상속재산 분할</span>은 상속세 신고기한과 같이 <span class=\"kw\">6개월</span> 안에 해야 한다.","explain":"분할에는 <span class=\"kw\">정해진 기간이 없다</span>. <span class=\"kw\">5년</span> 내 분할 금지 약정은 가능하다.","id":"q220"},{"module":1,"subject":"상속설계","topic":"상속회복청구권","ans":"O","html":"<span class=\"kw\">상속회복청구권</span>은 <span class=\"kw\">재판상</span>으로만 행사할 수 있고, 침해를 안 날부터 <span class=\"kw\">3년</span>·침해행위가 있은 날부터 <span class=\"kw\">10년</span>이다.","explain":"<span class=\"kw\">참칭상속인</span>을 상대로 <span class=\"kw\">소송</span>으로 행사한다.","id":"q221"},{"module":1,"subject":"상속설계","topic":"유증","ans":"O","html":"<span class=\"kw\">유증(유언상속)</span>은 법정상속보다 <span class=\"kw\">우선 적용</span>되고, 법정상속은 <span class=\"kw\">보충적</span>으로 적용된다.","explain":"유증은 <span class=\"kw\">단독행위</span>, 사인증여는 <span class=\"kw\">계약</span>이다.","id":"q222"},{"module":1,"subject":"상속설계","topic":"유언의 철회","ans":"O","html":"유언의 철회는 <span class=\"kw\">대리인</span>이 할 수 없고 <span class=\"kw\">포기</span>도 할 수 없다.","explain":"<span class=\"kw\">유언</span>에 의한 철회와 <span class=\"kw\">생전행위</span>에 의한 철회가 있다.","id":"q223"},{"module":1,"subject":"상속설계","topic":"유류분 반환","ans":"O","html":"유류분 반환은 <span class=\"kw\">유증</span>으로 부족한 경우 <span class=\"kw\">증여</span> 순으로 청구한다.","explain":"<span class=\"kw\">기여분</span>은 유류분 반환 대상이 <span class=\"kw\">아니다</span>.","id":"q224"},{"module":1,"subject":"상속설계","topic":"상속세 방식","ans":"X","html":"<span class=\"kw\">상속세</span>는 재산을 받은 자별로 과세하는 <span class=\"kw\">유산취득세 방식</span>이다.","explain":"<span class=\"kw\">상속세</span>는 <span class=\"kw\">유산세 방식</span>, 증여세가 유산취득세 방식이다.","id":"q225"},{"module":1,"subject":"상속설계","topic":"세대생략","ans":"O","html":"<span class=\"kw\">세대생략</span> 가산은 산출세액의 <span class=\"kw\">30%</span>이고, 미성년자가 <span class=\"kw\">20억 원 초과</span>를 받으면 <span class=\"kw\">40%</span>다.","explain":"민법상 <span class=\"kw\">대습상속</span>은 세대생략 가산에서 <span class=\"kw\">제외</span>된다.","id":"q226"},{"module":1,"subject":"상속설계","topic":"신고세액공제","ans":"X","html":"상속세를 <span class=\"kw\">법정신고기한</span>까지 신고하면 산출세액의 <span class=\"kw\">10%</span>를 공제한다.","explain":"<span class=\"kw\">신고세액공제</span>는 <span class=\"kw\">3%</span>다.","id":"q227"},{"module":1,"subject":"상속설계","topic":"분납","ans":"X","html":"상속세 <span class=\"kw\">분납</span>은 납부할 세액이 <span class=\"kw\">2천만 원</span>을 초과할 때 신청할 수 있다.","explain":"분납은 <span class=\"kw\">1천만 원</span> 초과, 연부연납·물납은 <span class=\"kw\">2천만 원</span> 초과다.","id":"q228"},{"module":1,"subject":"상속설계","topic":"물납","ans":"X","html":"<span class=\"kw\">물납</span>은 상속세와 <span class=\"kw\">증여세</span> 모두에 허용된다.","explain":"<span class=\"kw\">물납</span>은 <span class=\"kw\">증여세에는 허용되지 않는다</span>.","id":"q229"},{"module":1,"subject":"상속설계","topic":"보험금 증여","ans":"X","html":"<span class=\"kw\">보험금</span>의 증여 시기는 <span class=\"kw\">보험료를 납입한 날</span>이다.","explain":"<span class=\"kw\">보험금</span>의 증여 시기는 <span class=\"kw\">보험사고 발생일</span>(연금보험은 연금개시일)이다.","id":"q230"},{"module":1,"subject":"상속설계","topic":"자금출처조사","ans":"X","html":"<span class=\"kw\">자금출처조사</span>에서 미입증금액이 <span class=\"kw\">취득재산가액의 30%와 3억 원</span> 중 작은 금액보다 적으면 증여추정에서 제외된다.","explain":"<span class=\"kw\">자금출처</span> 기준은 <span class=\"kw\">20%와 2억 원</span> 중 작은 금액이다.","id":"q231"},{"module":1,"subject":"상속설계","topic":"저가양수","ans":"X","html":"특수관계인 간 <span class=\"kw\">저가양수</span>는 차액이 시가의 <span class=\"kw\">20%</span> 이상이면 증여로 본다.","explain":"<span class=\"kw\">30% 이상</span> 또는 <span class=\"kw\">3억</span> 원 이상이다.","id":"q232"},{"module":1,"subject":"상속설계","topic":"금융재산공제","ans":"O","html":"<span class=\"kw\">금융재산상속공제</span>는 순금융재산 2천만 원 이하 전액, 1억 원 초과~10억 원 이하는 <span class=\"kw\">20%</span>, 10억 원 초과는 <span class=\"kw\">2억 원</span> 한도다.","explain":"<span class=\"kw\">2천만</span> 원 초과~1억 원 이하는 <span class=\"kw\">2천만 원</span>이다.","id":"q233"},{"module":1,"subject":"상속설계","topic":"동거주택공제","ans":"X","html":"<span class=\"kw\">동거주택상속공제</span>는 10년 이상 동거·1세대 1주택 요건으로 <span class=\"kw\">3억 원</span> 한도다.","explain":"<span class=\"kw\">동거주택상속공제</span>의 한도는 <span class=\"kw\">6억 원</span>이다.","id":"q234"},{"module":1,"subject":"상속설계","topic":"가업상속공제","ans":"O","html":"<span class=\"kw\">가업상속공제</span>는 피상속인이 <span class=\"kw\">10년 이상</span> 영위한 가업에 대해 최대 <span class=\"kw\">600억 원</span>까지 공제된다.","explain":"<span class=\"kw\">10년</span> 이상 300억, 20년 이상 400억, 30년 이상 <span class=\"kw\">600억</span>이다.","id":"q235"},{"module":1,"subject":"상속설계","topic":"사후관리","ans":"X","html":"상속세 결정세액의 <span class=\"kw\">사후관리</span>는 상속재산 가액 <span class=\"kw\">10억 원 이상</span>인 경우 <span class=\"kw\">3년</span>간 한다.","explain":"<span class=\"kw\">30억 원 이상</span>, <span class=\"kw\">5년</span>이다.","id":"q236"},{"module":1,"subject":"상속설계","topic":"증여재산공제","ans":"X","html":"수증자가 <span class=\"kw\">비거주자</span>여도 <span class=\"kw\">증여재산공제</span>를 받을 수 있다.","explain":"<span class=\"kw\">비거주자에게</span>는 <span class=\"kw\">증여재산공제가 적용되지 않는다</span>.","id":"q237"},{"module":2,"subject":"위험관리와 보험설계","topic":"위험의 구분","ans":"O","html":"위험은 <span class=\"kw\">순수위험·투자위험</span>, <span class=\"kw\">객관적·주관적 위험</span>, <span class=\"kw\">특정·기본위험</span>으로 구분된다.","explain":"<span class=\"kw\">보험</span>은 기본적으로 <span class=\"kw\">순수위험</span>을 대상으로 한다.","id":"q238"},{"module":2,"subject":"위험관리와 보험설계","topic":"위험의 구분","ans":"X","html":"<span class=\"kw\">순수위험</span>은 <span class=\"kw\">손실과 이익</span>이 모두 발생할 가능성이 있는 위험이다.","explain":"순수위험은 <span class=\"kw\">손실만</span> 발생 가능하다. 이익과 손실이 모두 가능한 것은 <span class=\"kw\">투자위험</span>이다.","id":"q239"},{"module":2,"subject":"위험관리와 보험설계","topic":"위험관리 프로세스","ans":"X","html":"<span class=\"kw\">위험관리 프로세스</span>는 <span class=\"kw\">위험측정·평가</span>를 먼저 하고 <span class=\"kw\">위험인식</span>을 나중에 한다.","explain":"<span class=\"kw\">위험관리</span>는 <span class=\"kw\">위험인식</span>이 가장 먼저다.","id":"q240"},{"module":2,"subject":"위험관리와 보험설계","topic":"손실 규모","ans":"O","html":"<span class=\"kw\">최대가능손실</span>은 최악의 상황에서 가능한 최대 손실, <span class=\"kw\">추정최대손실</span>은 정상 상황에서 합리적으로 예상되는 최대 손실이다.","explain":"<span class=\"kw\">추정최대손실</span>이 <span class=\"kw\">더 작은 값</span>이다.","id":"q241"},{"module":2,"subject":"위험관리와 보험설계","topic":"위험관리 방법","ans":"X","html":"손실 발생빈도와 심도가 <span class=\"kw\">모두 높으면</span> <span class=\"kw\">위험전가</span>가 적합하다.","explain":"<span class=\"kw\">손실 빈도</span>와 심도가 모두 높으면 <span class=\"kw\">위험회피·손실감소</span>가 적합하다.","id":"q242"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험가능 위험","ans":"O","html":"<span class=\"kw\">보험가능 위험</span>은 <span class=\"kw\">다수의 동질성</span>, <span class=\"kw\">우연성</span>, <span class=\"kw\">측정가능성</span>, 회사가 감당 가능한 손실을 갖춰야 한다.","explain":"<span class=\"kw\">우연성</span>은 손실 발생 <span class=\"kw\">여부·시기·정도</span>의 불확실성이다.","id":"q243"},{"module":2,"subject":"위험관리와 보험설계","topic":"역선택","ans":"O","html":"<span class=\"kw\">역선택</span>은 보험계약자와 보험회사 사이의 <span class=\"kw\">정보의 비대칭</span>에서 발생한다.","explain":"<span class=\"kw\">도덕적 위태 방지책</span>으로 <span class=\"kw\">공제조항·대기기간·면책조항</span> 등이 있다.","id":"q244"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험사고 요건","ans":"X","html":"<span class=\"kw\">보험사고</span>는 <span class=\"kw\">우연성</span>과 <span class=\"kw\">발생가능성</span>만 충족하면 된다.","explain":"<span class=\"kw\">보험사고</span>는 <span class=\"kw\">한정성</span>까지 충족해야 한다.","id":"q245"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험계약의 특성","ans":"O","html":"보험계약은 <span class=\"kw\">불요식·낙성계약</span>, 유상·쌍무계약, <span class=\"kw\">조건부계약</span>, 사행계약, <span class=\"kw\">부합계약</span>의 특성을 갖는다.","explain":"<span class=\"kw\">사행계약적 특성 때문</span>에 <span class=\"kw\">최대선의원칙</span>이 적용된다.","id":"q246"},{"module":2,"subject":"위험관리와 보험설계","topic":"전부·일부보험","ans":"X","html":"<span class=\"kw\">일부보험</span>은 손해액 전액을 <span class=\"kw\">보험가입금액 한도</span>로 지급한다.","explain":"<span class=\"kw\">일부보험</span>은 <span class=\"kw\">비례보상</span>한다. 전액 지급은 전부보험이다.","id":"q247"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험계약의 무효","ans":"X","html":"<span class=\"kw\">제1회 보험료를 내지 않은</span> 경우 계약은 <span class=\"kw\">취소</span>된다.","explain":"제<span class=\"kw\">1회</span> 보험료 미납은 <span class=\"kw\">무효(해제)</span> 사유다.","id":"q248"},{"module":2,"subject":"위험관리와 보험설계","topic":"겸영제한","ans":"O","html":"생명보험업과 손해보험업은 <span class=\"kw\">겸영할 수 없지만</span>, <span class=\"kw\">제3보험업</span>은 겸영이 허용된다.","explain":"<span class=\"kw\">연금저축계약·퇴직보험계약</span>도 <span class=\"kw\">겸영 허용</span> 대상이다.","id":"q249"},{"module":2,"subject":"위험관리와 보험설계","topic":"예금자보호","ans":"X","html":"<span class=\"kw\">변액보험 주계약</span>은 <span class=\"kw\">예금자보호 대상</span>이다.","explain":"<span class=\"kw\">변액보험 주계약</span>은 <span class=\"kw\">비보호</span>이며, 최저보증 부분만 보호된다.","id":"q250"},{"module":2,"subject":"위험관리와 보험설계","topic":"예금자보호","ans":"O","html":"<span class=\"kw\">DC·IRP</span>의 적립금 중 예금보호대상 상품은 합산해 <span class=\"kw\">1억 원</span>까지 별도 보호된다.","explain":"<span class=\"kw\">연금저축(신탁·보험)</span>도 각각 <span class=\"kw\">1억 원</span> 한도로 보호된다.","id":"q251"},{"module":2,"subject":"위험관리와 보험설계","topic":"계약자 권리","ans":"X","html":"보험금 청구권과 해약환급금 청구권의 <span class=\"kw\">소멸시효</span>는 <span class=\"kw\">2년</span>이다.","explain":"보험금 청구권의 <span class=\"kw\">소멸시효</span>는 <span class=\"kw\">3년</span>이다.","id":"q252"},{"module":2,"subject":"위험관리와 보험설계","topic":"사업방법서","ans":"X","html":"<span class=\"kw\">보험료 추가납입</span>은 주계약 기본보험료 납입한도의 <span class=\"kw\">1배</span>까지 가능하다.","explain":"주계약은 <span class=\"kw\">2배</span>, 보장성은 <span class=\"kw\">1배</span>다.","id":"q253"},{"module":2,"subject":"위험관리와 보험설계","topic":"청약","ans":"O","html":"보험회사는 <span class=\"kw\">청약</span>을 받으면 <span class=\"kw\">30일 이내</span> 승낙 여부를 통지하고, 통지하지 않으면 <span class=\"kw\">승낙한 것으로 본다</span>.","explain":"<span class=\"kw\">청약철회</span>는 증권을 받은 날부터 <span class=\"kw\">15일</span>이다.","id":"q254"},{"module":2,"subject":"위험관리와 보험설계","topic":"유통채널","ans":"X","html":"보험설계사가 모집한 계약의 손해<span class=\"kw\">배상책임</span>은 <span class=\"kw\">1차적으로 보험설계사</span>가 진다.","explain":"<span class=\"kw\">손해배상</span>의 1차적 책임은 <span class=\"kw\">보험회사</span>가 진다(중개사는 본인).","id":"q255"},{"module":2,"subject":"위험관리와 보험설계","topic":"국민건강보험","ans":"O","html":"건강보험 <span class=\"kw\">피부양자</span> 소득요건은 연소득 <span class=\"kw\">2,000만 원</span>이고, 보수외 소득이 연 <span class=\"kw\">2,000만 원</span>을 넘으면 소득월액 보험료가 부과된다.","explain":"<span class=\"kw\">지역가입자</span>는 <span class=\"kw\">소득·재산·자동차</span>를 기준으로 보험료를 매긴다.","id":"q256"},{"module":2,"subject":"위험관리와 보험설계","topic":"노인장기요양보험","ans":"X","html":"<span class=\"kw\">노인장기요양보험</span>은 <span class=\"kw\">재가급여 20%</span>, <span class=\"kw\">시설급여 15%</span>의 본인부담금이 있다.","explain":"재가 <span class=\"kw\">15%</span>, 시설 <span class=\"kw\">20%</span>다.","id":"q257"},{"module":2,"subject":"위험관리와 보험설계","topic":"고용보험","ans":"O","html":"<span class=\"kw\">구직급여</span>는 이직 전 평균임금의 <span class=\"kw\">60%</span>를 지급하고, 1일 상한 <span class=\"kw\">68,100원</span>·하한 <span class=\"kw\">66,048원</span>이 적용된다.","explain":"이직 전 <span class=\"kw\">18개월</span>간 피보험단위기간 <span class=\"kw\">180일 이상</span>이 필요하다.","id":"q258"},{"module":2,"subject":"위험관리와 보험설계","topic":"산재보험","ans":"X","html":"<span class=\"kw\">산업재해</span>보상보험료는 원칙적으로 <span class=\"kw\">근로자와 사업주가 반반</span> 부담한다.","explain":"<span class=\"kw\">원칙적</span>으로 <span class=\"kw\">사업주 전액</span> 부담이다(특수형태근로종사자는 반반).","id":"q259"},{"module":2,"subject":"위험관리와 보험설계","topic":"저축성보험 비과세","ans":"O","html":"<span class=\"kw\">저축성보험</span> 보험차익 비과세는 <span class=\"kw\">1억 원 이하</span>·<span class=\"kw\">10년 이상</span>, 월적립식은 <span class=\"kw\">월 150만 원 이하</span>·5년 이상 적립 요건을 갖춰야 한다.","explain":"<span class=\"kw\">종신형 연금보험</span>은 <span class=\"kw\">55세 이후</span> 연금으로 받는 조건이다.","id":"q260"},{"module":2,"subject":"위험관리와 보험설계","topic":"정기보험","ans":"X","html":"<span class=\"kw\">정기보험</span>은 <span class=\"kw\">저축기능</span>이 있어 만기에 환급금을 받을 수 있다.","explain":"정기보험은 <span class=\"kw\">순수보장성</span>으로 저축기능과 환급금이 <span class=\"kw\">없다</span>.","id":"q261"},{"module":2,"subject":"위험관리와 보험설계","topic":"종신보험","ans":"O","html":"<span class=\"kw\">종신보험</span>의 변동보험금 계산방법은 <span class=\"kw\">가산지급방법</span>, 일시납보험 추가가입방법, <span class=\"kw\">계약자적립액비례방법</span>이 있다.","explain":"<span class=\"kw\">수정종신보험</span><span class=\"kw\">은 기간</span>이 지나며 보험료가 오르므로 장래 소득이 높아질 사람에게 적합하다.","id":"q262"},{"module":2,"subject":"위험관리와 보험설계","topic":"변액보험","ans":"X","html":"<span class=\"kw\">변액보험</span>의 <span class=\"kw\">투자책임</span>은 보험회사에 있다.","explain":"변액보험은 <span class=\"kw\">보험계약자</span>가 투자책임을 지고, <span class=\"kw\">특별계정</span>에서 운용한다.","id":"q263"},{"module":2,"subject":"위험관리와 보험설계","topic":"계약유지 제도","ans":"X","html":"<span class=\"kw\">보험계약대출</span>을 받으면 <span class=\"kw\">해약환급금</span>이 감소한다.","explain":"<span class=\"kw\">보험계약대출</span>은 보험료·보험금·보장기간·<span class=\"kw\">해약환급금이 모두 동일</span>하다.","id":"q264"},{"module":2,"subject":"위험관리와 보험설계","topic":"언더라이팅","ans":"O","html":"<span class=\"kw\">언더라이팅</span>의 기본원칙은 <span class=\"kw\">대량위험·동질위험·분산가능위험·보험계속성·형평성</span> 원칙이다.","explain":"<span class=\"kw\">표준미달체</span>는 <span class=\"kw\">보험금 감액·보험료 할증·특정 보장 제한</span>으로 인수한다.","id":"q265"},{"module":2,"subject":"위험관리와 보험설계","topic":"표준약관","ans":"O","html":"피보험자가 <span class=\"kw\">자살</span>한 경우 보장개시일(<span class=\"kw\">부활</span> 시 부활청약일)부터 <span class=\"kw\">2년</span>이 지나면 사망보험금을 지급한다.","explain":"<span class=\"kw\">심신상실 상태</span>의 자해도 <span class=\"kw\">보험금을 지급</span>한다.","id":"q266"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험나이","ans":"X","html":"<span class=\"kw\">보험나이</span>는 계약일 현재 만 나이에서 <span class=\"kw\">6개월 미만 끝수를 버리고</span> 계산하므로, 만 47년 9개월은 <span class=\"kw\">47세</span>가 된다.","explain":"<span class=\"kw\">6개월</span> 이상 끝수는 <span class=\"kw\">1년으로 올림</span>해 48세가 된다.","id":"q267"},{"module":2,"subject":"위험관리와 보험설계","topic":"상해보험","ans":"O","html":"<span class=\"kw\">상해보험</span>은 <span class=\"kw\">급격</span>하고 <span class=\"kw\">우연한 외래</span>의 사고 세 요건과 <span class=\"kw\">인과관계</span>를 충족해야 한다.","explain":"<span class=\"kw\">상해</span>의 사망·후유장해는 <span class=\"kw\">정액보상</span>으로 중복 지급된다.","id":"q268"},{"module":2,"subject":"위험관리와 보험설계","topic":"실손의료보험","ans":"X","html":"<span class=\"kw\">실손의료보험</span>의 <span class=\"kw\">재가입 주기</span>는 <span class=\"kw\">3년</span>이다.","explain":"<span class=\"kw\">5년</span>이다. 4세대 전환 후 6개월 내 수령이 없으면 <span class=\"kw\">전환 철회</span>가 가능하다.","id":"q269"},{"module":2,"subject":"위험관리와 보험설계","topic":"질병보험","ans":"X","html":"<span class=\"kw\">암보험</span>의 대기기간은 <span class=\"kw\">30일</span>이다.","explain":"<span class=\"kw\">암보험</span>의 대기기간은 <span class=\"kw\">90일</span>이다.","id":"q270"},{"module":2,"subject":"위험관리와 보험설계","topic":"화재보험","ans":"O","html":"<span class=\"kw\">화재의 3요소</span>는 <span class=\"kw\">불자리를 벗어난 우발적 연소</span>, <span class=\"kw\">연소작용</span>, <span class=\"kw\">경제적 손해</span>다.","explain":"<span class=\"kw\">화재보험</span>은 <span class=\"kw\">재산손해와 비용손해</span>를 보상한다.","id":"q271"},{"module":2,"subject":"위험관리와 보험설계","topic":"화재보험","ans":"X","html":"<span class=\"kw\">일반화재보험</span>은 폭발·파열에 따른 직접손해도 <span class=\"kw\">보상</span>한다.","explain":"<span class=\"kw\">일반화재보험</span>은 폭발·파열 직접손해를 <span class=\"kw\">보상하지 않는다</span>(주택화재보험은 보상).","id":"q272"},{"module":2,"subject":"위험관리와 보험설계","topic":"배상책임보험","ans":"O","html":"<span class=\"kw\">손해사고기준</span> <span class=\"kw\">배상책임보험</span>은 보험기간 중 사고가 발생하면 기간이 만료돼도 <span class=\"kw\">청구권이 소멸하지 않는다</span>.","explain":"<span class=\"kw\">시점 특정</span>이 어려운 위험은 <span class=\"kw\">배상청구기준</span>을 쓴다.","id":"q273"},{"module":2,"subject":"위험관리와 보험설계","topic":"장기손해보험","ans":"O","html":"장기손해보험의 <span class=\"kw\">저축성보험</span>은 보험기간이 <span class=\"kw\">15년 이내</span>이고, <span class=\"kw\">중도·만기환급금</span>이 있다.","explain":"<span class=\"kw\">보장성</span>은 <span class=\"kw\">100세 만기</span>도 가능하다.","id":"q274"},{"module":2,"subject":"위험관리와 보험설계","topic":"자동차보험","ans":"X","html":"사망사고·뺑소니·<span class=\"kw\">12대 중과실</span> 사고는 <span class=\"kw\">종합보험</span>에 가입하면 형사처벌 특례가 적용된다.","explain":"<span class=\"kw\">이 세 경우</span>는 <span class=\"kw\">특례가 적용되지 않아</span> 형사처벌을 받는다.","id":"q275"},{"module":2,"subject":"위험관리와 보험설계","topic":"대인배상Ⅰ","ans":"O","html":"<span class=\"kw\">대인배상Ⅰ</span>은 1인당 <span class=\"kw\">사망 1억 5천만 원</span>, 후유장해 1급 1억 5천만 원, 부상 1급 <span class=\"kw\">3천만 원</span> 한도다.","explain":"<span class=\"kw\">대인배상Ⅰ</span>은 1사고당 보상한도가 <span class=\"kw\">없다</span>.","id":"q276"},{"module":2,"subject":"위험관리와 보험설계","topic":"운전자보험","ans":"O","html":"<span class=\"kw\">운전자보험</span>은 <span class=\"kw\">형사상 책임</span>과 행정상 책임(면허취소 위로금 등)을 보상한다.","explain":"<span class=\"kw\">민사상 배상책임</span>은 <span class=\"kw\">자동차보험</span>이 보상한다.","id":"q277"},{"module":2,"subject":"투자설계","topic":"증권의 종류","ans":"X","html":"자본시장법상 증권은 <span class=\"kw\">채무·지분·수익·투자계약·파생결합</span>의 <span class=\"kw\">5종</span>이며 <span class=\"kw\">수익증권</span>은 제외된다.","explain":"수익증권을 <span class=\"kw\">포함</span>해 <span class=\"kw\">6종</span>이다.","id":"q278"},{"module":2,"subject":"투자설계","topic":"GDP 디플레이터","ans":"X","html":"<span class=\"kw\">GDP 디플레이터</span>는 <span class=\"kw\">실질 GDP ÷ 명목 GDP</span> × 100이다.","explain":"<span class=\"kw\">GDP 디플레이터</span>는 <span class=\"kw\">명목 GDP ÷ 실질 GDP</span> × 100이다.","id":"q279"},{"module":2,"subject":"투자설계","topic":"잠재GDP","ans":"X","html":"<span class=\"kw\">잠재GDP</span>는 생산요소 중 <span class=\"kw\">일부만 고용</span>한 상태에서 달성되는 GDP다.","explain":"<span class=\"kw\">잠재GDP</span>는 생산요소를 <span class=\"kw\">모두 고용</span>한 완전고용 상태의 GDP다.","id":"q280"},{"module":2,"subject":"투자설계","topic":"경제성장률","ans":"O","html":"<span class=\"kw\">경제성장률</span>은 <span class=\"kw\">실질 GDP</span>의 증가율로 측정한다.","explain":"명목 GDP <span class=\"kw\">증가</span>율은 <span class=\"kw\">물가 상승</span>이 섞여 있다.","id":"q281"},{"module":2,"subject":"투자설계","topic":"장단기 금리","ans":"X","html":"<span class=\"kw\">장단기 금리 역전</span>은 <span class=\"kw\">침체기에서 호황기</span>로 넘어갈 때 나타난다.","explain":"<span class=\"kw\">호황기</span>에서 <span class=\"kw\">침체기로 전환</span>되기 전에 나타나는 신호다.","id":"q282"},{"module":2,"subject":"투자설계","topic":"경기지표","ans":"X","html":"<span class=\"kw\">BSI</span>는 긍정 응답 업체 수를 <span class=\"kw\">전체 응답 업체 수</span>로 나눈 뒤 100을 더한 값이다.","explain":"<span class=\"kw\">BSI</span>는 <span class=\"kw\">부정 응답 업체 수</span>를 빼야 한다.","id":"q283"},{"module":2,"subject":"투자설계","topic":"평균수익률","ans":"X","html":"<span class=\"kw\">여러 기간</span>에 걸친 투자수익률을 계산할 때는 <span class=\"kw\">산술평균</span>이 더 바람직하다.","explain":"<span class=\"kw\">다기간</span>은 <span class=\"kw\">기하평균</span>, 미래 예측에는 산술평균이 적절하다.","id":"q284"},{"module":2,"subject":"투자설계","topic":"가중수익률","ans":"X","html":"<span class=\"kw\">시간가중수익률</span>은 현금 유출입의 현재가치를 같게 만드는 <span class=\"kw\">내부수익률</span>과 같다.","explain":"시간가중은 <span class=\"kw\">기하평균</span>, 내부수익률은 <span class=\"kw\">금액가중수익률</span>이다.","id":"q285"},{"module":2,"subject":"투자설계","topic":"정규분포","ans":"O","html":"<span class=\"kw\">정규분포</span>에서 기대수익률 ± <span class=\"kw\">1σ는 약 68%</span>, ±2σ는 95%, ±3σ는 <span class=\"kw\">99%</span>의 확률범위다.","explain":"표준편차가 클수록 <span class=\"kw\">위험</span>이 <span class=\"kw\">크다</span>.","id":"q286"},{"module":2,"subject":"투자설계","topic":"체계적 위험","ans":"O","html":"<span class=\"kw\">체계적 위험</span>은 경기·금리·환율 등 거시요인에서 발생하고, <span class=\"kw\">비체계적 위험</span>은 기업 고유요인에서 발생한다.","explain":"<span class=\"kw\">분산투자</span>로 줄일 수 있는 것은 <span class=\"kw\">비체계적 위험</span>이다.","id":"q287"},{"module":2,"subject":"투자설계","topic":"유상증자","ans":"O","html":"<span class=\"kw\">유상증자</span> 배정방식에는 <span class=\"kw\">주주배정·주주우선공모·제3자배정·일반공모</span> 방식이 있다.","explain":"<span class=\"kw\">제3자배정</span>은 <span class=\"kw\">기존주주 대신</span> 관계사·채권은행 등에 배정한다.","id":"q288"},{"module":2,"subject":"투자설계","topic":"배당 지표","ans":"X","html":"<span class=\"kw\">배당수익률</span>은 주당배당금을 <span class=\"kw\">주당순이익(EPS)</span>으로 나눈 값이다.","explain":"배당수익률은 <span class=\"kw\">주가</span>로 나눈다. DPS/EPS는 <span class=\"kw\">배당성향</span>이다.","id":"q289"},{"module":2,"subject":"투자설계","topic":"주식과 채권","ans":"O","html":"주식은 <span class=\"kw\">자기자본</span>으로 원금상환이 없고, 채권은 <span class=\"kw\">타인자본</span>으로 만기에 원금이 상환된다.","explain":"<span class=\"kw\">청구권</span>은 채권자가 <span class=\"kw\">우선</span>한다.","id":"q290"},{"module":2,"subject":"투자설계","topic":"기본적 분석","ans":"O","html":"<span class=\"kw\">기본적분석</span>은 <span class=\"kw\">회계정보의 신뢰성·시의성</span> 문제와 <span class=\"kw\">투자심리</span> 반영의 한계를 갖는다.","explain":"대부분 공개자료를 쓰므로 <span class=\"kw\">초과이익</span> 실현 가능성이 <span class=\"kw\">낮다</span>.","id":"q291"},{"module":2,"subject":"투자설계","topic":"모자형 펀드","ans":"O","html":"<span class=\"kw\">모자형 펀드</span>는 자펀드 자금을 모펀드에 투자하며, 수수료·보수는 <span class=\"kw\">자펀드에서만</span> 부과한다.","explain":"<span class=\"kw\">모펀드</span>와 자펀드는 <span class=\"kw\">같은 운용사</span>가 운용한다.","id":"q292"},{"module":2,"subject":"투자설계","topic":"종류형 펀드","ans":"X","html":"<span class=\"kw\">종류형 펀드</span>의 A클래스와 C클래스는 <span class=\"kw\">운용보수</span>가 다르다.","explain":"<span class=\"kw\">판매수수료·판매보수</span>만 다르고 <span class=\"kw\">운용보수는 동일</span>하다.","id":"q293"},{"module":2,"subject":"투자설계","topic":"ETF","ans":"O","html":"국내 <span class=\"kw\">ETF</span>는 <span class=\"kw\">10종목 이상</span>에 투자해야 하고, <span class=\"kw\">비교지수를 반드시</span> 선정해야 한다.","explain":"<span class=\"kw\">액티브 ETF</span>도 비교지수를 <span class=\"kw\">선정</span>한다.","id":"q294"},{"module":2,"subject":"투자설계","topic":"자산유동화증권","ans":"O","html":"<span class=\"kw\">CBO</span>는 채권, <span class=\"kw\">CLO</span>는 대출채권을 기초자산으로 발행한다.","explain":"<span class=\"kw\">CBO·CLO</span>는 둘 다 <span class=\"kw\">자산유동화증권</span>이다.","id":"q295"},{"module":2,"subject":"투자설계","topic":"ELW","ans":"X","html":"<span class=\"kw\">ELW</span>는 옵션의 매도포지션까지 증권화해 최대 손실이 <span class=\"kw\">무한</span>하다.","explain":"ELW는 <span class=\"kw\">매수포지션만</span> 증권화해 최대 손실이 <span class=\"kw\">투자원금</span>으로 한정된다.","id":"q296"},{"module":2,"subject":"투자설계","topic":"ELS 손익구조","ans":"O","html":"<span class=\"kw\">ELS 손익구조</span>에는 <span class=\"kw\">디지털형·클리켓형·유러피안형·베리어형·조기상환형</span>이 있다.","explain":"<span class=\"kw\">조기상환형</span>은 <span class=\"kw\">Knock-in</span> 여부와 조기상환일 평가가격으로 수익률이 정해진다.","id":"q297"},{"module":2,"subject":"투자설계","topic":"채권투자전략","ans":"X","html":"채권 액티브전략에서 기업의 <span class=\"kw\">신용등급 상승</span>은 <span class=\"kw\">신용스프레드 확대</span>로 이어져 채권가격이 하락한다.","explain":"등급이 오르면 스프레드가 <span class=\"kw\">축소</span>되어 채권금리가 하락하고 가격은 <span class=\"kw\">상승</span>한다.","id":"q298"},{"module":2,"subject":"투자설계","topic":"선물","ans":"O","html":"<span class=\"kw\">선물</span>의 <span class=\"kw\">개시증거금</span>은 거래 개시 시, <span class=\"kw\">유지증거금</span>은 매일 유지해야 하는 최소 수준이다.","explain":"<span class=\"kw\">잔액</span>이 유지증거금을 밑돌면 <span class=\"kw\">추가증거금</span>을 낸다.","id":"q299"},{"module":2,"subject":"투자설계","topic":"옵션","ans":"X","html":"<span class=\"kw\">콜옵션 매도</span>의 손실은 <span class=\"kw\">프리미엄</span>으로 제한된다.","explain":"<span class=\"kw\">콜옵션 매</span>도 손실은 <span class=\"kw\">무한대</span>다(매수는 프리미엄 한도).","id":"q300"},{"module":2,"subject":"투자설계","topic":"핵심-위성전략","ans":"O","html":"<span class=\"kw\">핵심포트폴리오</span>는 인덱스펀드·ETF로 비교지수 수익률을 추구하고, <span class=\"kw\">위성포트폴리오</span>는 액티브로 초과수익을 추구한다.","explain":"<span class=\"kw\">핵심</span>은 <span class=\"kw\">장기 보유</span>, 위성은 단기 초과수익이 목표다.","id":"q301"},{"module":2,"subject":"투자설계","topic":"헤지펀드","ans":"X","html":"<span class=\"kw\">헤지펀드</span>의 <span class=\"kw\">이벤트드리븐전략</span>은 <span class=\"kw\">방향성 전략</span>이다.","explain":"<span class=\"kw\">이벤트드리븐</span>은 <span class=\"kw\">비방향성 전략</span>이다(방향성은 롱숏·글로벌매크로·이머징).","id":"q302"},{"module":2,"subject":"세금설계","topic":"납세의무 소멸","ans":"X","html":"<span class=\"kw\">납세의무 소멸</span>사유에 <span class=\"kw\">부과제척기간 만료</span>와 <span class=\"kw\">징수권 소멸시효 완성</span>은 포함되지 않는다.","explain":"둘 다 <span class=\"kw\">소멸사유</span>다. 납부·충당·부과처분 취소도 <span class=\"kw\">포함</span>된다.","id":"q303"},{"module":2,"subject":"세금설계","topic":"수정신고·경정청구","ans":"X","html":"<span class=\"kw\">수정신고</span>는 이미 신고한 세액이 <span class=\"kw\">과대</span>한 경우 납세자가 정정하는 제도다.","explain":"<span class=\"kw\">과대신고 정정</span>은 <span class=\"kw\">경정청구</span>, 과소신고 정정이 수정신고다.","id":"q304"},{"module":2,"subject":"세금설계","topic":"국선대리인","ans":"X","html":"<span class=\"kw\">국선대리인</span>은 <span class=\"kw\">상속세·증여세·종부세</span>에도 지원된다.","explain":"<span class=\"kw\">세 가지</span>는 <span class=\"kw\">지원 대상에서 제외</span>된다.","id":"q305"},{"module":2,"subject":"세금설계","topic":"세법적용 원칙","ans":"X","html":"<span class=\"kw\">소급과세 금지</span>는 <span class=\"kw\">국세부과의 원칙</span>에 해당한다.","explain":"소급<span class=\"kw\">과세</span> 금지는 <span class=\"kw\">세법적용의 원칙</span>이다.","id":"q306"},{"module":2,"subject":"세금설계","topic":"소득세 과세원칙","ans":"X","html":"소득세는 <span class=\"kw\">포괄주의</span>를 원칙으로 하고, 법인세는 <span class=\"kw\">열거주의</span>를 채택한다.","explain":"반대다. 소득세는 <span class=\"kw\">열거주의</span>(이자·배당은 유형별 포괄), 법인세는 <span class=\"kw\">포괄주의</span>다.","id":"q307"},{"module":2,"subject":"세금설계","topic":"기장","ans":"X","html":"<span class=\"kw\">복식부기의무자</span>가 필수서류를 첨부하지 않아도 <span class=\"kw\">신고한 것</span>으로 본다.","explain":"<span class=\"kw\">복식부기</span> 미첨부는 <span class=\"kw\">신고하지 않은 것</span>으로 본다.","id":"q308"},{"module":2,"subject":"세금설계","topic":"필요경비","ans":"X","html":"<span class=\"kw\">60% 필요경비</span>가 인정되는 기타소득에는 <span class=\"kw\">강연료</span>가 포함되지 않는다.","explain":"고용관계 없이 일시 제공한 <span class=\"kw\">강연료</span>도 <span class=\"kw\">60%</span> 필요경비 대상이다.","id":"q309"},{"module":2,"subject":"세금설계","topic":"서화·골동품","ans":"X","html":"<span class=\"kw\">서화·골동품</span> 양도소득은 수입금액 <span class=\"kw\">1억 원 이하</span>이면 <span class=\"kw\">80%</span>를 필요경비로 인정한다.","explain":"<span class=\"kw\">90%</span>를 인정한다(<span class=\"kw\">10년</span> 이상 보유도 90%).","id":"q310"},{"module":2,"subject":"세금설계","topic":"인적공제","ans":"X","html":"<span class=\"kw\">기본공제</span> 대상 배우자는 연간 <span class=\"kw\">소득금액 500만 원 이하</span>여야 한다.","explain":"소득금액 <span class=\"kw\">100만 원 이하</span>(근로소득만 있으면 총급여 <span class=\"kw\">500만</span> 원 이하)다.","id":"q311"},{"module":2,"subject":"세금설계","topic":"추가공제","ans":"X","html":"<span class=\"kw\">추가공제</span>에서 <span class=\"kw\">경로우대</span>는 100만 원, <span class=\"kw\">장애인공제</span>는 <span class=\"kw\">100만 원</span>이다.","explain":"<span class=\"kw\">장애인공제</span>는 <span class=\"kw\">200만 원</span>이다.","id":"q312"},{"module":2,"subject":"세금설계","topic":"자녀세액공제","ans":"O","html":"<span class=\"kw\">자녀세액공제</span>는 첫째 <span class=\"kw\">25만 원</span>, 둘째 30만 원, 셋째 이상 1명당 <span class=\"kw\">40만 원</span>이다.","explain":"출산·입양 시 <span class=\"kw\">첫째 30만</span>·둘째 50만·<span class=\"kw\">셋째 70만 원</span>이다.","id":"q313"},{"module":2,"subject":"세금설계","topic":"특별세액공제","ans":"X","html":"기부금 세액공제는 <span class=\"kw\">사업소득만 있는 자</span>에게도 <span class=\"kw\">적용</span>된다.","explain":"<span class=\"kw\">사업소득</span>만 있는 자는 <span class=\"kw\">적용되지 않는다</span>(보험모집인은 예외).","id":"q314"},{"module":2,"subject":"세금설계","topic":"법인세 세무조정","ans":"O","html":"<span class=\"kw\">세무조정</span>에서 <span class=\"kw\">익금산입·손금불산입</span>은 가산조정, <span class=\"kw\">익금불산입·손금산입</span>은 차감조정이다.","explain":"<span class=\"kw\">당기순이익</span>에 세무조정을 반영해 <span class=\"kw\">각 사업연도 소득금액</span>을 구한다.","id":"q315"},{"module":2,"subject":"세금설계","topic":"부가가치세 특징","ans":"O","html":"<span class=\"kw\">부가가치세</span>는 <span class=\"kw\">간접세·일반소비세</span>이자 <span class=\"kw\">소비지국 과세원칙</span>을 따르는 다단계거래세다.","explain":"<span class=\"kw\">전단계세액공제법</span><span class=\"kw\">과 신고납세제도</span>를 채택한다.","id":"q316"},{"module":2,"subject":"세금설계","topic":"간주공급","ans":"O","html":"재화의 <span class=\"kw\">간주공급</span>에는 <span class=\"kw\">자가공급</span>, 개인적 공급, <span class=\"kw\">사업상 증여</span>, <span class=\"kw\">폐업 시 잔존재화</span>가 있다.","explain":"<span class=\"kw\">재화</span>의 수입은 <span class=\"kw\">수입신고 수리 전</span> 물품을 말한다.","id":"q317"},{"module":2,"subject":"세금설계","topic":"매입세액 불공제","ans":"O","html":"<span class=\"kw\">비영업용 소형승용차</span>, 면세사업 관련, <span class=\"kw\">토지 관련</span> <span class=\"kw\">매입세액</span>은 공제되지 않는다.","explain":"<span class=\"kw\">매입세액</span>은 <span class=\"kw\">사업자등록 전</span>이면 공제되지 않는다.","id":"q318"},{"module":2,"subject":"세금설계","topic":"과세표준","ans":"X","html":"<span class=\"kw\">부가가치세</span> 과세표준에서 <span class=\"kw\">대손금·판매장려금</span>은 공제한다.","explain":"<span class=\"kw\">과세표준</span>에서 대손금·판매장려금·하자보증금·마일리지는 <span class=\"kw\">공제하지 않는다</span>.","id":"q319"},{"module":2,"subject":"세금설계","topic":"금융소득 종합과세","ans":"O","html":"<span class=\"kw\">출자공동사업자</span>의 손익분배금, 국외 미원천 <span class=\"kw\">금융소득</span>, <span class=\"kw\">비영업대금 이익</span>은 무조건 종합과세된다.","explain":"그 외 금융소득은 <span class=\"kw\">2천만 원 초과</span> 시 조건부 <span class=\"kw\">종합과세</span>된다.","id":"q320"},{"module":2,"subject":"세금설계","topic":"Gross-up","ans":"X","html":"배당가산액(<span class=\"kw\">Gross-up</span>)은 종합과세되는 배당소득 <span class=\"kw\">전체</span>에 <span class=\"kw\">10%</span>를 더한다.","explain":"<span class=\"kw\">Gross-up</span>은 <span class=\"kw\">2천만 원 초과분</span>에만 적용된다.","id":"q321"},{"module":2,"subject":"세금설계","topic":"주식 양도소득세","ans":"O","html":"상장주식 <span class=\"kw\">대주주</span> 기준은 <span class=\"kw\">유가증권 1%</span>, 코스닥 2%, <span class=\"kw\">코넥스 4%</span> 또는 50억 원이다.","explain":"<span class=\"kw\">장외거래</span>는 대주주 여부와 관계없이 <span class=\"kw\">과세</span>된다.","id":"q322"},{"module":2,"subject":"세금설계","topic":"취득세","ans":"O","html":"1주택자가 주택을 유상취득하면 <span class=\"kw\">6억 원 이하 1%</span>, 6억~9억 원은 <span class=\"kw\">가액에 따른 세율</span>, 9억 원 초과 3%다.","explain":"상속에 따른 무상취득은 <span class=\"kw\">시가표준액</span>으로 <span class=\"kw\">과세</span>한다.","id":"q323"},{"module":2,"subject":"세금설계","topic":"재산세","ans":"O","html":"<span class=\"kw\">재산세</span>는 <span class=\"kw\">6월 1일</span> 기준으로 부과되고 <span class=\"kw\">20% 지방교육세</span>가 부가되며, 직전 연도 세액의 <span class=\"kw\">150%</span>가 상한이다.","explain":"<span class=\"kw\">주택</span>에는 세부담 상한을 <span class=\"kw\">적용하지 않는다</span>.","id":"q324"},{"module":2,"subject":"세금설계","topic":"종합부동산세","ans":"O","html":"<span class=\"kw\">종부세</span>는 <span class=\"kw\">6월 1일</span> 기준으로 주택 <span class=\"kw\">9억 원</span>(1세대 1주택 12억 원), 종합합산토지 5억 원, 별도합산토지 <span class=\"kw\">80억 원</span> 초과분에 과세된다.","explain":"<span class=\"kw\">종부세</span>에는 <span class=\"kw\">20% 농어촌특별세</span>가 부가된다.","id":"q325"},{"module":2,"subject":"세금설계","topic":"양도소득세","ans":"O","html":"<span class=\"kw\">부담부증여</span>, 위자료 대물변제, <span class=\"kw\">공동사업 현물출자</span>, 협의매수·수용은 양도로 본다.","explain":"<span class=\"kw\">양도소득세</span>에서 <span class=\"kw\">환지처분</span>·양도담보 제공·신탁해지·재산분할은 양도로 보지 않는다.","id":"q326"},{"module":2,"subject":"세금설계","topic":"장기보유특별공제","ans":"O","html":"<span class=\"kw\">장기보유특별공제</span>는 토지·건물은 <span class=\"kw\">연 2%씩 15년</span> 최대 30%, 1세대 1주택은 <span class=\"kw\">보유 40%+거주 40%</span>로 최대 80%다.","explain":"<span class=\"kw\">1세대 1주택자</span>는 <span class=\"kw\">12억 원</span>이다.","id":"q327"},{"module":2,"subject":"세금설계","topic":"고가주택","ans":"X","html":"<span class=\"kw\">1세대 1주택 비과세</span>는 양도가액 <span class=\"kw\">9억 원</span> 이하 주택에 적용된다.","explain":"<span class=\"kw\">고가주택 기준</span>은 <span class=\"kw\">12억 원</span>이다.","id":"q328"},{"module":2,"subject":"세금설계","topic":"퇴직소득","ans":"O","html":"<span class=\"kw\">퇴직소득</span>은 근속연수 공제 후 근속연수로 나눠 <span class=\"kw\">12를 곱한 환산급여</span>에서 다시 공제하고, 산출세액을 <span class=\"kw\">12로 나눈 뒤 근속연수를 곱한다</span>.","explain":"<span class=\"kw\">퇴직소득</span>의 <span class=\"kw\">연분연승</span> 구조다.","id":"q329"},{"module":2,"subject":"세금설계","topic":"퇴직소득 과세이연","ans":"O","html":"세후 퇴직금을 받은 날부터 <span class=\"kw\">60일 이내</span> 연금계좌에 입금하면 낸 <span class=\"kw\">퇴직소득</span>세를 <span class=\"kw\">환급</span>받는다.","explain":"<span class=\"kw\">퇴직 전 계좌</span>를 열어 받으면 <span class=\"kw\">세전 금액</span>이 들어간다.","id":"q330"},{"module":2,"subject":"세금설계","topic":"사적연금","ans":"X","html":"<span class=\"kw\">사적연금</span> 자기부담금 납입한도는 연 <span class=\"kw\">1,200만 원</span>이다.","explain":"연 <span class=\"kw\">1,800만 원</span>에 ISA 전환금, 1주택 고령가구 차액(<span class=\"kw\">1억</span> 한도)이 더해진다.","id":"q331"},{"module":2,"subject":"세금설계","topic":"연금계좌 과세","ans":"O","html":"연금계좌에서 연금으로 받는 이연<span class=\"kw\">퇴직소득</span>은 퇴직소득세율의 <span class=\"kw\">70%</span>(11년차 60%, 21년차 50%)로 <span class=\"kw\">무조건 분리과세</span>된다.","explain":"그 외 소득은 <span class=\"kw\">3~5%</span> 원천징수되고, 연 <span class=\"kw\">1,500만</span> 원을 넘으면 합산 또는 15% 분리과세다.","id":"q332"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"기본 회계원칙","ans":"O","html":"개인재무제표의 기본 회계원칙은 <span class=\"kw\">객관성·중요성·일관성</span>, <span class=\"kw\">보수주의</span>, <span class=\"kw\">완전공개</span>다.","explain":"<span class=\"kw\">보수주의</span>는 <span class=\"kw\">불확실한 상황</span>에서 신중하게 평가하는 원칙이다.","id":"q333"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"금융상품 유형","ans":"O","html":"금융상품은 <span class=\"kw\">예금성·대출성·투자성·보장성</span>으로 나뉘고, 판매채널은 <span class=\"kw\">직접판매·대리중개·자문</span>으로 구분된다.","explain":"<span class=\"kw\">보장성 상품</span>은 <span class=\"kw\">보험</span>이 대표적이다.","id":"q334"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"행동규범","ans":"O","html":"재무설계사 행동규범은 <span class=\"kw\">업무수임과 계약</span>, 정보제공·투명성, 고객 자산·정보 보호, <span class=\"kw\">전문적 직무 수행</span>, 인증기관·사회에 대한 의무의 5영역이다.","explain":"<span class=\"kw\">고객 자산·정보 보호</span>는 <span class=\"kw\">기본적 윤리적 책무</span>다.","id":"q335"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"대출금리","ans":"O","html":"연체이자율은 <span class=\"kw\">법정 최고금리 20%</span> 범위에서 <span class=\"kw\">약정이자율 + 3%</span> 이내로 제한된다.","explain":"<span class=\"kw\">금리인하요구권</span>을 <span class=\"kw\">위반하면 과태료</span>가 부과된다.","id":"q336"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"대출상환방식","ans":"X","html":"초기 상환 부담은 <span class=\"kw\">만기일시상환</span>이 <span class=\"kw\">원금균등분할상환</span>보다 크다.","explain":"<span class=\"kw\">부담 순서</span>는 <span class=\"kw\">원금균등 &lt; 원리금균등 &lt; 만기일시</span>다. 만기일시가 초기 부담이 가장 작다.","id":"q337"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"LTV","ans":"X","html":"<span class=\"kw\">LTV</span>는 분자에 <span class=\"kw\">주택담보대출금액만</span> 넣어 계산한다.","explain":"<span class=\"kw\">분자</span>에 <span class=\"kw\">선순위채권·임차보증금</span>도 포함한다.","id":"q338"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"신용정보","ans":"X","html":"신용정보 <span class=\"kw\">고지 요구권</span>은 고지받은 날부터 <span class=\"kw\">30일</span> 이내에 자료의 정확성 확인을 요청하는 권리다.","explain":"<span class=\"kw\">고지 요구권</span>은 <span class=\"kw\">60일 이내</span>에 요청할 수 있다.","id":"q339"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"금리인하요구권","ans":"X","html":"<span class=\"kw\">금리인하요구권</span>을 위반한 금융회사는 <span class=\"kw\">형사처벌</span>을 받는다.","explain":"<span class=\"kw\">과태료</span>가 부과된다. <span class=\"kw\">형사처벌</span>이 아니다.","id":"q340"},{"module":1,"subject":"은퇴설계","topic":"은퇴설계 절차","ans":"O","html":"은퇴설계는 <span class=\"kw\">총은퇴일시금 산정</span> → 은퇴자산 평가 → 추가저축액 계산 → <span class=\"kw\">저축·투자계획 수립</span> 순으로 진행한다.","explain":"<span class=\"kw\">연간 저축액</span>과 <span class=\"kw\">저축여력</span>을 비교해 목표를 수정한다.","id":"q341"},{"module":1,"subject":"은퇴설계","topic":"소득 있는 업무","ans":"O","html":"소득이 있는 업무에 종사하면 지급개시연령부터 <span class=\"kw\">5년 동안</span> 연금액의 <span class=\"kw\">1/2 한도</span>로 감액되고 <span class=\"kw\">부양가족연금액은 지급되지 않는다</span>.","explain":"<span class=\"kw\">감액 기준</span>은 <span class=\"kw\">소득 수준</span>에 따라 달라진다.","id":"q342"},{"module":1,"subject":"은퇴설계","topic":"반환일시금","ans":"O","html":"반환일시금 <span class=\"kw\">반납</span>은 <span class=\"kw\">최대 24개월</span>까지 허용되고, 이자는 1년 만기 정기예금 이자율을 적용한다.","explain":"<span class=\"kw\">반환일시금</span>은 <span class=\"kw\">납부예외자</span>도 반납할 수 있다.","id":"q343"},{"module":1,"subject":"은퇴설계","topic":"공적연금 연계","ans":"O","html":"공적연금 연계에서 <span class=\"kw\">군복무·출산크레딧</span>은 연계대상기간에서 제외되고, <span class=\"kw\">장해연금 간 연계</span>는 없다.","explain":"<span class=\"kw\">연계기간</span>이 <span class=\"kw\">1년 미만</span>이면 일시금으로 지급한다.","id":"q344"},{"module":1,"subject":"은퇴설계","topic":"중소기업퇴직연금기금","ans":"X","html":"중소기업퇴직연금기금은 <span class=\"kw\">100인 이하</span> 사업장이면 <span class=\"kw\">2026년부터</span> 바로 가입할 수 있다.","explain":"현재는 <span class=\"kw\">50인 이하</span>이고, 100인 이하는 <span class=\"kw\">2027년 1월</span>부터다.","id":"q345"},{"module":1,"subject":"은퇴설계","topic":"연금저축 종류","ans":"X","html":"<span class=\"kw\">연금저축펀드</span>는 <span class=\"kw\">예금자보호 대상</span>이고 원금이 보장된다.","explain":"<span class=\"kw\">연금저축펀드</span>는 <span class=\"kw\">예금자보호 대상이 아니고</span> 원금이 보장되지 않는다.","id":"q346"},{"module":1,"subject":"은퇴설계","topic":"DB형","ans":"X","html":"DB형 퇴직연금은 <span class=\"kw\">상시 100인 이상</span> 사업장에서 <span class=\"kw\">운영위원회</span>를 구성해야 한다.","explain":"<span class=\"kw\">300인 이상</span> <span class=\"kw\">사업장</span>이 대상이다.","id":"q347"},{"module":1,"subject":"은퇴설계","topic":"IRP 과세","ans":"X","html":"IRP에서 <span class=\"kw\">퇴직급여 납입액</span>을 일시금으로 받으면 <span class=\"kw\">기타소득세 15%</span>가 과세된다.","explain":"퇴직급여 납입액은 <span class=\"kw\">퇴직소득세 100%</span>다. 기타소득세 15%는 <span class=\"kw\">가입자 납입액·운용수익</span>이다.","id":"q348"},{"module":1,"subject":"부동산설계","topic":"도시·군관리계획","ans":"O","html":"도시·군관리계획에는 <span class=\"kw\">용도지역·용도지구</span> 지정, <span class=\"kw\">기반시설</span> 설치, <span class=\"kw\">지구단위계획</span>이 포함된다.","explain":"<span class=\"kw\">개발제한구역·시가화조정구역</span> 지정도 <span class=\"kw\">도시·군관리계획</span>이다.","id":"q349"},{"module":1,"subject":"부동산설계","topic":"용도구역","ans":"O","html":"2025년 개정으로 <span class=\"kw\">도시혁신구역</span>, <span class=\"kw\">복합용도구역</span>, 도시·군계획시설<span class=\"kw\">입체복합구역</span>이 추가되었다.","explain":"<span class=\"kw\">입체복합구역</span>은 시설 <span class=\"kw\">준공 후 10년</span> 경과 등이 요건이다.","id":"q350"},{"module":1,"subject":"부동산설계","topic":"묵시적 갱신","ans":"O","html":"주택 임대차에서 임대인이 기간 종료 <span class=\"kw\">6개월 전부터 2개월 전</span>까지 갱신 거절을 통지하지 않으면 <span class=\"kw\">묵시적 갱신</span>된다.","explain":"<span class=\"kw\">임차인</span>은 언제든 해지 통고를 할 수 있고 <span class=\"kw\">3개월</span> 뒤 효력이 생긴다.","id":"q351"},{"module":1,"subject":"부동산설계","topic":"전문(테마)상가","ans":"X","html":"<span class=\"kw\">전문(테마)상가</span>는 <span class=\"kw\">투자금액이 작아</span> 위험 부담이 적다.","explain":"유사 품목이 밀집해 <span class=\"kw\">고객응집력</span>은 강하지만 <span class=\"kw\">투자금액이 커</span> 위험이 따른다.","id":"q352"},{"module":1,"subject":"부동산설계","topic":"상가임대차","ans":"X","html":"<span class=\"kw\">상가건물임대차</span>에서 차임 연체액이 <span class=\"kw\">2기</span>에 달하면 임대인이 계약을 해지할 수 있다.","explain":"<span class=\"kw\">상가</span>는 <span class=\"kw\">3기</span> 차임 연체 시 해지할 수 있다(주택은 2기).","id":"q353"},{"module":1,"subject":"부동산설계","topic":"총유","ans":"X","html":"<span class=\"kw\">총유</span>는 <span class=\"kw\">지분이 있어</span> 각자가 지분을 자유롭게 처분할 수 있다.","explain":"총유는 <span class=\"kw\">지분이 없고</span> 목적물 처분은 <span class=\"kw\">사원총회 결의</span>로 한다.","id":"q354"},{"module":1,"subject":"상속설계","topic":"상속인 부존재","ans":"O","html":"상속인이 없으면 <span class=\"kw\">특별연고자</span>의 청구에 따라 가정법원이 재산을 분여하고, 남은 재산은 <span class=\"kw\">국가에 귀속</span>된다.","explain":"<span class=\"kw\">특별연고자</span>에게 분여하고 남은 재산은 <span class=\"kw\">국가에 귀속</span>된다.","id":"q355"},{"module":1,"subject":"상속설계","topic":"특별수익","ans":"O","html":"<span class=\"kw\">특별수익</span>은 공동상속인에 한정되고, 상속개시 당시의 <span class=\"kw\">시가</span>로 평가한다.","explain":"<span class=\"kw\">대습상속인</span>이 대습 지위에서 받은 증여도 <span class=\"kw\">특별수익</span>이다.","id":"q356"},{"module":1,"subject":"상속설계","topic":"기여분","ans":"O","html":"<span class=\"kw\">기여분</span>은 공동상속인의 협의 또는 <span class=\"kw\">가정법원</span>이 결정하며, <span class=\"kw\">유증이 기여분보다 우선</span>한다.","explain":"<span class=\"kw\">기여분</span>은 <span class=\"kw\">유류분과 관계없다</span>.","id":"q357"},{"module":1,"subject":"상속설계","topic":"자필증서 유언","ans":"O","html":"<span class=\"kw\">자필증서</span> 유언은 전문·작성연월일·주소·성명을 <span class=\"kw\">자서하고 날인</span>해야 한다.","explain":"<span class=\"kw\">자필증서</span>는 <span class=\"kw\">증인이 필요 없다</span>.","id":"q358"},{"module":1,"subject":"상속설계","topic":"유언 증인","ans":"O","html":"유언의 <span class=\"kw\">증인</span>이 될 수 없는 자에는 <span class=\"kw\">미성년자</span>, 피성년·피한정후견인, <span class=\"kw\">유언으로 이익을 받는 자</span>가 있다.","explain":"<span class=\"kw\">미성년자</span>는 <span class=\"kw\">법정대리인 동의가 있어도</span> 결격이다.","id":"q359"},{"module":1,"subject":"상속설계","topic":"장례비 공제","ans":"O","html":"장례비는 증빙이 없으면 <span class=\"kw\">최소 500만 원</span>, 증빙이 있으면 <span class=\"kw\">최대 1천만 원</span>까지 공제된다.","explain":"봉안시설·<span class=\"kw\">자연장지 비용</span>은 <span class=\"kw\">500만 원 한도</span>로 추가 공제된다.","id":"q360"},{"module":1,"subject":"상속설계","topic":"후견제도","ans":"X","html":"<span class=\"kw\">성년후견</span>은 원칙적으로 <span class=\"kw\">행위능력자</span>로 본다.","explain":"<span class=\"kw\">성년후견</span>은 <span class=\"kw\">행위능력이 원칙적으로 제한</span>된다. 한정후견이 원칙적 행위능력자다.","id":"q361"},{"module":1,"subject":"상속설계","topic":"자녀공제","ans":"X","html":"<span class=\"kw\">자녀공제</span>는 피상속인의 자녀 수 × <span class=\"kw\">1억 원</span>이다.","explain":"<span class=\"kw\">자녀공제</span>는 자녀 수 × <span class=\"kw\">5천만 원</span>이다.","id":"q362"},{"module":1,"subject":"상속설계","topic":"단기재상속","ans":"X","html":"<span class=\"kw\">단기재상속세액공제</span>는 <span class=\"kw\">5년 이내</span> 상속에 대해 1년당 10%를 공제한다.","explain":"<span class=\"kw\">10년 이내</span> <span class=\"kw\">상속</span>이 대상이다.","id":"q363"},{"module":1,"subject":"상속설계","topic":"증여재산 반환","ans":"X","html":"증여세 신고기한이 지난 후 <span class=\"kw\">3개월 뒤</span> 증여받은 재산을 반환하면 <span class=\"kw\">과세제외</span>된다.","explain":"신고기한 후 <span class=\"kw\">3개월</span>이 지나면 <span class=\"kw\">모두 과세</span>된다.","id":"q364"},{"module":1,"subject":"상속설계","topic":"가업승계","ans":"X","html":"<span class=\"kw\">가업승계</span> 증여세 과세특례의 증여재산가액 <span class=\"kw\">한도</span>는 <span class=\"kw\">500억 원</span>이다.","explain":"<span class=\"kw\">가업승계증여특례</span>는 <span class=\"kw\">600억 원</span> 한도다.","id":"q365"},{"module":1,"subject":"상속설계","topic":"상장주식 평가","ans":"X","html":"<span class=\"kw\">상장주식</span>은 평가기준일 전·후 각 <span class=\"kw\">1개월</span>의 <span class=\"kw\">종가평균액</span>으로 평가한다.","explain":"상장주식은 각 <span class=\"kw\">2개월</span>의 <span class=\"kw\">종가평균액</span>이다.","id":"q366"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험료 결정","ans":"O","html":"보험료는 <span class=\"kw\">예정위험률</span>이 높아지면 오르고, <span class=\"kw\">예정이자율</span>이 높아지면 내려가며, <span class=\"kw\">예정사업비율</span>이 높아지면 오른다.","explain":"<span class=\"kw\">세 요소</span>를 합쳐 <span class=\"kw\">영업보험료</span>를 산출한다.","id":"q367"},{"module":2,"subject":"위험관리와 보험설계","topic":"노후·유병력자 실손","ans":"O","html":"<span class=\"kw\">노후실손</span>은 급여 20%·비급여 30% 자기부담에 <span class=\"kw\">우선공제 30만 원</span>이 있고, <span class=\"kw\">유병력자 실손</span>은 최소 자기부담금이 10만 원이다.","explain":"<span class=\"kw\">노후실손</span>은 <span class=\"kw\">75세까지</span> 가입할 수 있다.","id":"q368"},{"module":2,"subject":"위험관리와 보험설계","topic":"장기간병보험","ans":"O","html":"장기간병보험은 <span class=\"kw\">일상생활장해 면책 90일</span>, <span class=\"kw\">중증치매 면책 2년</span>을 두지만 <span class=\"kw\">재해</span>로 인한 경우 면책 중에도 보장한다.","explain":"<span class=\"kw\">민간보험</span>은 <span class=\"kw\">임의가입</span>이다.","id":"q369"},{"module":2,"subject":"위험관리와 보험설계","topic":"무보험자동차","ans":"O","html":"<span class=\"kw\">무보험자동차에 의한 상해</span>는 대인배상Ⅰ·Ⅱ, 대물배상, <span class=\"kw\">자기신체사고</span>가 함께 체결된 경우 가입할 수 있다.","explain":"무보험차는 <span class=\"kw\">비례 보상</span>하고 <span class=\"kw\">자기신체사고</span>가 필요하다.","id":"q370"},{"module":2,"subject":"위험관리와 보험설계","topic":"다중이용업소","ans":"X","html":"<span class=\"kw\">다중이용업소 화재배상책임보험</span>은 <span class=\"kw\">과실책임</span>을 담보한다.","explain":"<span class=\"kw\">다중이용업소</span>는 2021년부터 <span class=\"kw\">무과실 배상</span>이다.","id":"q371"},{"module":2,"subject":"위험관리와 보험설계","topic":"화재보험","ans":"X","html":"화재보험은 <span class=\"kw\">자연발화</span>로 생긴 손해도 <span class=\"kw\">보상</span>한다.","explain":"<span class=\"kw\">자연발화 손해</span>는 <span class=\"kw\">보상하지 않는다</span>. 다만 그로 인해 연소된 다른 목적의 손해는 보상한다.","id":"q372"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험료 결정","ans":"X","html":"<span class=\"kw\">예정이자율</span>이 높아지면 <span class=\"kw\">보험료가 오른다</span>.","explain":"<span class=\"kw\">예정이자율</span>이 높아지면 <span class=\"kw\">보험료가 내려간다</span>.","id":"q373"},{"module":2,"subject":"위험관리와 보험설계","topic":"유병력자 실손","ans":"X","html":"<span class=\"kw\">유병력자 실손</span>은 <span class=\"kw\">최소 자기부담금이 없다</span>.","explain":"<span class=\"kw\">최소 자기부담금</span>이 <span class=\"kw\">10만 원</span>(통원 2만 원) 있다.","id":"q374"},{"module":2,"subject":"투자설계","topic":"공분산·상관계수","ans":"O","html":"<span class=\"kw\">공분산</span>은 값의 범위에 제한이 없어 표준화가 필요하고, <span class=\"kw\">상관계수</span>는 −1에서 +1 사이의 값이다.","explain":"<span class=\"kw\">상관계수</span>가 <span class=\"kw\">−1에 가까울수록</span> 분산투자 효과가 크다.","id":"q375"},{"module":2,"subject":"투자설계","topic":"경기지표","ans":"O","html":"<span class=\"kw\">CSI</span>와 <span class=\"kw\">ESI</span>는 <span class=\"kw\">한국은행</span>이 조사해 발표하는 경제심리지표다.","explain":"<span class=\"kw\">ESI</span>는 <span class=\"kw\">BSI와 CSI</span>를 합성한 지수다.","id":"q376"},{"module":2,"subject":"투자설계","topic":"환율","ans":"O","html":"<span class=\"kw\">매입률</span>은 은행이 고객에게서 외환을 살 때, <span class=\"kw\">매도율</span>은 고객에게 팔 때 적용하는 환율이다.","explain":"<span class=\"kw\">원화→달러</span> 환전에는 <span class=\"kw\">현찰매도율</span>이 적용된다.","id":"q377"},{"module":2,"subject":"투자설계","topic":"옵션","ans":"O","html":"<span class=\"kw\">콜옵션 매수</span>의 손익분기점은 행사가격 + 프리미엄, <span class=\"kw\">풋옵션 매수</span>는 행사가격 − 프리미엄이다.","explain":"옵션 <span class=\"kw\">매수</span>의 손실은 <span class=\"kw\">프리미엄</span>으로 제한된다.","id":"q378"},{"module":2,"subject":"투자설계","topic":"선물","ans":"X","html":"선물 <span class=\"kw\">매도자</span>의 손익은 (만기 현물가격 − 매도가격) × <span class=\"kw\">거래승수</span>다.","explain":"<span class=\"kw\">매도자</span>는 (매도가격 − 만기 현물가격)으로 계산한다. 부호가 <span class=\"kw\">반대</span>다.","id":"q379"},{"module":2,"subject":"투자설계","topic":"TIF","ans":"X","html":"<span class=\"kw\">TIF</span>는 은퇴가 가까워질수록 <span class=\"kw\">주식 비중을 늘리는</span> 펀드다.","explain":"TIF는 주식·<span class=\"kw\">채권 비중</span>을 <span class=\"kw\">일정하게 유지</span>하는 밸런스 전략이다.","id":"q380"},{"module":2,"subject":"투자설계","topic":"유상증자","ans":"X","html":"<span class=\"kw\">일반공모방식</span>은 기존 주주에게 <span class=\"kw\">신주인수권</span>을 주고 청약을 받는다.","explain":"<span class=\"kw\">일반공모</span>는 신주인수권 <span class=\"kw\">없이</span> 일반투자자에게 청약을 받는다.","id":"q381"},{"module":2,"subject":"세금설계","topic":"재산세","ans":"O","html":"재산세는 토지 <span class=\"kw\">9월 16~30일</span>, 건축물 <span class=\"kw\">7월 16~31일</span>이 납기이고, <span class=\"kw\">250만 원 초과</span>면 3개월 이내 분납할 수 있다.","explain":"<span class=\"kw\">주택분 재산세</span>는 <span class=\"kw\">7월과 9월</span>에 나눠 부과된다.","id":"q382"},{"module":2,"subject":"세금설계","topic":"양도소득세","ans":"O","html":"양도소득 필요경비는 취득가액을 확인할 수 있으면 <span class=\"kw\">실비공제</span>, 확인할 수 없으면 <span class=\"kw\">개산공제</span>한다.","explain":"상속·<span class=\"kw\">증여 취득</span>도 <span class=\"kw\">실지거래가액</span>을 확인할 수 있으면 실비공제다.","id":"q383"},{"module":2,"subject":"세금설계","topic":"1세대 1주택","ans":"O","html":"1세대 1주택 비과세의 <span class=\"kw\">보유기간 요건</span>은 해외이주로 출국해 <span class=\"kw\">2년 이내</span> 양도하면 배제된다.","explain":"1년 이상 거주 후 <span class=\"kw\">취학·질병·근무</span>로 다른 <span class=\"kw\">시·군</span>으로 이사한 경우도 제외된다.","id":"q384"},{"module":2,"subject":"세금설계","topic":"퇴직소득","ans":"O","html":"퇴직소득은 <span class=\"kw\">근속연수공제</span> 후 근속연수로 나눠 12를 곱하고, <span class=\"kw\">환산급여공제</span>를 다시 적용한다.","explain":"<span class=\"kw\">산출세액</span>은 12로 나눈 뒤 <span class=\"kw\">근속연수</span>를 곱한다.","id":"q385"},{"module":2,"subject":"세금설계","topic":"종합부동산세","ans":"X","html":"1세대 1주택자의 종부세는 <span class=\"kw\">장기보유·노령자 세액공제</span>를 합쳐 <span class=\"kw\">100%</span>까지 공제된다.","explain":"<span class=\"kw\">공제 한도</span>는 <span class=\"kw\">80%</span>다.","id":"q386"},{"module":2,"subject":"세금설계","topic":"취득세","ans":"X","html":"1주택자가 <span class=\"kw\">6억 원 초과 9억 원 이하</span> 주택을 유상취득하면 세율은 <span class=\"kw\">2%</span>다.","explain":"<span class=\"kw\">가액</span>에 따라 <span class=\"kw\">1~3%</span> 사이의 세율이 적용된다(6억 이하 1%, 9억 초과 3%).","id":"q387"},{"module":2,"subject":"세금설계","topic":"현금영수증","ans":"X","html":"<span class=\"kw\">현금영수증</span> 의무발급 업종에는 <span class=\"kw\">부동산중개업</span>이 포함되지 않는다.","explain":"<span class=\"kw\">부동산중개업</span>은 <span class=\"kw\">의무발급 업종</span>이다.","id":"q388"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"생애주기별 재무관심사","ans":"O","html":"<span class=\"kw\">사회초년기</span>는 주거자금·학자금 상환·결혼자금이, <span class=\"kw\">생애전환기</span>는 자녀독립자금·<span class=\"kw\">노후종합설계</span>가 관심사다.","explain":"노후생활기는 <span class=\"kw\">노후생활비·의료비</span>와 <span class=\"kw\">자산 이전</span>의 세무관리가 핵심이다.","id":"q389"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"재무목표 구체화","ans":"X","html":"<span class=\"kw\">재무목표 구체화</span>는 인생목표를 <span class=\"kw\">정성적으로 서술</span>하는 것이다.","explain":"인생목표를 <span class=\"kw\">수치화(정량화)</span>하고 <span class=\"kw\">우선순위</span>를 정하는 것이다.","id":"q390"},{"module":1,"subject":"재무설계 개론·직업윤리","topic":"장단기 배분","ans":"O","html":"<span class=\"kw\">안정자산</span>은 위험관리·은퇴설계에, <span class=\"kw\">운용자산</span>은 비상예비자금·<span class=\"kw\">초단기 목적자금</span>에 배분한다.","explain":"<span class=\"kw\">투자자산</span>은 <span class=\"kw\">장기 목표</span> 자금에 배분한다.","id":"q391"},{"module":1,"subject":"은퇴설계","topic":"기초연금","ans":"X","html":"기초연금은 <span class=\"kw\">국외 체류</span>가 <span class=\"kw\">30일</span> 이상 지속되면 지급이 정지된다.","explain":"<span class=\"kw\">60일 이상</span> 지속될 때 <span class=\"kw\">지급이 정지</span>된다.","id":"q392"},{"module":1,"subject":"은퇴설계","topic":"주택연금","ans":"O","html":"주택연금은 <span class=\"kw\">12억 원 이하</span> 주택이 대상이고, 12억 원 초과 <span class=\"kw\">2주택자</span>는 <span class=\"kw\">3년 이내 1주택 처분</span> 조건으로 가입할 수 있다.","explain":"<span class=\"kw\">우대방식</span>은 <span class=\"kw\">기초연금 수급자</span>·2.5억 원 미만 1주택이 대상이다.","id":"q393"},{"module":1,"subject":"은퇴설계","topic":"연금저축 종류","ans":"X","html":"연금저축은 <span class=\"kw\">연금저축보험</span>과 <span class=\"kw\">연금저축신탁</span>의 <span class=\"kw\">2종류</span>다.","explain":"<span class=\"kw\">연금저축펀드</span>까지 3종류다. 펀드는 <span class=\"kw\">원금 비보장</span>이다.","id":"q394"},{"module":1,"subject":"은퇴설계","topic":"기초연금 감액","ans":"O","html":"기초연금은 <span class=\"kw\">단독·부부 1인</span> 수급이면 기준연금액의 <span class=\"kw\">10%</span>, <span class=\"kw\">부부 2인</span> 수급이면 <span class=\"kw\">20%</span> 감액된다.","explain":"감액 후에도 <span class=\"kw\">최저연금액</span>은 <span class=\"kw\">지급</span>된다.","id":"q395"},{"module":1,"subject":"부동산설계","topic":"용도지역","ans":"O","html":"용도지역은 <span class=\"kw\">도시지역</span>, 관리지역, <span class=\"kw\">농림지역</span>, <span class=\"kw\">자연환경보전지역</span>으로 구분된다.","explain":"도시지역은 <span class=\"kw\">주거·상업·공업·녹지</span>의 <span class=\"kw\">4종</span>으로 나뉜다.","id":"q396"},{"module":1,"subject":"부동산설계","topic":"상가임대차","ans":"O","html":"상가의 <span class=\"kw\">월차임</span>을 보증금으로 전환할 때는 월차임의 <span class=\"kw\">100배</span>로 환산한다.","explain":"상가는 <span class=\"kw\">100배</span>, 주택은 <span class=\"kw\">연 10%</span> 또는 기준금리+2%가 적용된다.","id":"q397"},{"module":1,"subject":"부동산설계","topic":"지목","ans":"X","html":"<span class=\"kw\">하천</span>은 인공적인 수로 부지, <span class=\"kw\">구거</span>는 자연적 유수가 있는 부지다.","explain":"반대다. 하천은 <span class=\"kw\">자연적 유수</span>, 구거는 <span class=\"kw\">인공 수로</span> 또는 소규모 수로다.","id":"q398"},{"module":1,"subject":"상속설계","topic":"유류분 부족액","ans":"O","html":"유류분 부족액은 <span class=\"kw\">기초재산 × 유류분 비율</span>에서 <span class=\"kw\">특별수익</span>과 <span class=\"kw\">순상속액</span>을 빼서 계산한다.","explain":"유류분 비율은 <span class=\"kw\">법정상속분의 1/2 또는 1/3</span>이고, <span class=\"kw\">기여분은 반환대상이 아니다</span>.","id":"q399"},{"module":1,"subject":"상속설계","topic":"유언의 방식","ans":"X","html":"<span class=\"kw\">공정증서</span> 유언은 유언자가 <span class=\"kw\">증인 1인</span>과 공증인에게 구술해 작성한다.","explain":"<span class=\"kw\">증인 2인</span>과 <span class=\"kw\">공증인</span>이 필요하다. 녹음 유언은 증인 1인 이상이 확인한다.","id":"q400"},{"module":1,"subject":"상속설계","topic":"유언대용신탁","ans":"X","html":"<span class=\"kw\">유언대용신탁</span>은 위탁자가 생전에 신탁하고 사후 수익자를 정하지만, <span class=\"kw\">유류분 침해</span> 시에도 청구 대상이 될 수 없다.","explain":"유류분 침해 시 <span class=\"kw\">청구 대상</span>이 <span class=\"kw\">될 수 있다</span>.","id":"q401"},{"module":1,"subject":"상속설계","topic":"상속재산","ans":"O","html":"<span class=\"kw\">생명보험 청구권</span>, 퇴직연금·<span class=\"kw\">유족연금</span> 청구권처럼 법률·계약으로 구속이 정해진 권리는 <span class=\"kw\">상속재산이 아니다</span>.","explain":"다만 계약자가 <span class=\"kw\">본인을 피보험자·수익자</span>로 정한 보험금 청구권은 <span class=\"kw\">상속재산</span>이다.","id":"q402"},{"module":1,"subject":"상속설계","topic":"부담부유증","ans":"X","html":"<span class=\"kw\">부담부유증</span>에서 수유자가 부담을 이행하지 않아도 <span class=\"kw\">유언을 취소할 수 없다</span>.","explain":"이행 최고 후 <span class=\"kw\">가정법원에 취소를 청구</span>할 수 있고, 취소 심판 시 <span class=\"kw\">상속개시 시로 소급</span>한다.","id":"q403"},{"module":1,"subject":"상속설계","topic":"창업자금 특례","ans":"O","html":"창업자금 증여특례는 <span class=\"kw\">50억 원</span>(10인 이상 고용 시 100억 원) 한도에 <span class=\"kw\">5억 원 공제</span>와 <span class=\"kw\">10% 세율</span>이 적용된다.","explain":"수증자는 <span class=\"kw\">18세 이상</span>, 증여자는 <span class=\"kw\">60세 이상</span> 부모다.","id":"q404"},{"module":2,"subject":"위험관리와 보험설계","topic":"보장 개시","ans":"X","html":"<span class=\"kw\">보장 개시</span>는 <span class=\"kw\">청약을 승낙한 날</span>부터다.","explain":"<span class=\"kw\">제1회 보험료를 받은 날</span>부터 개시되고, 진단일이 늦으면 <span class=\"kw\">진단일</span>부터다.","id":"q405"},{"module":2,"subject":"위험관리와 보험설계","topic":"청약철회","ans":"O","html":"청약철회는 보험증권을 받은 날부터 <span class=\"kw\">15일</span>과 청약일부터 <span class=\"kw\">30일</span> 중 먼저 도래한 기간 내에 할 수 있다.","explain":"<span class=\"kw\">건강진단지원계약</span>, <span class=\"kw\">90일 이내</span> 계약, 전문소비자 계약은 제외된다.","id":"q406"},{"module":2,"subject":"위험관리와 보험설계","topic":"보험계약자 의무","ans":"X","html":"<span class=\"kw\">위험변경·증가 통지의무</span>는 <span class=\"kw\">보험회사</span>가 부담하는 의무다.","explain":"<span class=\"kw\">보험계약자</span>의 의무다. <span class=\"kw\">고지·손해방지</span> 의무도 계약자 몫이다.","id":"q407"},{"module":2,"subject":"위험관리와 보험설계","topic":"화재 비용손해","ans":"O","html":"<span class=\"kw\">잔존물제거비용</span>은 보험증권에 기재된 보험가입금액 범위 내에서 <span class=\"kw\">재산손해액의 10%</span>를 한도로 보상한다.","explain":"<span class=\"kw\">손해방지비용</span>·<span class=\"kw\">대위권 보전비용</span>도 비용손해다.","id":"q408"},{"module":2,"subject":"세금설계","topic":"소득세 계산구조","ans":"X","html":"종합소득세는 <span class=\"kw\">세액공제</span>를 먼저 적용한 뒤 <span class=\"kw\">세율</span>을 곱해 계산한다.","explain":"<span class=\"kw\">과세표준 × 세율</span>로 산출세액을 구한 뒤 <span class=\"kw\">세액공제</span>를 뺀다.","id":"q409"},{"module":2,"subject":"세금설계","topic":"종합소득공제","ans":"X","html":"<span class=\"kw\">주택마련저축공제</span>와 <span class=\"kw\">신용카드 소득공제</span>는 모든 거주자에게 적용된다.","explain":"둘 다 <span class=\"kw\">근로소득이 있는 자</span>에게 적용되는 <span class=\"kw\">특별소득공제</span>다.","id":"q410"},{"module":2,"subject":"세금설계","topic":"국세부과 원칙","ans":"O","html":"국세부과의 원칙은 <span class=\"kw\">실질과세</span>, <span class=\"kw\">신의성실</span>, 근거과세, <span class=\"kw\">조세감면의 사후관리</span>다.","explain":"소급과세 금지는 <span class=\"kw\">세법적용의 원칙</span>, 실질과세는 <span class=\"kw\">국세부과의 원칙</span>이다.","id":"q411"},{"module":2,"subject":"위험관리와 보험설계","topic":"공장물건 화재보험","ans":"X","html":"<span class=\"kw\">공장물건</span>의 일부보험은 주택화재보험처럼 <span class=\"kw\">80% 코인슈어런스</span>로 비례보상한다.","explain":"<span class=\"kw\">공장물건·재고자산</span>은 <span class=\"kw\">손해액 × 가입금액 ÷ 보험가액</span>으로 보상한다.","id":"q412"}];
 
-  var Q = JSON.parse(document.getElementById("data").textContent);
   var byId = {};
-  Q.forEach(function(q){ byId[q.id] = q; });
+  for (var qi = 0; qi < Q.length; qi++) byId[Q[qi].id] = Q[qi];
 
-  var SUB = { intro:"개론·윤리", retire:"은퇴", real:"부동산", inherit:"상속" };
-  var FILTERS = [
-    {k:"all",     label:"전체"},
-    {k:"intro",   label:"개론·윤리"},
-    {k:"retire",  label:"은퇴"},
-    {k:"real",    label:"부동산"},
-    {k:"inherit", label:"상속"},
-    {k:"wrong",   label:"틀린 문제만"},
-    {k:"todo",    label:"안 푼 문제만"}
-  ];
-  var KEY = "afpk-m1-ox-v1";
+  var state = {
+    mode: "1",
+    filter: "all",
+    view: "one",
+    idx: { "1": 0, "2": 0 },
+    answers: {},
+    stars: {},
+    decks: { "1": null, "2": null }
+  };
+  var view = [];
+  var reveal = false;
+  var pending = null;
 
-  var st = { ans:{}, filter:"all", mode:"card", cur:Q[0].id };
-  var snap = null;
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        mode: state.mode, filter: state.filter, view: state.view, idx: state.idx,
+        answers: state.answers, stars: state.stars, decks: state.decks
+      }));
+    } catch (e) {}
+  }
 
-  function load(){
-    try{
-      var raw = localStorage.getItem(KEY);
-      if(!raw) return;
-      var o = JSON.parse(raw);
-      if(!o || typeof o !== "object") return;
-      if(o.ans && typeof o.ans === "object"){
-        Object.keys(o.ans).forEach(function(k){
-          var id = parseInt(k,10);
-          var v = o.ans[k];
-          if(byId[id] && (v === "O" || v === "X")) st.ans[id] = v;
-        });
+  function poolOf(mode) {
+    var m = mode === "2" ? 2 : 1, out = [];
+    for (var i = 0; i < Q.length; i++) if (Q[i].module === m) out.push(Q[i]);
+    return out;
+  }
+
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) {}
+    if (!raw) return;
+    var s;
+    try { s = JSON.parse(raw); } catch (e) { return; }
+    if (!s || typeof s !== "object") return;
+    if (s.mode === "1" || s.mode === "2") state.mode = s.mode;
+    if (s.filter === "all" || s.filter === "wrong" || s.filter === "star") state.filter = s.filter;
+    if (s.view === "one" || s.view === "many") state.view = s.view;
+    if (s.answers && typeof s.answers === "object") {
+      for (var id in s.answers) {
+        if (byId[id] && (s.answers[id] === "O" || s.answers[id] === "X")) state.answers[id] = s.answers[id];
       }
-      if(typeof o.filter === "string" && FILTERS.some(function(f){return f.k===o.filter;})) st.filter = o.filter;
-      if(o.mode === "list" || o.mode === "card") st.mode = o.mode;
-      if(byId[o.cur]) st.cur = o.cur;
-    }catch(e){ /* 저장값이 깨졌으면 무시하고 새로 시작 */ }
-  }
-
-  function save(){
-    try{
-      localStorage.setItem(KEY, JSON.stringify({ans:st.ans, filter:st.filter, mode:st.mode, cur:st.cur}));
-    }catch(e){ /* 저장 불가 환경(사생활 모드 등)에서도 앱은 동작 */ }
-  }
-
-  function buildSnap(){
-    if(st.filter === "wrong"){
-      snap = Q.filter(function(q){ return st.ans[q.id] && st.ans[q.id] !== q.a; }).map(function(q){ return q.id; });
-    }else if(st.filter === "todo"){
-      snap = Q.filter(function(q){ return !st.ans[q.id]; }).map(function(q){ return q.id; });
-    }else{
-      snap = null;
     }
-  }
-
-  function list(){
-    if(snap) return snap.map(function(id){ return byId[id]; });
-    if(st.filter === "all") return Q.slice();
-    return Q.filter(function(q){ return q.s === st.filter; });
-  }
-
-  function currentQ(){
-    var L = list();
-    for(var i=0;i<L.length;i++){ if(L[i].id === st.cur) return L[i]; }
-    return L.length ? L[0] : null;
-  }
-
-  var $ = function(id){ return document.getElementById(id); };
-  var progEl=$("prog"), accEl=$("acc"), filtersEl=$("filters"), modeBtn=$("modeBtn"), resetBtn=$("resetBtn");
-  var cardView=$("cardView"), cardEl=$("card"), tagEl=$("tag"), inoEl=$("ino"), stemEl=$("stem");
-  var fbEl=$("fb"), vbEl=$("vb"), exEl=$("ex"), btnO=$("btnO"), btnX=$("btnX");
-  var posEl=$("pos"), prevBtn=$("prev"), nextBtn=$("next"), emptyEl=$("empty");
-  var listView=$("listView");
-
-  /* ---------- 필터 칩 구성 ---------- */
-  FILTERS.forEach(function(f){
-    var b = document.createElement("button");
-    b.className = "chip";
-    b.type = "button";
-    b.dataset.f = f.k;
-    b.innerHTML = f.label + '<span class="n"></span>';
-    b.addEventListener("click", function(){ setFilter(f.k); });
-    filtersEl.appendChild(b);
-  });
-
-  function chipCounts(){
-    var wrong = 0, todo = 0;
-    Q.forEach(function(q){
-      if(!st.ans[q.id]) todo++;
-      else if(st.ans[q.id] !== q.a) wrong++;
-    });
-    return {wrong:wrong, todo:todo};
-  }
-
-  function paintChips(){
-    var c = chipCounts();
-    Array.prototype.forEach.call(filtersEl.children, function(b){
-      var k = b.dataset.f;
-      b.classList.toggle("on", k === st.filter);
-      var n = b.querySelector(".n");
-      if(k === "wrong") n.textContent = c.wrong ? String(c.wrong) : "";
-      else if(k === "todo") n.textContent = c.todo ? String(c.todo) : "";
-    });
-  }
-
-  /* ---------- 헤더 ---------- */
-  function paintHead(){
-    var L = list();
-    var answered = L.filter(function(q){ return st.ans[q.id]; }).length;
-    progEl.textContent = answered + " / " + L.length;
-
-    var done = Q.filter(function(q){ return st.ans[q.id]; });
-    if(!done.length){
-      accEl.textContent = "–";
-    }else{
-      var ok = done.filter(function(q){ return st.ans[q.id] === q.a; }).length;
-      accEl.textContent = Math.round(ok / done.length * 100) + "%";
+    if (s.stars && typeof s.stars === "object") {
+      for (var sid in s.stars) if (byId[sid]) state.stars[sid] = 1;
     }
-    paintChips();
-  }
-
-  /* ---------- 카드 모드 ---------- */
-  function paintCard(){
-    var L = list();
-    if(!L.length){
-      cardEl.hidden = true;
-      prevBtn.disabled = nextBtn.disabled = true;
-      posEl.textContent = "–";
-      emptyEl.hidden = false;
-      emptyEl.textContent = st.filter === "todo"
-        ? "안 푼 문제가 없습니다. 50문항을 모두 풀었어요."
-        : "틀린 문제가 없습니다.";
-      return;
+    if (s.idx && typeof s.idx === "object") {
+      for (var k in state.idx) if (typeof s.idx[k] === "number" && s.idx[k] >= 0) state.idx[k] = s.idx[k];
     }
-    cardEl.hidden = false;
-    emptyEl.hidden = true;
-    prevBtn.disabled = nextBtn.disabled = false;
-
-    var i = 0;
-    for(var k=0;k<L.length;k++){ if(L[k].id === st.cur){ i = k; break; } }
-    if(L[i].id !== st.cur){ st.cur = L[i].id; save(); }
-
-    var q = L[i];
-    var a = st.ans[q.id];
-
-    tagEl.textContent = SUB[q.s];
-    inoEl.textContent = "No." + q.id;
-    stemEl.textContent = q.q;
-    posEl.textContent = (i+1) + " / " + L.length;
-
-    fbEl.className = a ? ("fb show " + (a === q.a ? "ok" : "no")) : "fb";
-    if(a){
-      var good = (a === q.a);
-      vbEl.textContent = good ? "정답입니다" : ("오답입니다 · 정답은 " + q.a);
-      vbEl.className = "v" + (good ? " ok" : " no");
-      exEl.textContent = q.e;
-    }
-
-    btnO.className = "ox o";
-    btnX.className = "ox x";
-    if(a){
-      if(a === "O") btnO.classList.add("on"); else btnX.classList.add("on");
-      if(a !== q.a){
-        if(q.a === "O"){ btnO.classList.add("correct-hint"); btnX.classList.add("dim"); }
-        else { btnX.classList.add("correct-hint"); btnO.classList.add("dim"); }
+    if (s.decks && typeof s.decks === "object") {
+      for (var dk in state.decks) {
+        var d = s.decks[dk];
+        if (!d || !d.length || d.length !== poolOf(dk).length) continue;
+        var ok = true, seen = {};
+        for (var i = 0; i < d.length && ok; i++) {
+          var qid = d[i], q = byId[qid];
+          if (!q || seen[qid] || String(q.module) !== dk) ok = false;
+          seen[qid] = 1;
+        }
+        if (ok) state.decks[dk] = d;
       }
     }
   }
 
-  /* ---------- 목록 모드 ---------- */
-  function buildList(){
-    var L = list();
-    listView.innerHTML = "";
-    if(!L.length){
-      var d = document.createElement("div");
-      d.className = "empty";
-      d.textContent = st.filter === "todo" ? "안 푼 문제가 없습니다." : "틀린 문제가 없습니다.";
-      listView.appendChild(d);
-      return;
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
     }
-    var frag = document.createDocumentFragment();
-    L.forEach(function(q, idx){
-      var art = document.createElement("article");
-      art.className = "item";
-      art.dataset.id = String(q.id);
-
-      var head = document.createElement("div");
-      head.className = "ihead";
-      var tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = SUB[q.s];
-      var no = document.createElement("span");
-      no.className = "ino";
-      no.textContent = "No." + q.id + " · " + (idx+1) + "/" + L.length;
-      head.appendChild(tag); head.appendChild(no);
-
-      var p = document.createElement("p");
-      p.className = "istem";
-      p.textContent = q.q;
-
-      var btns = document.createElement("div");
-      btns.className = "ibtns";
-      ["O","X"].forEach(function(v){
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "mini " + (v === "O" ? "o" : "x");
-        b.dataset.a = v;
-        b.textContent = v;
-        btns.appendChild(b);
-      });
-
-      var fbv = document.createElement("div");
-      fbv.className = "ifb";
-      var vv = document.createElement("p"); vv.className = "v";
-      var ee = document.createElement("p"); ee.className = "e";
-      fbv.appendChild(vv); fbv.appendChild(ee);
-
-      art.appendChild(head); art.appendChild(p); art.appendChild(btns); art.appendChild(fbv);
-      frag.appendChild(art);
-      paintItem(art, q);
-    });
-    listView.appendChild(frag);
+    return a;
   }
 
-  function paintItem(art, q){
-    var a = st.ans[q.id];
-    Array.prototype.forEach.call(art.querySelectorAll(".mini"), function(b){
-      b.classList.remove("on","correct-hint","dim");
-      if(!a) return;
-      if(b.dataset.a === a) b.classList.add("on");
-      if(a !== q.a){
-        if(b.dataset.a === q.a) b.classList.add("correct-hint");
-        else b.classList.add("dim");
+  function buildDeck(mode) {
+    var pool = poolOf(mode), ids = [];
+    for (var i = 0; i < pool.length; i++) ids.push(pool[i].id);
+    return shuffle(ids);
+  }
+
+  function deckOf(mode) {
+    if (!state.decks[mode] || state.decks[mode].length !== poolOf(mode).length) {
+      state.decks[mode] = buildDeck(mode);
+    }
+    return state.decks[mode];
+  }
+
+  function match(q, filter) {
+    if (filter === "wrong") {
+      var a = state.answers[q.id];
+      return !!a && a !== q.ans;
+    }
+    if (filter === "star") return !!state.stars[q.id];
+    return true;
+  }
+
+  function compose() {
+    var deck = deckOf(state.mode), list = [];
+    for (var i = 0; i < deck.length; i++) {
+      var q = byId[deck[i]];
+      if (q && match(q, state.filter)) list.push(q);
+    }
+    view = list;
+    var i2 = state.idx[state.mode] || 0;
+    if (i2 > view.length - 1) i2 = view.length - 1;
+    if (i2 < 0) i2 = 0;
+    state.idx[state.mode] = i2;
+  }
+
+  function cur() { return view[state.idx[state.mode]] || null; }
+
+  function el(id) { return document.getElementById(id); }
+  var eSeg1 = el("seg1"), eSeg2 = el("seg2"), eShuffle = el("shuffle");
+  var eViewOne = el("viewOne"), eViewMany = el("viewMany");
+  var eChipWrong = el("chipWrong"), eChipStar = el("chipStar");
+  var eOne = el("onePane"), eMany = el("manyPane"), eList = el("list");
+  var eCard = el("card"), eBadge = el("badge"), eStar = el("star");
+  var eStem = el("stem"), eFb = el("fb"), eFbTitle = el("fbTitle"), eFbBody = el("fbBody");
+  var eO = el("btnO"), eX = el("btnX"), ePrev = el("btnPrev"), eNext = el("btnNext");
+
+  function setTabs() {
+    eSeg1.className = state.mode === "1" ? "on" : "";
+    eSeg2.className = state.mode === "2" ? "on" : "";
+    eViewOne.className = state.view === "one" ? "on" : "";
+    eViewMany.className = state.view === "many" ? "on" : "";
+    eChipWrong.className = "chip" + (state.filter === "wrong" ? " on" : "");
+    eChipStar.className = "iconbtn" + (state.filter === "star" ? " on" : "");
+    eOne.hidden = state.view !== "one";
+    eMany.hidden = state.view !== "many";
+  }
+
+  function paintButtons(q) {
+    var a = q ? state.answers[q.id] : null;
+    var co = "ox", cx = "ox";
+    if (q && a) {
+      var ok = a === q.ans;
+      if (ok) {
+        if (a === "O") co += " ok"; else cx += " ok";
+        if (reveal) { if (a === "O") cx += " faded"; else co += " faded"; }
+      } else {
+        if (a === "O") co += " no"; else cx += " no";
+        if (q.ans === "O") co += " hint"; else cx += " hint";
+        if (a === "O") cx += " faded"; else co += " faded";
       }
-    });
-    var fbv = art.querySelector(".ifb");
-    var vv = fbv.querySelector(".v");
-    var ee = fbv.querySelector(".e");
-    if(a){
-      var good = (a === q.a);
-      fbv.className = "ifb show " + (good ? "ok" : "no");
-      vv.textContent = good ? "정답입니다" : ("오답 · 정답은 " + q.a);
-      ee.textContent = q.e;
-    }else{
-      fbv.className = "ifb";
-      vv.textContent = "";
-      ee.textContent = "";
     }
+    eO.className = co;
+    eX.className = cx;
   }
 
-  /* ---------- 액션 ---------- */
-  function answer(id, choice){
-    if(choice !== "O" && choice !== "X") return;
-    st.ans[id] = choice;
-    save();
-    if(st.mode === "list"){
-      var art = listView.querySelector('.item[data-id="' + id + '"]');
-      if(art) paintItem(art, byId[id]);
-    }else{
-      paintCard();
-    }
-    paintHead();
-    if(navigator.vibrate){
-      try{ navigator.vibrate(st.ans[id] === byId[id].a ? 12 : [10,40,10]); }catch(e){}
-    }
+  function paintFeedback(q) {
+    if (!q) { eFb.className = "fb"; return; }
+    var a = state.answers[q.id];
+    if (!a || !reveal) { eFb.className = "fb"; return; }
+    var ok = a === q.ans;
+    eFb.className = "fb show " + (ok ? "ok" : "no");
+    eFbTitle.textContent = ok ? "정답이에요" : "아쉬워요 · 정답은 " + q.ans;
+    eFbBody.innerHTML = q.explain;
   }
 
-  function move(step){
-    var L = list();
-    if(!L.length) return;
-    var i = 0;
-    for(var k=0;k<L.length;k++){ if(L[k].id === st.cur){ i = k; break; } }
-    var j = i + step;
-    if(j < 0) j = 0;
-    if(j > L.length-1) j = L.length-1;
-    st.cur = L[j].id;
-    save();
-    if(st.mode === "card"){
-      cardEl.style.transition = "transform .12s ease";
-      cardEl.style.transform = "";
-      paintCard();
-    }
-  }
-
-  function setFilter(k){
-    st.filter = k;
-    buildSnap();
-    var L = list();
-    if(L.length) st.cur = L[0].id;   /* 필터를 바꾸면 그 목록의 첫 문항부터 */
-    save();
-    render();
-  }
-
-  function disarm(){
-    resetBtn.classList.remove("armed");
-    resetBtn.textContent = "초기화";
-    armed = false;
-    if(armTimer){ clearTimeout(armTimer); armTimer = null; }
-  }
-  var armed = false, armTimer = null;
-
-  function render(){
-    paintHead();
-    if(st.mode === "list"){
-      cardView.hidden = true;
-      listView.classList.add("on");
-      modeBtn.textContent = "카드 보기";
-      buildList();
-    }else{
-      cardView.hidden = false;
-      listView.classList.remove("on");
-      modeBtn.textContent = "목록 보기";
-      paintCard();
-    }
-  }
-
-  /* ---------- 이벤트 ---------- */
-  btnO.addEventListener("click", function(){
-    var q = currentQ(); if(!q) return; answer(q.id, "O");
-  });
-  btnX.addEventListener("click", function(){
-    var q = currentQ(); if(!q) return; answer(q.id, "X");
-  });
-  prevBtn.addEventListener("click", function(){ move(-1); });
-  nextBtn.addEventListener("click", function(){ move(1); });
-
-  listView.addEventListener("click", function(e){
-    var b = e.target.closest ? e.target.closest(".mini") : null;
-    if(!b) return;
-    var art = b.closest(".item");
-    if(!art) return;
-    answer(parseInt(art.dataset.id, 10), b.dataset.a);
-  });
-
-  modeBtn.addEventListener("click", function(){
-    st.mode = (st.mode === "card") ? "list" : "card";
-    save();
-    render();
-    if(st.mode === "list"){
-      var art = listView.querySelector('.item[data-id="' + st.cur + '"]');
-      if(art && art.scrollIntoView) art.scrollIntoView({block:"center"});
-    }
-  });
-
-  resetBtn.addEventListener("click", function(){
-    if(!armed){
-      armed = true;
-      resetBtn.classList.add("armed");
-      resetBtn.textContent = "다시 눌러 초기화";
-      armTimer = setTimeout(disarm, 3000);
+  function renderCard() {
+    var q = cur();
+    if (!q) {
+      eCard.className = "card empty";
+      eBadge.textContent = state.mode === "1" ? "모듈 1" : "모듈 2";
+      eStar.className = "star";
+      eStar.textContent = "☆";
+      eStem.innerHTML = state.filter === "wrong" ? "이 모듈에는 틀린 문제가 없어요."
+        : state.filter === "star" ? "별표한 문제가 없어요.<br>카드의 ☆를 눌러 담아 두세요."
+        : "카드가 없어요.";
+      eFb.className = "fb";
+      paintButtons(null);
+      ePrev.disabled = true; eNext.disabled = true;
       return;
     }
-    st.ans = {};
-    st.cur = Q[0].id;
-    buildSnap();
+    eCard.className = "card";
+    eBadge.textContent = "모듈 " + q.module + " · " + q.subject;
+    eStar.className = "star" + (state.stars[q.id] ? " on" : "");
+    eStar.textContent = state.stars[q.id] ? "★" : "☆";
+    eStem.innerHTML = q.html;
+    paintButtons(q);
+    paintFeedback(q);
+    ePrev.disabled = state.idx[state.mode] <= 0;
+    eNext.disabled = state.idx[state.mode] >= view.length - 1;
+    if (pending) {
+      eCard.classList.remove("in-next", "in-prev");
+      void eCard.offsetWidth;
+      var cls = pending;
+      eCard.classList.add(cls);
+      pending = null;
+      setTimeout(function () { eCard.classList.remove(cls); }, 240);
+    }
+  }
+
+  function renderList() {
+    if (!view.length) {
+      eList.innerHTML = '<div class="emptyList">' + (state.filter === "wrong"
+        ? "이 모듈에는 틀린 문제가 없어요."
+        : state.filter === "star" ? "별표한 문제가 없어요.<br>한 개 보기에서 ☆를 눌러 담아 두세요."
+        : "카드가 없어요.") + '</div>';
+      return;
+    }
+    var out = [], i, q, a, ok;
+    for (i = 0; i < view.length; i++) {
+      q = view[i]; a = state.answers[q.id]; ok = !!a && a === q.ans;
+      out.push('<article class="li">');
+      out.push('<div class="liTop"><span class="liBadge">모듈 ' + q.module + ' · ' + q.subject + '</span></div>');
+      out.push('<p class="liStem">' + q.html + '</p>');
+      out.push('<div class="liOx">');
+      out.push('<button type="button" class="liBtn' + (a === "O" ? (ok ? " ok" : " no") : (a && q.ans === "O" ? " hint" : "")) + '" data-id="' + q.id + '" data-act="O">O</button>');
+      out.push('<button type="button" class="liBtn' + (a === "X" ? (ok ? " ok" : " no") : (a && q.ans === "X" ? " hint" : "")) + '" data-id="' + q.id + '" data-act="X">X</button>');
+      out.push('</div>');
+      if (a) {
+        out.push('<div class="liFb ' + (ok ? "ok" : "no") + '"><b>' + (ok ? "정답이에요" : "아쉬워요 · 정답은 " + q.ans) + '</b><p>' + q.explain + '</p></div>');
+      }
+      out.push('</article>');
+    }
+    var st = eList.scrollTop;
+    eList.innerHTML = out.join("");
+    eList.scrollTop = st;
+  }
+
+  function render() {
+    setTabs();
+    if (state.view === "one") renderCard(); else renderList();
+  }
+
+  function go(dir) {
+    if (state.view !== "one") return;
+    var next = state.idx[state.mode] + dir;
+    if (next < 0 || next > view.length - 1) {
+      eCard.classList.remove("nudge");
+      void eCard.offsetWidth;
+      eCard.classList.add("nudge");
+      setTimeout(function () { eCard.classList.remove("nudge"); }, 190);
+      return;
+    }
+    state.idx[state.mode] = next;
+    reveal = false;
+    pending = dir > 0 ? "in-next" : "in-prev";
     save();
-    disarm();
+    renderCard();
+  }
+
+  function answer(v) {
+    var q = cur();
+    if (!q) return;
+    if (state.answers[q.id] === v && reveal) { reveal = false; renderCard(); return; }
+    state.answers[q.id] = v;
+    reveal = true;
+    save();
+    renderCard();
+  }
+
+  function reIndex() {
+    state.idx[state.mode] = 0;
+    reveal = false;
+    compose();
+  }
+
+  function setMode(m) {
+    if (state.mode === m) return;
+    state.mode = m;
+    reveal = false;
+    compose();
+    save();
     render();
+  }
+
+  function setFilter(f) {
+    state.filter = (state.filter === f) ? "all" : f;
+    reIndex();
+    save();
+    render();
+  }
+
+  function setView(v) {
+    if (state.view === v) return;
+    state.view = v;
+    save();
+    render();
+    if (v === "many") eList.scrollTop = 0;
+  }
+
+  function reshuffle() {
+    state.decks[state.mode] = buildDeck(state.mode);
+    reIndex();
+    save();
+    pending = "in-next";
+    render();
+  }
+
+  function on(node, type, fn, opt) { if (node) node.addEventListener(type, fn, opt); }
+
+  on(eSeg1, "click", function () { setMode("1"); });
+  on(eSeg2, "click", function () { setMode("2"); });
+  on(eViewOne, "click", function () { setView("one"); });
+  on(eViewMany, "click", function () { setView("many"); });
+  on(eChipWrong, "click", function () { setFilter("wrong"); });
+  on(eChipStar, "click", function () { setFilter("star"); });
+  on(eShuffle, "click", reshuffle);
+  on(eO, "click", function () { answer("O"); });
+  on(eX, "click", function () { answer("X"); });
+  on(ePrev, "click", function () { go(-1); });
+  on(eNext, "click", function () { go(1); });
+  on(eStar, "click", function () {
+    var q = cur();
+    if (!q) return;
+    if (state.stars[q.id]) delete state.stars[q.id]; else state.stars[q.id] = 1;
+    save();
+    renderCard();
+    setTabs();
   });
 
-  /* 스와이프 (카드 모드) */
-  var sx=0, sy=0, tracking=false, swiped=false;
-  cardEl.addEventListener("touchstart", function(e){
-    if(e.touches.length !== 1) return;
+  on(eList, "click", function (e) {
+    var t = e && e.target;
+    var id = t && t.getAttribute ? t.getAttribute("data-id") : null;
+    var act = t && t.getAttribute ? t.getAttribute("data-act") : null;
+    if (!id || (act !== "O" && act !== "X") || !byId[id]) return;
+    state.answers[id] = act;
+    save();
+    renderList();
+  });
+
+  var sx = 0, sy = 0, dx = 0, dragging = false, locked = false;
+  on(eCard, "touchstart", function (e) {
+    if (!e.touches || e.touches.length !== 1) return;
     sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-    tracking = true; swiped = false;
-    cardEl.style.transition = "none";
-  }, {passive:true});
-
-  cardEl.addEventListener("touchmove", function(e){
-    if(!tracking || e.touches.length !== 1) return;
-    var dx = e.touches[0].clientX - sx;
+    dx = 0; dragging = true; locked = false;
+    eCard.style.transition = "none";
+  }, { passive: true });
+  on(eCard, "touchmove", function (e) {
+    if (!dragging || !e.touches || e.touches.length !== 1) return;
+    dx = e.touches[0].clientX - sx;
     var dy = e.touches[0].clientY - sy;
-    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8){
-      swiped = true;
-      cardEl.style.transform = "translateX(" + (dx * 0.3) + "px)";
+    if (!locked) {
+      if (Math.abs(dx) > Math.abs(dy) + 6) locked = true;
+      else if (Math.abs(dy) > Math.abs(dx) + 6) {
+        dragging = false; eCard.style.transition = ""; eCard.style.transform = ""; return;
+      }
     }
-  }, {passive:true});
-
-  cardEl.addEventListener("touchend", function(e){
-    if(!tracking) return;
-    tracking = false;
-    var t = e.changedTouches[0];
-    var dx = t.clientX - sx, dy = t.clientY - sy;
-    cardEl.style.transition = "transform .16s ease";
-    cardEl.style.transform = "";
-    if(swiped && Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)){
-      move(dx < 0 ? 1 : -1);
+    if (locked) {
+      if (e.preventDefault) e.preventDefault();
+      eCard.style.transform = "translateX(" + (dx * 0.55) + "px)";
+      eCard.style.opacity = String(Math.max(0.65, 1 - Math.abs(dx) / 520));
     }
-  }, {passive:true});
-
-  cardEl.addEventListener("touchcancel", function(){
-    tracking = false;
-    cardEl.style.transition = "transform .16s ease";
-    cardEl.style.transform = "";
-  }, {passive:true});
-
-  document.addEventListener("keydown", function(e){
-    if(st.mode !== "card") return;
-    if(e.key === "ArrowRight"){ move(1); }
-    else if(e.key === "ArrowLeft"){ move(-1); }
+  }, { passive: false });
+  on(eCard, "touchend", function () {
+    if (!dragging) return;
+    dragging = false;
+    eCard.style.transition = "";
+    eCard.style.transform = "";
+    eCard.style.opacity = "";
+    if (locked && dx < -54) go(1);
+    else if (locked && dx > 54) go(-1);
+    dx = 0; locked = false;
   });
 
-  /* ---------- 시작 ---------- */
+  on(document, "keydown", function (e) {
+    var k = e.key;
+    if (k === "ArrowLeft") go(-1);
+    else if (k === "ArrowRight") go(1);
+    else if (k === "o" || k === "O") answer("O");
+    else if (k === "x" || k === "X") answer("X");
+  });
+
   load();
-  buildSnap();
+  compose();
   render();
+
+  window.__afpk = {
+    state: state,
+    questions: Q,
+    view: function () { return view; },
+    current: cur,
+    answer: answer,
+    go: go,
+    setMode: setMode,
+    setFilter: setFilter,
+    setView: setView,
+    reshuffle: reshuffle,
+    renderList: renderList,
+    key: KEY
+  };
 })();
 </script>
 </body>
