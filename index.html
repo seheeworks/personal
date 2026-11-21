@@ -189,9 +189,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .aiHint{margin:9px 0 0;font-size:12.5px;line-height:1.5;color:var(--sub)}
 .aiHint b{color:var(--sub2);font-weight:700}
 .aiHint a{color:var(--blue-deep);font-weight:600;text-decoration:none;word-break:break-all}
-.aiChips{flex:0 0 auto;display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;
-  scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.aiChips::-webkit-scrollbar{height:0}
+.aiChips{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .aiChips button{flex:0 0 auto;height:34px;padding:0 12px;border-radius:999px;background:#F2F4F6;color:#333D4B;
   font-size:13.5px;font-weight:600;white-space:nowrap}
 .aiChips button:active{background:#E7EBF0}
@@ -884,6 +882,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     for (i = 0; i < aiS.msgs.length; i++) {
       m = aiS.msgs[i];
       if (m.role !== "user" && m.role !== "ai") continue;
+      if (m.role === "ai" && !out.length) continue;
       var text = m.role === "user" && first ? aiCtxText(aiS.q) + "\n\n질문: " + m.text : m.text;
       if (m.role === "user") first = false;
       if (out.length && out[out.length - 1].role === m.role) out[out.length - 1].text += "\n" + text;
