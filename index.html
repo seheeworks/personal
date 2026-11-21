@@ -50,7 +50,7 @@ header{padding:calc(8px + env(safe-area-inset-top)) 16px 4px;flex:0 0 auto}
 .chip.on{background:var(--ink);color:#fff}
 
 /* ---------- 카드 ---------- */
-main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset-bottom))}
+main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .pane{height:100%}
 .card{
   height:100%;display:flex;flex-direction:column;
@@ -130,6 +130,14 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset
 .liFb p{margin:0;font-size:19px;line-height:1.55;font-weight:400;color:#333D4B;word-break:keep-all}
 .emptyList{background:#fff;border-radius:22px;padding:40px 20px;text-align:center;color:var(--sub);font-size:18px;font-weight:500;line-height:1.6}
 
+/* ---------- 하단 진행 ---------- */
+.prog{flex:0 0 auto;display:flex;align-items:center;gap:10px;
+  padding:6px 16px calc(10px + env(safe-area-inset-bottom))}
+.progTrack{flex:1 1 auto;height:4px;border-radius:999px;background:#E3E8EE;overflow:hidden}
+.progBar{display:block;height:100%;width:0;border-radius:999px;background:var(--blue);
+  transition:width .2s ease}
+.progNum{flex:0 0 auto;font-size:12px;font-weight:500;color:var(--sub);font-variant-numeric:tabular-nums}
+
 @media (max-height:720px){
   .stem{font-size:22px;line-height:1.55;margin:12px 0 10px}
   .ox{height:86px}
@@ -138,6 +146,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset
   .title{font-size:17px;margin-bottom:6px}
   .seg button{height:46px}
   .tools{margin-top:6px}
+  .prog{padding-top:4px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
 }
 </style>
 </head>
@@ -189,6 +198,11 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset
       <div class="list" id="list"></div>
     </section>
   </main>
+
+  <footer class="prog" id="prog" aria-label="진행 현황">
+    <span class="progTrack"><span class="progBar" id="progBar"></span></span>
+    <span class="progNum" id="progNum">0 / 0</span>
+  </footer>
 </div>
 
 <script>
@@ -317,6 +331,21 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset
   var eCard = el("card"), eBadge = el("badge"), eStar = el("star");
   var eStem = el("stem"), eFb = el("fb"), eFbTitle = el("fbTitle"), eFbBody = el("fbBody");
   var eO = el("btnO"), eX = el("btnX"), ePrev = el("btnPrev"), eNext = el("btnNext");
+  var eProgBar = el("progBar"), eProgNum = el("progNum");
+
+  function renderProg() {
+    var total = view.length, num = 0, i;
+    if (total > 0) {
+      if (state.view === "one") {
+        num = state.idx[state.mode] + 1;
+        if (num > total) num = total;
+      } else {
+        for (i = 0; i < total; i++) if (state.answers[view[i].id]) num++;
+      }
+    }
+    if (eProgNum) eProgNum.textContent = num + " / " + total;
+    if (eProgBar) eProgBar.style.width = (total > 0 ? (num / total) * 100 : 0) + "%";
+  }
 
   function setTabs() {
     eSeg1.className = state.mode === "1" ? "on" : "";
@@ -358,6 +387,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset
   }
 
   function renderCard() {
+    renderProg();
     var q = cur();
     if (!q) {
       eCard.className = "card empty";
@@ -392,6 +422,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px calc(10px + env(safe-area-inset
   }
 
   function renderList() {
+    renderProg();
     if (!view.length) {
       eList.innerHTML = '<div class="emptyList">' + (state.filter === "wrong"
         ? "이 모듈에는 틀린 문제가 없어요."
