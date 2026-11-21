@@ -138,6 +138,85 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   transition:width .2s ease}
 .progNum{flex:0 0 auto;font-size:12px;font-weight:500;color:var(--sub);font-variant-numeric:tabular-nums}
 
+/* ---------- AI 바로 질문 ---------- */
+.aiBtn{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;height:34px;padding:0 10px;
+  border-radius:11px;background:#EBF2FE;color:var(--blue-deep);font-size:14px;font-weight:700;
+  letter-spacing:-.01em;white-space:nowrap}
+.aiBtn:active{background:#DCE9FD}
+.cardTop .star{margin-left:2px}
+.card.empty .aiBtn{visibility:hidden}
+.fbAsk{display:inline-block;margin:9px 0 0;font-size:14.5px;font-weight:600;color:var(--blue-deep)}
+.fb.no .fbAsk{color:#C4343F}
+.liAiBtn{margin-left:auto;flex:0 0 auto;height:30px;padding:0 9px;border-radius:9px;background:#EBF2FE;
+  color:var(--blue-deep);font-size:13.5px;font-weight:700;white-space:nowrap}
+.liTop .liBadge{max-width:calc(100% - 86px)}
+.liAiBtn:active{background:#DCE9FD}
+
+.aiWrap{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.aiWrap[hidden]{display:none !important}
+.aiBack{position:absolute;inset:0;background:rgba(25,31,40,.44);opacity:0;transition:opacity .22s ease}
+.aiWrap.open .aiBack{opacity:1}
+.aiSheet{position:relative;width:100%;max-width:540px;max-height:88vh;max-height:88svh;background:#fff;
+  border-radius:24px 24px 0 0;display:flex;flex-direction:column;
+  padding:8px 16px calc(10px + env(safe-area-inset-bottom));
+  transform:translateY(102%);transition:transform .26s cubic-bezier(.22,.9,.3,1);
+  box-shadow:0 -6px 28px rgba(25,31,40,.18)}
+.aiWrap.open .aiSheet{transform:none}
+.aiGrab{flex:0 0 auto;width:36px;height:4px;border-radius:999px;background:#E3E8EE;margin:2px auto 10px}
+.aiHead{flex:0 0 auto;display:flex;align-items:center;gap:8px}
+.aiBadge{min-width:0;background:#EBF2FE;color:var(--blue-deep);border-radius:8px;padding:5px 9px;
+  font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aiKeyBtn{flex:0 0 auto;margin-left:auto;height:30px;padding:0 10px;border-radius:9px;background:#F2F4F6;
+  color:var(--sub2);font-size:13.5px;font-weight:600}
+.aiKeyBtn.on{background:#EBF2FE;color:var(--blue-deep)}
+.aiClose{flex:0 0 auto;width:32px;height:32px;border-radius:9px;font-size:16px;line-height:1;color:var(--sub2)}
+.aiClose:active{background:#F2F4F6}
+.aiPrev{flex:0 0 auto;margin:9px 0 0;font-size:14px;line-height:1.45;color:var(--sub);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  word-break:keep-all;overflow-wrap:anywhere}
+.aiPanel{flex:0 0 auto;margin-top:10px;border-radius:16px;background:#F7F8FA;padding:11px 11px 12px}
+.aiSeg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;background:#E3E8EE;border-radius:11px;padding:3px}
+.aiSeg button{height:34px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--sub2)}
+.aiSeg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(25,31,40,.10)}
+.aiField{display:flex;gap:6px;margin-top:8px}
+.aiField input{flex:1 1 auto;min-width:0;height:42px;border:0;border-radius:11px;background:#fff;padding:0 12px;
+  font-family:inherit;font-size:15px;color:var(--ink);outline:none;box-shadow:inset 0 0 0 1.5px #E3E8EE}
+.aiField input:focus{box-shadow:inset 0 0 0 1.5px var(--blue)}
+.aiFieldBtns button{flex:1 1 0;height:40px;border-radius:11px;font-size:14.5px;font-weight:700}
+#aiKeySave{background:var(--blue);color:#fff}
+#aiKeySave:active{background:var(--blue-deep)}
+.aiGhost{background:#fff;color:var(--sub2);box-shadow:inset 0 0 0 1.5px #E3E8EE}
+.aiHint{margin:9px 0 0;font-size:12.5px;line-height:1.5;color:var(--sub)}
+.aiHint b{color:var(--sub2);font-weight:700}
+.aiHint a{color:var(--blue-deep);font-weight:600;text-decoration:none;word-break:break-all}
+.aiChips{flex:0 0 auto;display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.aiChips::-webkit-scrollbar{height:0}
+.aiChips button{flex:0 0 auto;height:34px;padding:0 12px;border-radius:999px;background:#F2F4F6;color:#333D4B;
+  font-size:13.5px;font-weight:600;white-space:nowrap}
+.aiChips button:active{background:#E7EBF0}
+.aiChat{flex:1 1 auto;min-height:88px;margin-top:10px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:flex;flex-direction:column;gap:8px;padding-bottom:2px}
+.aiChat::-webkit-scrollbar{width:0}
+.aiMsg{max-width:88%;border-radius:16px;padding:10px 13px;font-size:15px;line-height:1.55;
+  word-break:keep-all;overflow-wrap:anywhere;white-space:pre-wrap}
+.aiMsg.user{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:6px}
+.aiMsg.ai{align-self:flex-start;background:#F2F4F6;color:#333D4B;border-bottom-left-radius:6px}
+.aiMsg.err{align-self:flex-start;background:var(--coral-soft);color:#C4343F;font-size:13.5px;border-bottom-left-radius:6px}
+.aiMsg.typing{align-self:flex-start;background:#F2F4F6;color:var(--sub);animation:blink 1.1s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
+.aiInputRow{flex:0 0 auto;display:flex;gap:6px;margin-top:10px}
+.aiInputRow input{flex:1 1 auto;min-width:0;height:46px;border:0;border-radius:14px;background:#F2F4F6;
+  padding:0 14px;font-family:inherit;font-size:15.5px;color:var(--ink);outline:none}
+.aiInputRow input:focus{background:#fff;box-shadow:inset 0 0 0 1.5px var(--blue)}
+.aiIcon{flex:0 0 auto;width:46px;height:46px;border-radius:14px;background:#F2F4F6;color:var(--sub2);font-size:16px}
+.aiIcon:active{background:#E7EBF0}
+.aiIcon.done{background:#EBF2FE;color:var(--blue-deep);font-size:12.5px;font-weight:700}
+.aiSend{flex:0 0 auto;height:46px;padding:0 16px;border-radius:14px;background:var(--blue);color:#fff;
+  font-size:15px;font-weight:700}
+.aiSend:active{background:var(--blue-deep)}
+.aiSend:disabled{background:#D6DCE4}
+
 @media (max-height:720px){
   .stem{font-size:22px;line-height:1.55;margin:12px 0 10px}
   .ox{height:86px}
@@ -176,12 +255,14 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       <article class="card" id="card">
         <div class="cardTop">
           <span class="badge" id="badge"></span>
+          <button type="button" class="aiBtn" id="aiBtn" aria-label="이 문제를 AI에게 질문">💡 질문</button>
           <button type="button" class="star" id="star" aria-label="별표">☆</button>
         </div>
         <p class="stem" id="stem"></p>
         <div class="fb" id="fb" role="status" aria-live="polite">
           <p class="v" id="fbTitle"></p>
           <p class="e" id="fbBody"></p>
+          <button type="button" class="fbAsk" id="fbAsk">이해 안 되면 바로 물어보기 →</button>
         </div>
         <div class="oxrow">
           <button type="button" class="ox" id="btnO" aria-label="O">O</button>
@@ -203,6 +284,45 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     <span class="progTrack"><span class="progBar" id="progBar"></span></span>
     <span class="progNum" id="progNum">0 / 0</span>
   </footer>
+</div>
+
+<div class="aiWrap" id="aiWrap" hidden>
+  <div class="aiBack" id="aiBack"></div>
+  <section class="aiSheet" id="aiSheet" role="dialog" aria-modal="true" aria-label="AI에게 바로 질문">
+    <div class="aiGrab"></div>
+    <div class="aiHead">
+      <span class="aiBadge" id="aiBadge"></span>
+      <button type="button" class="aiKeyBtn" id="aiKeyBtn">키 설정</button>
+      <button type="button" class="aiClose" id="aiClose" aria-label="닫기">✕</button>
+    </div>
+    <p class="aiPrev" id="aiPrev"></p>
+    <div class="aiPanel" id="aiKeyPanel" hidden>
+      <div class="aiSeg" id="aiProv">
+        <button type="button" data-prov="gemini" class="on">Gemini 무료</button>
+        <button type="button" data-prov="groq">Groq 무료</button>
+        <button type="button" data-prov="openai">OpenAI 유료</button>
+      </div>
+      <div class="aiField">
+        <input type="password" id="aiKeyInput" placeholder="API 키 붙여넣기" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="API 키">
+      </div>
+      <div class="aiField aiFieldBtns">
+        <button type="button" id="aiKeySave">저장</button>
+        <button type="button" id="aiKeyDel" class="aiGhost">키 삭제</button>
+      </div>
+      <p class="aiHint" id="aiHint"></p>
+    </div>
+    <div class="aiChips" id="aiChips">
+      <button type="button" data-chip="왜 이게 답이야?">왜 이게 답이야?</button>
+      <button type="button" data-chip="쉬운 비유로 설명해 줘">쉬운 비유로 설명해 줘</button>
+      <button type="button" data-chip="시험 함정 포인트">시험 함정 포인트</button>
+    </div>
+    <div class="aiChat" id="aiChat" aria-live="polite"></div>
+    <div class="aiInputRow">
+      <input type="text" id="aiInput" placeholder="궁금한 걸 바로 물어보세요" autocomplete="off" aria-label="질문 입력">
+      <button type="button" class="aiIcon" id="aiCopy" aria-label="문제와 해설 복사" title="복사">⧉</button>
+      <button type="button" class="aiSend" id="aiSend">전송</button>
+    </div>
+  </section>
 </div>
 
 <script>
@@ -434,7 +554,8 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     for (i = 0; i < view.length; i++) {
       q = view[i]; a = state.answers[q.id]; ok = !!a && a === q.ans;
       out.push('<article class="li">');
-      out.push('<div class="liTop"><span class="liBadge">모듈 ' + q.module + ' · ' + q.subject + '</span></div>');
+      out.push('<div class="liTop"><span class="liBadge">모듈 ' + q.module + ' · ' + q.subject + '</span>' +
+        '<button type="button" class="liAiBtn" data-ai="' + q.id + '">💡 질문</button></div>');
       out.push('<p class="liStem">' + q.html + '</p>');
       out.push('<div class="liOx">');
       out.push('<button type="button" class="liBtn' + (a === "O" ? (ok ? " ok" : " no") : (a && q.ans === "O" ? " hint" : "")) + '" data-id="' + q.id + '" data-act="O">O</button>');
@@ -587,6 +708,10 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   });
 
   on(document, "keydown", function (e) {
+    if (aiS.open) {
+      if (e.key === "Escape") aiClose();
+      return;
+    }
     var k = e.key;
     if (k === "ArrowLeft") go(-1);
     else if (k === "ArrowRight") go(1);
@@ -597,6 +722,369 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   load();
   compose();
   render();
+
+  /* ---------- AI 바로 질문 바텀시트 ---------- */
+  var AI_KEY = "afpk-ai-qa-v1";
+  var AI_MODELS = {
+    gemini: ["gemini-4-hydrogen", "gemini-3.8-flash", "gemini-3.5-flash-lite"],
+    groq: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+    openai: ["gpt-4.1-mini", "gpt-4o-mini"]
+  };
+  var AI_NAMES = { gemini: "Gemini", groq: "Groq", openai: "OpenAI" };
+  var AI_SYS = [
+    "너는 AFPK 시험을 준비하는 수험생의 과외 선생님이야. 친근한 존댓말로 한국어로만 답해.",
+    "답은 4~6줄 안팎으로 짧게, 모바일에서 바로 읽히도록 문장을 끊어서 써.",
+    "첫 줄에 핵심 결론, 그다음 시험 함정(숫자·단어·예외)을 집어 줘. 도움되면 비유 한 줄을 넣어.",
+    "문제와 해설에 있는 근거만 써. 확실하지 않으면 '교재에서 확인 필요'라고 말해.",
+    "고객·개인정보는 묻지도 저장하지도 않아. 잡담은 짧게 받아 줘."
+  ].join("\n");
+  var AI_HINTS = {
+    gemini: '<b>카드 등록 없이 무료</b> · 개인/고객정보는 입력하지 마세요.<br>' +
+      '<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey</a>에서 키를 만들어 붙여넣으세요. 키는 이 브라우저에만 저장돼요.',
+    groq: '<b>무료</b> · <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>에서 키를 만들어 붙여넣으세요. 키는 이 브라우저에만 저장돼요.',
+    openai: '<b>유료 API</b> · <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a>. 쓴 만큼 결제돼요. 키는 이 브라우저에만 저장돼요.'
+  };
+  var aiCfg = { prov: "gemini", keys: { gemini: "", groq: "", openai: "" } };
+  var aiS = { q: null, msgs: [], busy: false, open: false, loading: false };
+
+  var eAiWrap = el("aiWrap"), eAiBack = el("aiBack"), eAiSheet = el("aiSheet");
+  var eAiBtn = el("aiBtn"), eFbAsk = el("fbAsk");
+  var eAiBadge = el("aiBadge"), eAiPrev = el("aiPrev"), eAiClose = el("aiClose"), eAiKeyBtn = el("aiKeyBtn");
+  var eAiPanel = el("aiKeyPanel"), eAiProv = el("aiProv"), eAiKeyInput = el("aiKeyInput");
+  var eAiHint = el("aiHint"), eAiChat = el("aiChat"), eAiChips = el("aiChips");
+  var eAiInput = el("aiInput"), eAiSend = el("aiSend"), eAiCopy = el("aiCopy");
+
+  function loadAiCfg() {
+    var raw = null;
+    try { raw = localStorage.getItem(AI_KEY); } catch (e) {}
+    if (!raw) return;
+    var c;
+    try { c = JSON.parse(raw); } catch (e) { return; }
+    if (!c || typeof c !== "object") return;
+    if (c.prov === "gemini" || c.prov === "groq" || c.prov === "openai") aiCfg.prov = c.prov;
+    if (c.keys && typeof c.keys === "object") {
+      for (var k in aiCfg.keys) if (typeof c.keys[k] === "string") aiCfg.keys[k] = c.keys[k];
+    }
+  }
+
+  function saveAiCfg() {
+    try { localStorage.setItem(AI_KEY, JSON.stringify(aiCfg)); } catch (e) {}
+  }
+
+  function plain(h) {
+    var d = document.createElement("div");
+    d.innerHTML = h || "";
+    return (d.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function aiCtxText(q) {
+    return "[문제 정보]\n모듈 " + q.module + " · " + q.subject + (q.topic ? " / " + q.topic : "") +
+      "\nO/X 문제: " + plain(q.html) + "\n정답: " + q.ans + "\n해설: " + plain(q.explain);
+  }
+
+  function paintProv() {
+    if (!eAiProv) return;
+    var btns = eAiProv.getElementsByTagName("button");
+    for (var i = 0; i < btns.length; i++) {
+      var p = btns[i].getAttribute("data-prov");
+      btns[i].className = p === aiCfg.prov ? "on" : "";
+    }
+    if (eAiHint) eAiHint.innerHTML = AI_HINTS[aiCfg.prov] || "";
+    if (eAiKeyInput) eAiKeyInput.placeholder = (aiCfg.keys[aiCfg.prov] ? "새 키로 바꾸려면 붙여넣기" : AI_NAMES[aiCfg.prov] + " API 키 붙여넣기");
+  }
+
+  function setKeyPanel(show) {
+    if (!eAiPanel) return;
+    eAiPanel.hidden = !show;
+    eAiKeyBtn.className = "aiKeyBtn" + (show ? " on" : "");
+    if (show) { paintProv(); if (eAiKeyInput) eAiKeyInput.value = ""; }
+  }
+
+  function aiRenderHead() {
+    var q = aiS.q;
+    if (!q) return;
+    eAiBadge.textContent = "모듈 " + q.module + " · " + q.subject;
+    eAiPrev.textContent = plain(q.html);
+  }
+
+  function aiRenderChat() {
+    if (!eAiChat) return;
+    eAiChat.innerHTML = "";
+    for (var i = 0; i < aiS.msgs.length; i++) {
+      var m = aiS.msgs[i], d = document.createElement("div");
+      d.className = "aiMsg " + (m.role === "user" ? "user" : m.role === "err" ? "err" : "ai");
+      d.textContent = m.text;
+      eAiChat.appendChild(d);
+    }
+    if (aiS.loading) {
+      var t = document.createElement("div");
+      t.className = "aiMsg typing";
+      t.textContent = "생각 중…";
+      eAiChat.appendChild(t);
+    }
+    eAiChat.scrollTop = eAiChat.scrollHeight;
+  }
+
+  function aiGreeting() {
+    aiS.msgs = [{ role: "hint", text: "이 문제, 어디가 헷갈려요? 아래 버튼을 누르면 바로 설명해 드릴게요." }];
+  }
+
+  function aiOpenFor(q) {
+    if (!q || !eAiWrap) return;
+    if (!aiS.q || aiS.q.id !== q.id) {
+      aiS.q = q;
+      aiS.busy = false;
+      aiS.loading = false;
+      aiGreeting();
+    }
+    aiRenderHead();
+    aiRenderChat();
+    setKeyPanel(!aiCfg.keys[aiCfg.prov]);
+    eAiWrap.hidden = false;
+    aiS.open = true;
+    if (eAiSend) eAiSend.disabled = false;
+    setTimeout(function () { if (aiS.open) eAiWrap.classList.add("open"); }, 16);
+  }
+
+  function aiClose() {
+    if (!aiS.open || !eAiWrap) return;
+    aiS.open = false;
+    eAiWrap.classList.remove("open");
+    setTimeout(function () { if (!aiS.open && eAiWrap) eAiWrap.hidden = true; }, 280);
+  }
+
+  function aiPush(role, text) { aiS.msgs.push({ role: role, text: text }); }
+
+  function aiSaveKey() {
+    var v = (eAiKeyInput && eAiKeyInput.value ? eAiKeyInput.value : "").replace(/\s+/g, "");
+    if (!v) {
+      aiPush("err", "키를 먼저 붙여넣어 주세요.");
+      aiRenderChat();
+      return;
+    }
+    aiCfg.keys[aiCfg.prov] = v;
+    saveAiCfg();
+    eAiKeyInput.value = "";
+    setKeyPanel(false);
+    aiPush("ai", AI_NAMES[aiCfg.prov] + " 키를 저장했어요. 이제 아래 버튼으로 바로 물어보세요.");
+    aiRenderChat();
+  }
+
+  function aiDelKey() {
+    aiCfg.keys[aiCfg.prov] = "";
+    saveAiCfg();
+    if (eAiKeyInput) eAiKeyInput.value = "";
+    setKeyPanel(true);
+    aiPush("ai", "이 브라우저에 저장된 " + AI_NAMES[aiCfg.prov] + " 키를 지웠어요.");
+    aiRenderChat();
+  }
+
+  function aiTurns() {
+    var out = [], first = true, i, m;
+    for (i = 0; i < aiS.msgs.length; i++) {
+      m = aiS.msgs[i];
+      if (m.role !== "user" && m.role !== "ai") continue;
+      var text = m.role === "user" && first ? aiCtxText(aiS.q) + "\n\n질문: " + m.text : m.text;
+      if (m.role === "user") first = false;
+      if (out.length && out[out.length - 1].role === m.role) out[out.length - 1].text += "\n" + text;
+      else out.push({ role: m.role, text: text });
+    }
+    return out;
+  }
+
+  function aiReq(prov, model, key, turns) {
+    var i, j;
+    if (prov === "gemini") {
+      var contents = [];
+      for (i = 0; i < turns.length; i++) {
+        contents.push({ role: turns[i].role === "ai" ? "model" : "user", parts: [{ text: turns[i].text }] });
+      }
+      return {
+        url: "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent",
+        opts: {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: AI_SYS }] },
+            contents: contents,
+            generationConfig: { temperature: 0.4, maxOutputTokens: 1200 }
+          })
+        }
+      };
+    }
+    var msgs = [{ role: "system", content: AI_SYS }];
+    for (j = 0; j < turns.length; j++) {
+      msgs.push({ role: turns[j].role === "ai" ? "assistant" : "user", content: turns[j].text });
+    }
+    return {
+      url: prov === "groq" ? "https://api.groq.com/openai/v1/chat/completions" : "https://api.openai.com/v1/chat/completions",
+      opts: {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key },
+        body: JSON.stringify({ model: model, messages: msgs, temperature: 0.4, max_tokens: 800 })
+      }
+    };
+  }
+
+  function aiRead(prov, data) {
+    var i, out = "";
+    if (prov === "gemini") {
+      var c = data && data.candidates && data.candidates[0];
+      var parts = c && c.content && c.content.parts;
+      if (parts) for (i = 0; i < parts.length; i++) if (parts[i] && parts[i].text) out += parts[i].text;
+      return out.trim();
+    }
+    var ch = data && data.choices && data.choices[0];
+    return ((ch && ch.message && ch.message.content) || "").trim();
+  }
+
+  function aiAsk(prov, key, turns) {
+    var models = AI_MODELS[prov] || AI_MODELS.gemini;
+    var i = 0, last = 0;
+    function attempt() {
+      if (i >= models.length) return Promise.reject({ kind: last === 429 ? "rate" : "model", status: last });
+      var model = models[i++], req = aiReq(prov, model, key, turns);
+      return fetch(req.url, req.opts).then(function (res) {
+        last = res.status;
+        if (res.ok) {
+          return res.json().then(function (data) {
+            var txt = aiRead(prov, data);
+            if (!txt) throw { kind: "empty" };
+            return txt;
+          });
+        }
+        return res.text().then(function (b) { return b || ""; }, function () { return ""; }).then(function (b) {
+          var retry = res.status === 404 || res.status === 429 || res.status === 500 || res.status === 503 ||
+            (res.status === 400 && /models\/|not found|not supported|unsupported|invalid model/i.test(b));
+          if (retry) return attempt();
+          throw { kind: (res.status === 400 || res.status === 401 || res.status === 403) ? "key" : "fail", status: res.status };
+        });
+      }, function () { throw { kind: "net" }; });
+    }
+    return attempt();
+  }
+
+  function aiErrText(e) {
+    var k = e && e.kind;
+    if (k === "key") return "API 키를 다시 확인해 주세요. 키 설정에서 새로 넣으면 바로 돼요.";
+    if (k === "rate") return "잠시 후 다시 눌러 주세요. 오늘 무료 사용 한도를 넘었어요.";
+    if (k === "net") return "인터넷 연결을 확인하고 잠시 후 다시 눌러 주세요.";
+    if (k === "model") return "지금은 쓸 수 있는 모델이 없어요. 잠시 후 다시 눌러 주세요.";
+    if (k === "empty") return "답을 받지 못했어요. 잠시 후 다시 눌러 주세요.";
+    return "잠시 후 다시 눌러 주세요.";
+  }
+
+  function aiSend(text) {
+    var t = (text == null ? (eAiInput ? eAiInput.value : "") : text) || "";
+    t = t.replace(/\s+/g, " ").trim();
+    if (!t || aiS.busy || !aiS.q) return;
+    if (text == null && eAiInput) eAiInput.value = "";
+    var key = aiCfg.keys[aiCfg.prov];
+    aiPush("user", t);
+    if (!key) {
+      aiPush("err", "먼저 " + AI_NAMES[aiCfg.prov] + " API 키를 넣어 주세요. 위 설정에서 1분이면 돼요.");
+      setKeyPanel(true);
+      aiRenderChat();
+      return;
+    }
+    aiS.busy = true;
+    aiS.loading = true;
+    if (eAiSend) eAiSend.disabled = true;
+    aiRenderChat();
+    aiAsk(aiCfg.prov, key, aiTurns()).then(function (out) {
+      aiS.loading = false;
+      aiS.busy = false;
+      if (eAiSend) eAiSend.disabled = false;
+      aiPush("ai", out);
+      aiRenderChat();
+    }, function (err) {
+      aiS.loading = false;
+      aiS.busy = false;
+      if (eAiSend) eAiSend.disabled = false;
+      aiPush("err", aiErrText(err));
+      aiRenderChat();
+    });
+  }
+
+  function aiCopyText() {
+    var q = aiS.q;
+    if (!q) return "";
+    var lines = ["[모듈 " + q.module + " · " + q.subject + "]", plain(q.html), "정답: " + q.ans, "해설: " + plain(q.explain)];
+    for (var i = aiS.msgs.length - 1; i >= 0; i--) {
+      if (aiS.msgs[i].role === "ai") { lines.push("AI: " + aiS.msgs[i].text); break; }
+    }
+    return lines.join("\n");
+  }
+
+  function aiCopied() {
+    if (!eAiCopy) return;
+    eAiCopy.className = "aiIcon done";
+    eAiCopy.textContent = "복사됨";
+    setTimeout(function () {
+      if (!eAiCopy) return;
+      eAiCopy.className = "aiIcon";
+      eAiCopy.textContent = "⧉";
+    }, 1300);
+  }
+
+  function aiCopy() {
+    var t = aiCopyText();
+    if (!t) return;
+    function legacy() {
+      var ta = document.createElement("textarea");
+      ta.value = t;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      aiCopied();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(aiCopied, legacy);
+    } else legacy();
+  }
+
+  on(eAiBtn, "click", function () { aiOpenFor(cur()); });
+  on(eFbAsk, "click", function () { aiOpenFor(cur()); });
+  on(eAiClose, "click", aiClose);
+  on(eAiBack, "click", aiClose);
+  on(eAiKeyBtn, "click", function () { if (eAiPanel) setKeyPanel(!!eAiPanel.hidden); });
+  on(el("aiKeySave"), "click", aiSaveKey);
+  on(el("aiKeyDel"), "click", aiDelKey);
+  on(eAiProv, "click", function (e) {
+    var t = e && e.target, p = t && t.getAttribute ? t.getAttribute("data-prov") : null;
+    if (!p || !AI_MODELS[p] || p === aiCfg.prov) return;
+    aiCfg.prov = p;
+    saveAiCfg();
+    setKeyPanel(!aiCfg.keys[p]);
+    aiRenderChat();
+  });
+  on(eAiChips, "click", function (e) {
+    var t = e && e.target, c = t && t.getAttribute ? t.getAttribute("data-chip") : null;
+    if (!c) return;
+    aiSend(c);
+  });
+  on(eAiSend, "click", function () { aiSend(null); });
+  on(eAiCopy, "click", aiCopy);
+  on(eAiInput, "keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); aiSend(null); }
+  });
+  on(eAiKeyInput, "keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); aiSaveKey(); }
+  });
+  on(eList, "click", function (e) {
+    var t = e && e.target;
+    while (t && t !== eList && !(t.getAttribute && t.getAttribute("data-ai"))) t = t.parentNode;
+    var id = t && t !== eList && t.getAttribute ? t.getAttribute("data-ai") : null;
+    if (!id || !byId[id]) return;
+    aiOpenFor(byId[id]);
+  });
+
+  loadAiCfg();
 
   window.__afpk = {
     state: state,
@@ -610,7 +1098,20 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     setView: setView,
     reshuffle: reshuffle,
     renderList: renderList,
-    key: KEY
+    key: KEY,
+    ai: {
+      open: aiOpenFor,
+      close: aiClose,
+      send: aiSend,
+      ask: aiAsk,
+      req: aiReq,
+      models: AI_MODELS,
+      names: AI_NAMES,
+      ctx: aiCtxText,
+      cfg: function () { return aiCfg; },
+      state: function () { return aiS; },
+      key: AI_KEY
+    }
   };
 })();
 </script>
