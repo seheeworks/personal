@@ -1270,6 +1270,8 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       voiceHint("브라우저 설정에서 마이크·받아쓰기 권한을 허용해 주세요.", "warn", 6000);
     } else if (err === "service-not-allowed") {
       voiceHint("이 브라우저의 음성인식 서비스를 쓸 수 없어요. 타이핑으로 질문해 주세요.", "warn", 6000);
+    } else if (err === "no-speech") {
+      voiceHint("들린 말이 없어요. 다시 눌러 말씀해 주세요.", "warn", 4000);
     } else if (err) {
       voiceHint("음성인식을 마치지 못했어요. 다시 눌러 말씀해 주세요.", "warn", 5000);
     } else {
