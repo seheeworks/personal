@@ -163,6 +163,10 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   transform:translateY(102%);transition:transform .26s cubic-bezier(.22,.9,.3,1);
   box-shadow:0 -6px 28px rgba(25,31,40,.18)}
 .aiWrap.open .aiSheet{transform:none}
+/* 모바일 Safari 하단 글래스 툴바(닫힌 상태)에 입력줄이 가리지 않도록 시트 아래 여백 48px 확보.
+   키보드가 열려 있으면(.kb) 여백을 걷어 입력줄이 키보드 바로 위에 붙는다. */
+.aiWrap.padB .aiSheet{padding-bottom:calc(48px + env(safe-area-inset-bottom))}
+.aiWrap.kb .aiSheet{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 .aiGrab{flex:0 0 auto;width:36px;height:4px;border-radius:999px;background:#E3E8EE;margin:2px auto 10px}
 .aiHead{flex:0 0 auto;display:flex;align-items:center;gap:8px}
 .aiBadge{min-width:0;background:#EBF2FE;color:var(--blue-deep);border-radius:8px;padding:5px 9px;
@@ -797,10 +801,33 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     return Math.min.apply(Math, cands);
   }
 
+  // 키보드가 닫혀 있을 때의 기준 높이(aiBaseH)를 학습해 두고, 그보다 크게 줄어들면
+  // 키보드가 올라온 것으로 본다. 키보드가 없을 때는 Safari 하단 툴바를 피해 48px 여백(padB),
+  // 키보드가 올라오면 그 여백을 걷고(.kb) 입력줄을 키보드 위에 붙인다.
+  var aiBaseH = 0;
+  function aiIsMobile() {
+    var coarse = false;
+    try { coarse = !!(window.matchMedia && window.matchMedia("(pointer:coarse)").matches); } catch (e) {}
+    if (coarse) return true;
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent || "")) return true;
+    return (window.innerWidth || 0) <= 540;
+  }
+  function aiFocused() {
+    var a = document.activeElement;
+    return !!(a && (a === eAiInput || a === eAiKeyInput));
+  }
   function aiFit() {
     if (!eAiWrap) return;
     var b = aiUsableBottom();
     if (!(b > 0)) return;
+    var focused = aiFocused();
+    if (focused) { if (!aiBaseH) aiBaseH = b; }
+    else if (b > aiBaseH) aiBaseH = b;
+    var kb = (aiBaseH - b >= 110) || (focused && aiBaseH - b >= 80);
+    if (eAiWrap.classList) {
+      eAiWrap.classList.toggle("padB", aiIsMobile());
+      eAiWrap.classList.toggle("kb", !!kb);
+    }
     eAiWrap.style.setProperty("--aiH", Math.round(b) + "px");
   }
 
@@ -1515,7 +1542,10 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     window.visualViewport.addEventListener("scroll", aiFit);
   }
   window.addEventListener("resize", function () { if (aiS.open) aiFit(); });
-  window.addEventListener("orientationchange", function () { setTimeout(aiFit, 300); });
+  window.addEventListener("orientationchange", function () {
+    if (!aiFocused()) aiBaseH = 0;
+    setTimeout(aiFit, 300);
+  });
   document.addEventListener("focusin", function (e) {
     if (eAiSheet && e.target && eAiSheet.contains(e.target)) aiFitSoon(300);
   });
