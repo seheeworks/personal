@@ -152,11 +152,12 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .liTop .liBadge{max-width:calc(100% - 86px)}
 .liAiBtn:active{background:#DCE9FD}
 
-.aiWrap{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.aiWrap{position:fixed;left:0;right:0;top:0;height:var(--aiH,100svh);z-index:60;
+  display:flex;align-items:flex-end;justify-content:center}
 .aiWrap[hidden]{display:none !important}
 .aiBack{position:absolute;inset:0;background:rgba(25,31,40,.44);opacity:0;transition:opacity .22s ease}
 .aiWrap.open .aiBack{opacity:1}
-.aiSheet{position:relative;width:100%;max-width:540px;max-height:88vh;max-height:88svh;background:#fff;
+.aiSheet{position:relative;width:100%;max-width:540px;max-height:calc(100% - 6px);background:#fff;
   border-radius:24px 24px 0 0;display:flex;flex-direction:column;
   padding:8px 16px calc(10px + env(safe-area-inset-bottom));
   transform:translateY(102%);transition:transform .26s cubic-bezier(.22,.9,.3,1);
@@ -171,9 +172,13 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .aiKeyBtn.on{background:#EBF2FE;color:var(--blue-deep)}
 .aiClose{flex:0 0 auto;width:32px;height:32px;border-radius:9px;font-size:16px;line-height:1;color:var(--sub2)}
 .aiClose:active{background:#F2F4F6}
-.aiPrev{flex:0 0 auto;margin:9px 0 0;font-size:14px;line-height:1.45;color:var(--sub);
+.aiPrev{margin:9px 0 0;font-size:14px;line-height:1.45;color:var(--sub);
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   word-break:keep-all;overflow-wrap:anywhere}
+.aiBody{flex:0 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;display:flex;flex-direction:column}
+.aiBody::-webkit-scrollbar{width:0}
+.aiBody .aiPrev{flex:0 0 auto}
 .aiPanel{flex:0 0 auto;margin-top:10px;border-radius:16px;background:#F7F8FA;padding:11px 11px 12px}
 .aiSeg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;background:#E3E8EE;border-radius:11px;padding:3px}
 .aiSeg button{height:34px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--sub2)}
@@ -182,6 +187,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .aiField input{flex:1 1 auto;min-width:0;height:42px;border:0;border-radius:11px;background:#fff;padding:0 12px;
   font-family:inherit;font-size:15px;color:var(--ink);outline:none;box-shadow:inset 0 0 0 1.5px #E3E8EE}
 .aiField input:focus{box-shadow:inset 0 0 0 1.5px var(--blue)}
+#aiKeyInput{-webkit-text-security:disc}
 .aiFieldBtns button{flex:1 1 0;height:40px;border-radius:11px;font-size:14.5px;font-weight:700}
 #aiKeySave{background:var(--blue);color:#fff}
 #aiKeySave:active{background:var(--blue-deep)}
@@ -193,7 +199,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .aiChips button{flex:0 0 auto;height:34px;padding:0 12px;border-radius:999px;background:#F2F4F6;color:#333D4B;
   font-size:13.5px;font-weight:600;white-space:nowrap}
 .aiChips button:active{background:#E7EBF0}
-.aiChat{flex:1 1 auto;min-height:88px;margin-top:10px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+.aiChat{flex:0 0 auto;min-height:88px;margin-top:10px;
   display:flex;flex-direction:column;gap:8px;padding-bottom:2px}
 .aiChat::-webkit-scrollbar{width:0}
 .aiMsg{max-width:88%;border-radius:16px;padding:10px 13px;font-size:15px;line-height:1.55;
@@ -309,6 +315,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       <button type="button" class="aiKeyBtn" id="aiKeyBtn">키 설정</button>
       <button type="button" class="aiClose" id="aiClose" aria-label="닫기">✕</button>
     </div>
+    <div class="aiBody" id="aiBody">
     <p class="aiPrev" id="aiPrev"></p>
     <div class="aiPanel" id="aiKeyPanel" hidden>
       <div class="aiSeg" id="aiProv">
@@ -317,7 +324,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
         <button type="button" data-prov="openai">OpenAI 유료</button>
       </div>
       <div class="aiField">
-        <input type="password" id="aiKeyInput" placeholder="API 키 붙여넣기" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="API 키">
+        <input type="text" id="aiKeyInput" placeholder="API 키 붙여넣기" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-1p-ignore="true" data-lpignore="true" data-form-type="other" aria-label="API 키">
       </div>
       <div class="aiField aiFieldBtns">
         <button type="button" id="aiKeySave">저장</button>
@@ -331,6 +338,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       <button type="button" data-chip="시험 함정 포인트">시험 함정 포인트</button>
     </div>
     <div class="aiChat" id="aiChat" aria-live="polite"></div>
+    </div>
     <p class="aiVoiceHint" id="aiVoiceHint" role="status" aria-live="polite" hidden></p>
     <div class="aiInputRow">
       <input type="text" id="aiInput" placeholder="궁금한 걸 바로 물어보세요" autocomplete="off" aria-label="질문 입력">
@@ -769,6 +777,38 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   var eAiPanel = el("aiKeyPanel"), eAiProv = el("aiProv"), eAiKeyInput = el("aiKeyInput");
   var eAiHint = el("aiHint"), eAiChat = el("aiChat"), eAiChips = el("aiChips");
   var eAiInput = el("aiInput"), eAiSend = el("aiSend"), eAiCopy = el("aiCopy");
+  var eApp = document.querySelector ? document.querySelector(".app") : null, eAiBody = el("aiBody");
+
+  // iOS Safari는 주소창·하단 툴바가 화면 위에 떠 있어서 position:fixed; inset:0 만 쓰면
+  // 시트 아랫부분이 툴바에 가린다. 실제로 쓸 수 있는 아래끝(visual viewport · 레이아웃 뷰포트 ·
+  // .app 상자 중 가장 위쪽 값)을 재서 시트 높이를 맞춘다. 키보드가 열리면 visual viewport가
+  // 줄어들므로 같은 계산으로 입력줄이 키보드 위에 올라간다.
+  function aiUsableBottom() {
+    var vv = window.visualViewport, cands = [], v;
+    v = vv ? vv.height : (window.innerHeight || 0);
+    if (v > 0) cands.push(v);
+    v = document.documentElement ? document.documentElement.clientHeight || 0 : 0;
+    if (v > 0) cands.push(v);
+    if (eApp && eApp.getBoundingClientRect) {
+      v = eApp.getBoundingClientRect().bottom || 0;
+      if (v > 0) cands.push(v);
+    }
+    if (!cands.length) return 0;
+    return Math.min.apply(Math, cands);
+  }
+
+  function aiFit() {
+    if (!eAiWrap) return;
+    var b = aiUsableBottom();
+    if (!(b > 0)) return;
+    eAiWrap.style.setProperty("--aiH", Math.round(b) + "px");
+  }
+
+  function aiFitSoon(delay) {
+    aiFit();
+    setTimeout(aiFit, delay || 120);
+    if (window.requestAnimationFrame) window.requestAnimationFrame(aiFit);
+  }
 
   function loadAiCfg() {
     var raw = null;
@@ -838,7 +878,8 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       t.textContent = "생각 중…";
       eAiChat.appendChild(t);
     }
-    eAiChat.scrollTop = eAiChat.scrollHeight;
+    var sc = eAiBody || eAiChat;
+    sc.scrollTop = sc.scrollHeight;
   }
 
   function aiGreeting() {
@@ -859,6 +900,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     setKeyPanel(!aiCfg.keys[aiCfg.prov]);
     eAiWrap.hidden = false;
     aiS.open = true;
+    aiFitSoon(260);
     if (eAiSend) eAiSend.disabled = false;
     setTimeout(function () { if (aiS.open) eAiWrap.classList.add("open"); }, 16);
   }
@@ -1468,6 +1510,18 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   on(eFbAsk, "click", function () { aiOpenFor(cur()); });
   on(eAiClose, "click", aiClose);
   on(eAiBack, "click", aiClose);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", aiFit);
+    window.visualViewport.addEventListener("scroll", aiFit);
+  }
+  window.addEventListener("resize", function () { if (aiS.open) aiFit(); });
+  window.addEventListener("orientationchange", function () { setTimeout(aiFit, 300); });
+  document.addEventListener("focusin", function (e) {
+    if (eAiSheet && e.target && eAiSheet.contains(e.target)) aiFitSoon(300);
+  });
+  document.addEventListener("focusout", function (e) {
+    if (eAiSheet && e.target && eAiSheet.contains(e.target)) setTimeout(aiFit, 300);
+  });
   on(eAiKeyBtn, "click", function () { if (eAiPanel) setKeyPanel(!!eAiPanel.hidden); });
   on(el("aiKeySave"), "click", aiSaveKey);
   on(el("aiKeyDel"), "click", aiDelKey);
@@ -1518,6 +1572,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     ai: {
       open: aiOpenFor,
       close: aiClose,
+      fit: aiFit,
       send: aiSend,
       ask: aiAsk,
       req: aiReq,
