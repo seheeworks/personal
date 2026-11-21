@@ -214,6 +214,22 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   font-size:15px;font-weight:700}
 .aiSend:active{background:var(--blue-deep)}
 .aiSend:disabled{background:#D6DCE4}
+.aiMic{position:relative;font-size:17px;line-height:1}
+.aiMic:active{background:#E7EBF0}
+.aiMic.recording{background:var(--coral-soft);color:var(--coral);font-size:15px}
+.aiMic.recording::after{content:"";position:absolute;inset:0;border-radius:14px;pointer-events:none;
+  animation:micRing 1.3s ease-out infinite}
+@keyframes micRing{0%{box-shadow:0 0 0 0 rgba(240,68,82,.34)}70%{box-shadow:0 0 0 8px rgba(240,68,82,0)}100%{box-shadow:0 0 0 0 rgba(240,68,82,0)}}
+.aiVoiceHint{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin:9px 2px 0;
+  font-size:12.5px;line-height:1.4;font-weight:600;letter-spacing:-.01em;color:var(--blue-deep)}
+.aiVoiceHint::before{content:"";flex:0 0 auto;width:6px;height:6px;border-radius:999px;background:currentColor}
+.aiVoiceHint.rec{color:var(--coral)}
+.aiVoiceHint.warn{color:#B4471F}
+@media (max-width:400px){
+  .aiInputRow{gap:5px}
+  .aiIcon{width:44px}
+  .aiSend{padding:0 14px}
+}
 
 @media (max-height:720px){
   .stem{font-size:22px;line-height:1.55;margin:12px 0 10px}
@@ -315,8 +331,10 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       <button type="button" data-chip="시험 함정 포인트">시험 함정 포인트</button>
     </div>
     <div class="aiChat" id="aiChat" aria-live="polite"></div>
+    <p class="aiVoiceHint" id="aiVoiceHint" role="status" aria-live="polite" hidden></p>
     <div class="aiInputRow">
       <input type="text" id="aiInput" placeholder="궁금한 걸 바로 물어보세요" autocomplete="off" aria-label="질문 입력">
+      <button type="button" class="aiIcon aiMic" id="aiMic" aria-label="음성으로 질문하기" title="음성 입력" aria-pressed="false">🎙️</button>
       <button type="button" class="aiIcon" id="aiCopy" aria-label="문제와 해설 복사" title="복사">⧉</button>
       <button type="button" class="aiSend" id="aiSend">전송</button>
     </div>
@@ -830,6 +848,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   function aiOpenFor(q) {
     if (!q || !eAiWrap) return;
     if (!aiS.q || aiS.q.id !== q.id) {
+      voiceAbort();
       aiS.q = q;
       aiS.busy = false;
       aiS.loading = false;
@@ -846,6 +865,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 
   function aiClose() {
     if (!aiS.open || !eAiWrap) return;
+    voiceAbort();
     aiS.open = false;
     eAiWrap.classList.remove("open");
     setTimeout(function () { if (!aiS.open && eAiWrap) eAiWrap.hidden = true; }, 280);
@@ -891,12 +911,23 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     return out;
   }
 
-  function aiReq(prov, model, key, turns) {
+  function aiReq(prov, model, key, turns, audio) {
     var i, j;
     if (prov === "gemini") {
       var contents = [];
       for (i = 0; i < turns.length; i++) {
         contents.push({ role: turns[i].role === "ai" ? "model" : "user", parts: [{ text: turns[i].text }] });
+      }
+      if (audio && audio.data) {
+        for (i = contents.length - 1; i >= 0; i--) {
+          if (contents[i].role !== "user") continue;
+          var vtext = AI_VOICE_PROMPT + (i === 0 && aiS.q ? "\n\n" + aiCtxText(aiS.q) : "");
+          var prev = (contents[i].parts[0] && contents[i].parts[0].text) || "";
+          prev = prev.split("\n").filter(function (line) { return line.replace(/\s+/g, "") !== "🎤음성질문"; }).join("\n").replace(/\s+/g, " ").trim();
+          if (prev) vtext += "\n\n직전에 남긴 말: " + prev;
+          contents[i].parts = [{ text: vtext }, { inlineData: { mimeType: audio.mime, data: audio.data } }];
+          break;
+        }
       }
       return {
         url: "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent",
@@ -937,12 +968,12 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     return ((ch && ch.message && ch.message.content) || "").trim();
   }
 
-  function aiAsk(prov, key, turns) {
+  function aiAsk(prov, key, turns, audio) {
     var models = AI_MODELS[prov] || AI_MODELS.gemini;
     var i = 0, last = 0;
     function attempt() {
       if (i >= models.length) return Promise.reject({ kind: last === 429 ? "rate" : "model", status: last });
-      var model = models[i++], req = aiReq(prov, model, key, turns);
+      var model = models[i++], req = aiReq(prov, model, key, turns, audio);
       return fetch(req.url, req.opts).then(function (res) {
         last = res.status;
         if (res.ok) {
@@ -1047,6 +1078,390 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     } else legacy();
   }
 
+  /* ---------- 음성 질문 (Web Speech API 우선 · MediaRecorder 폴백) ---------- */
+  var AI_VOICE_PROMPT = "사용자가 음성으로 AFPK 이 문제를 질문했습니다. 음성 질문 내용을 정확히 파악해 핵심부터 답변해 주세요.";
+  var VOICE_MIMES = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/aac"];
+  var VOICE_MAX_MS = 60000;
+  var VOICE_TX = {
+    groq: ["whisper-large-v3-turbo", "whisper-large-v3"],
+    openai: ["gpt-4o-mini-transcribe", "whisper-1"]
+  };
+  var VOICE = {
+    mode: "", id: 0, recog: null, rec: null, stream: null, chunks: [],
+    base: "", finalText: "", interim: "", stopping: false, fellBack: false,
+    err: "", mime: "", timer: 0, hintTimer: 0
+  };
+
+  var eAiMic = el("aiMic"), eAiVoiceHint = el("aiVoiceHint");
+
+  function voiceSR() { return window.SpeechRecognition || window.webkitSpeechRecognition || null; }
+  function voiceMR() { return window.MediaRecorder || null; }
+  function voiceHasGum() { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia); }
+
+  function voiceSecure() {
+    if (window.isSecureContext) return true;
+    var p = location.protocol, h = location.hostname;
+    return p === "https:" || p === "file:" || h === "localhost" || h === "127.0.0.1" || h === "";
+  }
+
+  function voiceHint(msg, kind, autoHide) {
+    if (!eAiVoiceHint) return;
+    if (VOICE.hintTimer) { clearTimeout(VOICE.hintTimer); VOICE.hintTimer = 0; }
+    if (!msg) {
+      eAiVoiceHint.hidden = true;
+      eAiVoiceHint.textContent = "";
+      eAiVoiceHint.className = "aiVoiceHint";
+      return;
+    }
+    eAiVoiceHint.hidden = false;
+    eAiVoiceHint.className = "aiVoiceHint" + (kind ? " " + kind : "");
+    eAiVoiceHint.textContent = msg;
+    if (autoHide) {
+      VOICE.hintTimer = setTimeout(function () {
+        VOICE.hintTimer = 0;
+        if (!VOICE.mode) voiceHint("", "");
+      }, autoHide);
+    }
+  }
+
+  function paintMic() {
+    if (!eAiMic) return;
+    var rec = !!VOICE.mode;
+    eAiMic.className = "aiIcon aiMic" + (rec ? " recording" : "");
+    eAiMic.textContent = rec ? "⏹" : "🎙️";
+    eAiMic.setAttribute("aria-pressed", rec ? "true" : "false");
+    eAiMic.setAttribute("aria-label", rec ? "음성 입력 중지" : "음성으로 질문하기");
+    eAiMic.title = rec ? "녹음 중지" : "음성 입력";
+  }
+
+  function voiceValue() {
+    var core = (VOICE.finalText + (VOICE.interim ? (VOICE.finalText ? " " : "") + VOICE.interim : ""))
+      .replace(/\s+/g, " ").trim();
+    var base = VOICE.base || "";
+    if (!core) return base;
+    if (!base) return core;
+    return base + (/[\s]$/.test(base) ? "" : " ") + core;
+  }
+
+  function voicePaint() { if (eAiInput) eAiInput.value = voiceValue(); }
+
+  function voiceCommit(txt) {
+    var base = VOICE.base || "";
+    var out = txt ? (base ? base + (/[\s]$/.test(base) ? "" : " ") + txt : txt) : base;
+    if (eAiInput) eAiInput.value = out;
+    VOICE.base = ""; VOICE.finalText = ""; VOICE.interim = "";
+  }
+
+  function voiceStopStream() {
+    var s = VOICE.stream;
+    VOICE.stream = null;
+    if (!s) return;
+    try {
+      var ts = s.getTracks();
+      for (var i = 0; i < ts.length; i++) { try { ts[i].stop(); } catch (e) {} }
+    } catch (e) {}
+  }
+
+  function voiceClearTimer() {
+    if (VOICE.timer) { clearTimeout(VOICE.timer); VOICE.timer = 0; }
+  }
+
+  function voiceAbort() {
+    var r = VOICE.recog, rec = VOICE.rec, was = VOICE.mode;
+    VOICE.id++;
+    VOICE.recog = null; VOICE.rec = null; VOICE.mode = "";
+    VOICE.chunks = []; VOICE.finalText = ""; VOICE.interim = ""; VOICE.base = ""; VOICE.err = "";
+    VOICE.stopping = false;
+    voiceClearTimer();
+    voiceStopStream();
+    try { if (r) r.abort(); } catch (e) {}
+    try { if (rec && rec.state && rec.state !== "inactive") rec.stop(); } catch (e) {}
+    paintMic();
+    if (was) voiceHint("", "");
+  }
+
+  function voiceToggle() {
+    if (VOICE.mode) {
+      VOICE.stopping = true;
+      if (VOICE.mode === "speech") {
+        try { if (VOICE.recog) VOICE.recog.stop(); else voiceEndSpeech(); }
+        catch (e) { voiceEndSpeech(); }
+      } else {
+        voiceClearTimer();
+        if (!VOICE.rec) { voiceAbort(); return; }
+        voiceHint("녹음 마치고 정리하는 중…", "");
+        try {
+          if (VOICE.rec && VOICE.rec.state !== "inactive") VOICE.rec.stop(); else voiceEndRecord();
+        } catch (e) { voiceEndRecord(); }
+      }
+      return;
+    }
+    if (!aiS.open) return;
+    if (!voiceSecure()) {
+      voiceHint("음성 입력은 https 주소에서만 쓸 수 있어요. 배포된 주소로 열어 주세요.", "warn", 5000);
+      return;
+    }
+    if (aiS.busy) {
+      voiceHint("답변을 기다리는 중이에요. 답이 오면 다시 눌러 주세요.", "warn", 3500);
+      return;
+    }
+    VOICE.fellBack = false;
+    VOICE.err = "";
+    if (voiceSR()) voiceStartSpeech();
+    else if (voiceMR() && voiceHasGum()) voiceStartRecord();
+    else voiceHint("이 브라우저는 음성 입력을 지원하지 않아요. 타이핑으로 질문해 주세요.", "warn", 5000);
+  }
+
+  function voiceStartSpeech() {
+    var SRc = voiceSR(), id = ++VOICE.id, r;
+    try { r = new SRc(); }
+    catch (e) { VOICE.mode = ""; VOICE.recog = null; paintMic(); voiceStartRecord(); return; }
+    VOICE.mode = "speech"; VOICE.recog = r; VOICE.err = ""; VOICE.stopping = false;
+    VOICE.base = eAiInput ? eAiInput.value : "";
+    VOICE.finalText = ""; VOICE.interim = "";
+    r.lang = "ko-KR";
+    r.interimResults = true;
+    r.continuous = false;
+    r.maxAlternatives = 1;
+    r.onresult = function (ev) {
+      if (id !== VOICE.id) return;
+      var fin = "", itr = "", i, res, t;
+      for (i = (ev && ev.resultIndex) || 0; i < (ev && ev.results ? ev.results.length : 0); i++) {
+        res = ev.results[i];
+        t = res && res[0] ? (res[0].transcript || "") : "";
+        if (res && res.isFinal) fin += t; else itr += t;
+      }
+      if (fin) VOICE.finalText = (VOICE.finalText + " " + fin).replace(/\s+/g, " ").trim();
+      VOICE.interim = itr;
+      voicePaint();
+      voiceHint("듣고 있어요… 말씀하시면 입력창에 바로 적혀요", "rec");
+    };
+    r.onerror = function (ev) { if (id === VOICE.id) VOICE.err = (ev && ev.error) || "error"; };
+    r.onend = function () { if (id === VOICE.id) voiceEndSpeech(); };
+    paintMic();
+    voiceHint("듣고 있어요…", "rec");
+    try { r.start(); }
+    catch (e) {
+      VOICE.id++; VOICE.recog = null; VOICE.mode = ""; paintMic();
+      voiceStartRecord();
+    }
+  }
+
+  function voiceEndSpeech() {
+    if (VOICE.mode !== "speech") return;
+    var err = VOICE.err;
+    var core = (VOICE.finalText + (VOICE.interim ? (VOICE.finalText ? " " : "") + VOICE.interim : ""))
+      .replace(/\s+/g, " ").trim();
+    VOICE.recog = null; VOICE.mode = ""; VOICE.stopping = false; VOICE.interim = "";
+    paintMic();
+    if (core) {
+      voiceCommit(core);
+      voiceHint("입력창에 적었어요. 확인하고 전송을 눌러 주세요.", "", 4000);
+      return;
+    }
+    var canFall = !!(voiceMR() && voiceHasGum());
+    var hardErr = err && err !== "not-allowed" && err !== "no-speech" && err !== "aborted";
+    if (hardErr && canFall && !VOICE.fellBack) {
+      VOICE.fellBack = true;
+      voiceStartRecord();
+      return;
+    }
+    if (err === "not-allowed") {
+      voiceHint("브라우저 설정에서 마이크·받아쓰기 권한을 허용해 주세요.", "warn", 6000);
+    } else if (err === "service-not-allowed") {
+      voiceHint("이 브라우저의 음성인식 서비스를 쓸 수 없어요. 타이핑으로 질문해 주세요.", "warn", 6000);
+    } else if (err) {
+      voiceHint("음성인식을 마치지 못했어요. 다시 눌러 말씀해 주세요.", "warn", 5000);
+    } else {
+      voiceHint("들린 말이 없어요. 다시 눌러 말씀해 주세요.", "warn", 4000);
+    }
+  }
+
+  function voiceFail(msg) {
+    VOICE.id++;
+    VOICE.rec = null; VOICE.mode = "";
+    voiceClearTimer();
+    voiceStopStream();
+    paintMic();
+    voiceHint(msg, "warn", 5000);
+  }
+
+  function voiceStartRecord() {
+    var MRc = voiceMR();
+    if (!MRc || !voiceHasGum()) {
+      voiceHint("이 브라우저는 음성 녹음을 지원하지 않아요. 타이핑으로 질문해 주세요.", "warn", 5000);
+      return;
+    }
+    var id = ++VOICE.id;
+    VOICE.mode = "record"; VOICE.err = ""; VOICE.stopping = false; VOICE.chunks = [];
+    VOICE.base = eAiInput ? eAiInput.value : "";
+    paintMic();
+    voiceHint("마이크 켜는 중…", "rec");
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      if (id !== VOICE.id || !aiS.open) {
+        try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+        return;
+      }
+      VOICE.stream = stream;
+      var mime = "", i;
+      if (MRc.isTypeSupported) {
+        for (i = 0; i < VOICE_MIMES.length; i++) {
+          if (MRc.isTypeSupported(VOICE_MIMES[i])) { mime = VOICE_MIMES[i]; break; }
+        }
+      }
+      var rec;
+      try { rec = mime ? new MRc(stream, { mimeType: mime }) : new MRc(stream); }
+      catch (e) {
+        try { rec = new MRc(stream); }
+        catch (e2) { voiceFail("녹음을 시작하지 못했어요. 다시 눌러 주세요."); return; }
+      }
+      VOICE.rec = rec;
+      VOICE.mime = (rec.mimeType || mime || "audio/webm").toLowerCase();
+      rec.ondataavailable = function (ev) {
+        if (ev && ev.data && (ev.data.size || ev.data.byteLength)) VOICE.chunks.push(ev.data);
+      };
+      rec.onstop = function () { if (id !== VOICE.id) return; voiceEndRecord(); };
+      rec.onerror = function () { if (id === VOICE.id) VOICE.err = "record"; };
+      try { rec.start(); }
+      catch (e) { voiceFail("녹음을 시작하지 못했어요. 다시 눌러 주세요."); return; }
+      voiceHint("녹음 중… 다시 누르면 전송돼요", "rec");
+      VOICE.timer = setTimeout(function () {
+        VOICE.timer = 0;
+        if (VOICE.mode === "record") voiceToggle();
+      }, VOICE_MAX_MS);
+    }, function () {
+      if (id !== VOICE.id) return;
+      VOICE.mode = ""; VOICE.rec = null;
+      paintMic();
+      voiceHint("브라우저 설정에서 마이크 권한을 허용해 주세요.", "warn", 6000);
+    });
+  }
+
+  function voiceEndRecord() {
+    if (VOICE.mode !== "record") return;
+    VOICE.id++;
+    voiceClearTimer();
+    var chunks = VOICE.chunks, raw = VOICE.mime || "audio/webm";
+    VOICE.chunks = []; VOICE.rec = null; VOICE.mode = "";
+    voiceStopStream();
+    paintMic();
+    var mime = String(raw).split(";")[0].replace(/\s+/g, "").toLowerCase();
+    if (mime === "audio/mp4" || mime === "audio/x-m4a" || mime === "audio/m4a") mime = "audio/m4a";
+    if (mime !== "audio/m4a" && mime !== "audio/webm" && mime !== "audio/aac") {
+      mime = String(raw).indexOf("mp4") >= 0 ? "audio/m4a" : "audio/webm";
+    }
+    var blob = null;
+    try { blob = new Blob(chunks, { type: mime }); } catch (e) { blob = null; }
+    if (!blob || !blob.size) {
+      voiceHint("녹음된 소리가 없어요. 다시 눌러 말씀해 주세요.", "warn", 5000);
+      return;
+    }
+    var prov = aiCfg.prov, key = aiCfg.keys[prov];
+    if (!key) { voiceNeedKey(); return; }
+    if (prov === "gemini") {
+      voiceHint("음성 질문을 보내는 중…", "");
+      voiceReadB64(blob).then(function (b64) {
+        voiceAskAudio(mime, b64);
+      }, function () {
+        voiceHint("녹음을 읽지 못했어요. 다시 시도해 주세요.", "warn", 5000);
+      });
+      return;
+    }
+    voiceHint("녹음을 글로 바꾸는 중…", "");
+    voiceTranscribe(blob, mime);
+  }
+
+  function voiceReadB64(blob) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () {
+        var s = String(fr.result || ""), k = s.indexOf(",");
+        if (k < 0) { reject(new Error("b64")); return; }
+        resolve(s.slice(k + 1));
+      };
+      fr.onerror = function () { reject(new Error("read")); };
+      fr.readAsDataURL(blob);
+    });
+  }
+
+  function voiceAskAudio(mime, b64) {
+    var key = aiCfg.keys[aiCfg.prov];
+    if (!key) { voiceNeedKey(); return; }
+    aiPush("user", "🎤 음성 질문");
+    aiS.busy = true;
+    aiS.loading = true;
+    if (eAiSend) eAiSend.disabled = true;
+    aiRenderChat();
+    voiceHint("", "");
+    aiAsk(aiCfg.prov, key, aiTurns(), { mime: mime, data: b64 }).then(function (out) {
+      aiS.loading = false;
+      aiS.busy = false;
+      if (eAiSend) eAiSend.disabled = false;
+      aiPush("ai", out);
+      aiRenderChat();
+    }, function (err) {
+      aiS.loading = false;
+      aiS.busy = false;
+      if (eAiSend) eAiSend.disabled = false;
+      aiPush("err", aiErrText(err));
+      aiRenderChat();
+    });
+  }
+
+  function voiceTranscribe(blob, mime) {
+    var prov = aiCfg.prov, key = aiCfg.keys[prov];
+    var models = VOICE_TX[prov] || VOICE_TX.gemini;
+    var name = mime === "audio/m4a" ? "voice.m4a" : mime === "audio/aac" ? "voice.aac" : "voice.webm";
+    var base = prov === "groq" ? "https://api.groq.com/openai/v1/audio/transcriptions" : "https://api.openai.com/v1/audio/transcriptions";
+    var i = 0;
+    function attempt() {
+      if (i >= models.length) return Promise.reject({ kind: "model" });
+      var fd = new FormData();
+      fd.append("file", blob, name);
+      fd.append("model", models[i++]);
+      fd.append("language", "ko");
+      return fetch(base, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + key },
+        body: fd
+      }).then(function (res) {
+        if (res.ok) {
+          return res.json().then(function (d) {
+            var t = ((d && d.text) || "").replace(/\s+/g, " ").trim();
+            if (!t) throw { kind: "empty" };
+            return t;
+          });
+        }
+        return res.text().then(function (b) { return b || ""; }, function () { return ""; }).then(function (b) {
+          var retry = res.status === 404 || res.status === 429 || res.status >= 500 ||
+            (res.status === 400 && /model|not found|not supported|unsupported/i.test(b));
+          if (retry) return attempt();
+          throw { kind: (res.status === 401 || res.status === 403) ? "key" : "fail", status: res.status };
+        });
+      }, function () { throw { kind: "net" }; });
+    }
+    attempt().then(function (txt) {
+      voiceCommit(txt);
+      voiceHint("받아쓰기 완료 — 확인하고 전송을 눌러 주세요.", "", 4000);
+    }, function (err) {
+      voiceHint(aiErrText(err), "warn", 5000);
+    });
+  }
+
+  function voiceNeedKey() {
+    setKeyPanel(true);
+    if (aiCfg.prov === "gemini") {
+      voiceHint("음성 인식이 지원되지 않는 브라우저라 Gemini 무료 키를 먼저 저장하면 음성 녹음 질문이 가능해요", "warn", 10000);
+    } else {
+      voiceHint(AI_NAMES[aiCfg.prov] + " 키를 저장하면 녹음한 음성을 글로 바꿔 입력창에 넣어 드려요.", "warn", 9000);
+    }
+  }
+
+  on(eAiMic, "click", voiceToggle);
+  on(document, "visibilitychange", function () { if (document.hidden && VOICE.mode) voiceAbort(); });
+  on(window, "pagehide", voiceAbort);
+  on(window, "beforeunload", voiceAbort);
+
   on(eAiBtn, "click", function () { aiOpenFor(cur()); });
   on(eFbAsk, "click", function () { aiOpenFor(cur()); });
   on(eAiClose, "click", aiClose);
@@ -1067,10 +1482,10 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     if (!c) return;
     aiSend(c);
   });
-  on(eAiSend, "click", function () { aiSend(null); });
+  on(eAiSend, "click", function () { if (VOICE.mode) voiceAbort(); aiSend(null); });
   on(eAiCopy, "click", aiCopy);
   on(eAiInput, "keydown", function (e) {
-    if (e.key === "Enter") { e.preventDefault(); aiSend(null); }
+    if (e.key === "Enter") { e.preventDefault(); if (VOICE.mode) voiceAbort(); aiSend(null); }
   });
   on(eAiKeyInput, "keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); aiSaveKey(); }
@@ -1109,7 +1524,19 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       ctx: aiCtxText,
       cfg: function () { return aiCfg; },
       state: function () { return aiS; },
-      key: AI_KEY
+      key: AI_KEY,
+      voice: {
+        toggle: voiceToggle,
+        stop: voiceAbort,
+        hint: function () { return eAiVoiceHint && !eAiVoiceHint.hidden ? eAiVoiceHint.textContent : ""; },
+        state: function () {
+          return {
+            mode: VOICE.mode, base: VOICE.base, finalText: VOICE.finalText,
+            interim: VOICE.interim, mime: VOICE.mime, err: VOICE.err
+          };
+        },
+        secure: voiceSecure
+      }
     }
   };
 })();
