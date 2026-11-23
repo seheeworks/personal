@@ -25,7 +25,8 @@ body{
   font-size:17px;line-height:1.5;overflow:hidden;overscroll-behavior:none;
 }
 button{font-family:inherit;cursor:pointer;touch-action:manipulation;border:0;background:none;color:inherit}
-.app{display:flex;flex-direction:column;height:100%;max-width:540px;margin:0 auto;position:relative}
+.app{display:flex;flex-direction:column;height:100%;max-width:540px;margin:0 auto;position:relative;
+  z-index:2;will-change:transform}
 
 /* ---------- 헤더 ---------- */
 header{padding:calc(8px + env(safe-area-inset-top)) 16px 4px;flex:0 0 auto}
@@ -50,8 +51,8 @@ header{padding:calc(8px + env(safe-area-inset-top)) 16px 4px;flex:0 0 auto}
 .chip.on{background:var(--ink);color:#fff}
 
 /* ---------- 카드 ---------- */
-main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
-.pane{height:100%}
+main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:hidden}
+.pane{height:100%;position:relative}
 .card{
   height:100%;display:flex;flex-direction:column;
   background:#fff;border-radius:24px;padding:18px 18px 14px;
@@ -268,18 +269,36 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .list.in-down{animation:listUp .24s ease-out both}
 @keyframes listUp{from{opacity:.3;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-.pullHint{position:absolute;left:50%;z-index:45;height:34px;padding:0 14px 0 5px;border-radius:999px;
-  display:inline-flex;align-items:center;gap:7px;background:rgba(25,31,40,.92);color:#fff;
-  font-size:13px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;pointer-events:none;
-  opacity:0;transform:translate(-50%,0);transition:opacity .14s ease}
-.pullHint.show{opacity:1}
-.pullHint .ico{flex:0 0 auto;width:24px;height:24px;border-radius:999px;background:rgba(255,255,255,.16);
-  display:inline-flex;align-items:center;justify-content:center;font-size:13px;line-height:1;
-  transition:background .15s,color .15s}
-.pullHint.ready .ico{background:#fff;color:var(--ink);animation:spinOnce .42s ease-out both}
-@keyframes spinOnce{from{transform:rotate(-200deg)}to{transform:none}}
-.pullUp{top:50%;bottom:auto;transform:translate(-50%,-50%)}
-.pullDown{top:calc(8px + env(safe-area-inset-top))}
+/* 상단 새로고침 인디케이터: #app 뒤쪽(아래 레이어)에 있어 #app이 밀려 내려오며 열린 여백에 드러난다 */
+.ptr{position:fixed;left:50%;top:0;z-index:1;display:inline-flex;align-items:center;gap:8px;
+  height:34px;padding:0 13px 0 5px;border-radius:999px;background:#fff;color:var(--sub2);
+  font-size:12.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;
+  box-shadow:0 2px 10px rgba(25,31,40,.10);opacity:0;pointer-events:none;
+  transform:translate(-50%,0)}
+.ptr .ring{flex:0 0 auto;width:24px;height:24px;border-radius:999px;background:#EBF2FE;color:var(--blue);
+  display:inline-flex;align-items:center;justify-content:center;transform-origin:50% 50%}
+.ptr svg{width:15px;height:15px;display:block}
+.ptr.ready{color:var(--blue-deep)}
+.ptr.ready .ring{background:var(--blue);color:#fff}
+.ptr.loading .ring{background:var(--blue);color:#fff}
+.ptr.loading .ring svg{animation:ptrSpin .62s linear infinite}
+@keyframes ptrSpin{to{transform:rotate(360deg)}}
+
+/* 카드가 위로 밀려 올라가며 카드 아래에 드러나는 인디케이터 */
+.upInd{position:absolute;left:50%;bottom:0;z-index:3;display:inline-flex;align-items:center;gap:6px;
+  height:30px;padding:0 12px 0 4px;border-radius:999px;background:rgba(25,31,40,.055);color:var(--sub2);
+  font-size:12.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;
+  opacity:0;pointer-events:none;transform:translate(-50%,0)}
+.upInd .ico{flex:0 0 auto;width:22px;height:22px;border-radius:999px;background:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-size:12px;line-height:1;
+  color:var(--blue-deep);box-shadow:0 1px 4px rgba(25,31,40,.10)}
+.upInd.ready{color:var(--blue-deep)}
+.upInd.ready .ico{background:var(--blue);color:#fff}
+
+@media (prefers-reduced-motion:reduce){
+  .card.in-up,.card.in-down,.list.in-up,.list.in-down{animation:none}
+  .ptr.loading .ring svg{animation:none}
+}
 
 .toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));z-index:95;
   background:rgba(25,31,40,.94);color:#fff;font-size:13.5px;font-weight:600;letter-spacing:-.01em;
@@ -300,6 +319,15 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 </style>
 </head>
 <body>
+<div class="ptr" id="ptr" aria-hidden="true">
+  <span class="ring" id="ptrRing">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M19.4 9.1A7.6 7.6 0 1 0 19.6 12"/>
+      <path d="M19.8 4.6v4.6h-4.6"/>
+    </svg>
+  </span>
+  <span class="lbl" id="ptrLbl">당겨서 새 문제</span>
+</div>
 <div class="app" id="app">
   <header>
     <h1 class="title">AFPK <em>전범위</em> O/X</h1>
@@ -341,6 +369,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
           <button type="button" id="btnNext">다음 ▶</button>
         </div>
       </article>
+      <div class="upInd" id="upInd" aria-hidden="true"><span class="ico" id="upIndIco">↑</span><span class="lbl" id="upIndLbl">당겨서 새 문제</span></div>
     </section>
 
     <section class="pane" id="manyPane" hidden>
@@ -353,8 +382,6 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     <span class="progNum" id="progNum">0 / 0</span>
   </footer>
 
-  <div class="pullHint pullUp" id="pullUp" hidden aria-hidden="true"><span class="ico">↑</span><span class="lbl">더 당기면 새 문제</span></div>
-  <div class="pullHint pullDown" id="pullDown" hidden aria-hidden="true"><span class="ico">↓</span><span class="lbl">당겨서 새 문제</span></div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -522,16 +549,14 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   var eViewOne = el("viewOne"), eViewMany = el("viewMany");
   var eChipWrong = el("chipWrong"), eChipStar = el("chipStar");
   var eOne = el("onePane"), eMany = el("manyPane"), eList = el("list");
-  var eMainEl = document.querySelector ? document.querySelector("main") : null;
   var eCard = el("card"), eBadge = el("badge"), eStar = el("star");
   var eStem = el("stem"), eFb = el("fb"), eFbTitle = el("fbTitle"), eFbBody = el("fbBody");
   var eO = el("btnO"), eX = el("btnX"), ePrev = el("btnPrev"), eNext = el("btnNext");
   var eProgBar = el("progBar"), eProgNum = el("progNum");
-  var eAppRoot = el("app"), eToast = el("toast"), ePullUp = el("pullUp"), ePullDown = el("pullDown");
-  var ePullUpIco = ePullUp ? ePullUp.querySelector(".ico") : null;
-  var ePullUpLbl = ePullUp ? ePullUp.querySelector(".lbl") : null;
-  var ePullDnIco = ePullDown ? ePullDown.querySelector(".ico") : null;
-  var ePullDnLbl = ePullDown ? ePullDown.querySelector(".lbl") : null;
+  var eAppRoot = el("app"), eToast = el("toast");
+  var ePtr = el("ptr"), ePtrRing = el("ptrRing"), ePtrLbl = el("ptrLbl");
+  var eUpInd = el("upInd"), eUpIco = el("upIndIco"), eUpLbl = el("upIndLbl");
+  var RM = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   function renderProg() {
     var total = view.length, num = 0, i;
@@ -754,7 +779,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   }
 
   /* answers·stars·AI 키(localStorage afpk-ai-qa-v1)는 건드리지 않는다. */
-  function refreshRandom(anim) {
+  function refreshRandom(anim, skipCardAnim) {
     var mode = state.mode;
     var prev = cur(), prevId = prev ? prev.id : null;
     reveal = false;
@@ -766,7 +791,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       var t = view[0]; view[0] = view[1]; view[1] = t;
     }
     save();
-    pending = state.view === "one" ? (anim || "in-up") : null;
+    pending = state.view !== "one" ? null : (skipCardAnim ? null : (anim || "in-up"));
     render();
     if (state.view === "many") {
       eList.scrollTop = 0;
@@ -807,71 +832,185 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     return false;
   }
 
-  /* --- 카드에서 위로 당기기 --- */
-  var vUp = false, upReady = false;
+  /* --- 카드에서 위로 당기기: 카드가 물리적으로 따라 올라간다 --- */
+  var vUp = false, upReady = false, upLock = false;
+  var UP_MAX = 106, UP_FIRE = 64, UP_OBJ = 110;
+
+  function rubber(amount, max, scale) {
+    var o = Math.round(max * (1 - Math.exp(-amount / scale)));
+    return o > max ? max : (o < 0 ? 0 : o);
+  }
+
+  function paintUpInd(offset, p, ready) {
+    if (!eUpInd) return;
+    eUpInd.style.opacity = String(Math.min(1, p * 1.15));
+    eUpInd.style.bottom = Math.round(offset / 2 - 15) + "px";
+    if (eUpIco) { var ic = ready ? "↻" : "↑"; if (eUpIco.textContent !== ic) eUpIco.textContent = ic; }
+    if (eUpLbl) { var lb = ready ? "놓으면 새 문제" : "당겨서 새 문제"; if (eUpLbl.textContent !== lb) eUpLbl.textContent = lb; }
+    if (ready !== upReady) {
+      upReady = ready;
+      eUpInd.classList.toggle("ready", ready);
+    }
+  }
+
+  function hideUpInd() {
+    upReady = false;
+    if (!eUpInd) return;
+    eUpInd.classList.remove("ready");
+    eUpInd.style.opacity = "0";
+    eUpInd.style.bottom = "0px";
+    if (eUpIco) eUpIco.textContent = "↑";
+    if (eUpLbl) eUpLbl.textContent = "당겨서 새 문제";
+  }
 
   function paintPullUp(d) {
-    var shift = d * 0.35;
-    if (shift < -56) shift = -56;
-    eCard.style.transform = "translateY(" + shift + "px)";
-    var ready = d <= -PULL_UP_AT;
-    if (ePullUp) {
-      if (ePullUp.hidden) ePullUp.hidden = false;
-      ePullUp.classList.add("show");
-      if (ready !== upReady) {
-        upReady = ready;
-        ePullUp.classList.toggle("ready", ready);
-        if (ePullUpIco) ePullUpIco.textContent = ready ? "↻" : "↑";
-        if (ePullUpLbl) ePullUpLbl.textContent = ready ? "놓으면 새 문제 랜덤" : "더 당기면 새 문제";
-      }
-    }
+    var dist = -d;
+    if (dist < 0) dist = 0;
+    var offset = rubber(dist, UP_MAX, 165);
+    eCard.style.transition = "none";
+    eCard.style.transform = "translate3d(0," + (-offset) + "px,0)";
+    paintUpInd(offset, Math.min(1, dist / UP_FIRE), dist >= UP_FIRE);
   }
 
   function clearPullUp(smooth) {
-    vUp = false; upReady = false;
+    vUp = false;
+    hideUpInd();
     if (smooth) {
-      eCard.style.transition = "transform .2s cubic-bezier(.22,.9,.3,1)";
-      eCard.style.transform = "";
-      setTimeout(function () { if (!vUp) eCard.style.transition = ""; }, 220);
+      eCard.style.transition = RM ? "none" : "transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease";
+      eCard.style.transform = "translate3d(0,0,0)";
+      eCard.style.opacity = "1";
+      setTimeout(function () {
+        if (vUp || upLock) return;
+        eCard.style.transition = "";
+        eCard.style.transform = "";
+        eCard.style.opacity = "";
+      }, RM ? 0 : 310);
     } else {
       eCard.style.transition = "";
       eCard.style.transform = "";
+      eCard.style.opacity = "";
     }
-    eCard.style.opacity = "";
-    if (ePullUp) { ePullUp.classList.remove("show", "ready"); ePullUp.hidden = true; }
   }
 
-  /* --- 맨 위에서 아래로 당기기(풀투리프레시) --- */
-  var pOn = false, pMode = null, pSx = 0, pSy = 0, pDy = 0, pReady = false, pScr = null;
+  /* 임계값을 넘겨 놓았을 때: 위로 미끄러져 나간 뒤 새 카드가 아래에서 올라와 들어온다 */
+  function commitPullUp() {
+    upLock = true;
+    hideUpInd();
+    eCard.style.transition = RM ? "none" : "transform .14s ease-in, opacity .14s ease-in";
+    eCard.style.transform = "translate3d(0," + (-UP_OBJ) + "px,0)";
+    eCard.style.opacity = "0";
+    setTimeout(function () {
+      refreshRandom("in-up", true);
+      eCard.style.transition = "none";
+      if (RM) {
+        eCard.style.transform = "translate3d(0,0,0)";
+        eCard.style.opacity = "1";
+      } else {
+        eCard.style.transform = "translate3d(0,68px,0)";
+        eCard.style.opacity = "0";
+      }
+      void eCard.offsetWidth;
+      eCard.style.transition = RM ? "none" : "transform .28s cubic-bezier(.22,1,.36,1), opacity .2s ease-out";
+      eCard.style.transform = "translate3d(0,0,0)";
+      eCard.style.opacity = "1";
+      setTimeout(function () {
+        eCard.style.transition = "";
+        eCard.style.transform = "";
+        eCard.style.opacity = "";
+        upLock = false;
+      }, RM ? 0 : 300);
+    }, RM ? 0 : 145);
+  }
+
+  /* --- 맨 위에서 아래로 당기기: 화면 전체(#app)가 물리적으로 밀려 내려온다 --- */
+  var pOn = false, pMode = null, pSx = 0, pSy = 0, pDy = 0, pReady = false, pScr = null, ptrLock = false;
+  var DN_MAX = 95, DN_HOLD = 56, DN_OBJ = 108;
+
+  function paintDownInd(offset, p, ready) {
+    if (!ePtr) return;
+    ePtr.style.opacity = String(Math.min(1, p * 1.15));
+    ePtr.style.top = Math.round((offset - 34) / 2) + "px";
+    if (ePtrRing) {
+      ePtrRing.style.transform = "scale(" + (0.75 + 0.25 * p).toFixed(3) + ") rotate(" + Math.round(180 * p) + "deg)";
+    }
+    if (ePtrLbl) {
+      var lb = ready ? "놓으면 새로고침" : "당겨서 새 문제";
+      if (ePtrLbl.textContent !== lb) ePtrLbl.textContent = lb;
+    }
+    if (ready !== pReady) {
+      pReady = ready;
+      ePtr.classList.toggle("ready", ready);
+    }
+  }
+
+  function resetPtr() {
+    pReady = false;
+    if (!ePtr) return;
+    ePtr.classList.remove("ready", "loading");
+    ePtr.style.opacity = "0";
+    ePtr.style.top = "0px";
+    if (ePtrRing) { ePtrRing.style.transition = "none"; ePtrRing.style.transform = ""; }
+    if (ePtrLbl) ePtrLbl.textContent = "당겨서 새 문제";
+  }
 
   function paintPullDown(d) {
-    var shift = d * 0.3;
-    if (shift > 12) shift = 12;
-    var ready = d >= PULL_DN_AT;
-    if (ePullDown) {
-      if (ePullDown.hidden) ePullDown.hidden = false;
-      ePullDown.classList.add("show");
-      var mt = 0;
-      if (eMainEl && eMainEl.getBoundingClientRect) mt = eMainEl.getBoundingClientRect().top || 0;
-      ePullDown.style.top = (mt + 2) + "px";
-      ePullDown.style.transform = "translate(-50%," + shift + "px)";
-      if (ready !== pReady) {
-        pReady = ready;
-        ePullDown.classList.toggle("ready", ready);
-        if (ePullDnIco) ePullDnIco.textContent = ready ? "↻" : "↓";
-        if (ePullDnLbl) ePullDnLbl.textContent = ready ? "놓으면 새로고침" : "당겨서 새 문제";
-      }
+    var offset = rubber(d, DN_MAX, 165);
+    eAppRoot.style.transition = "none";
+    eAppRoot.style.transform = "translate3d(0," + offset + "px,0)";
+    paintDownInd(offset, Math.min(1, d / PULL_DN_AT), d >= PULL_DN_AT);
+    return offset;
+  }
+
+  /* 임계값 미만에서 놓았을 때: 스프링 이징으로 제자리 복귀 */
+  function springAppBack() {
+    pDy = 0;
+    eAppRoot.style.transition = RM ? "none" : "transform .32s cubic-bezier(.22,1,.36,1)";
+    eAppRoot.style.transform = "translate3d(0,0,0)";
+    if (ePtr) { ePtr.style.transition = RM ? "none" : "opacity .18s ease"; ePtr.style.opacity = "0"; }
+    setTimeout(function () {
+      eAppRoot.style.transition = "";
+      eAppRoot.style.transform = "";
+      if (ePtr) ePtr.style.transition = "";
+      resetPtr();
+      ptrLock = false;
+    }, RM ? 0 : 330);
+  }
+
+  /* 임계값을 넘겨 놓았을 때: 56px 안착 → 스피너 → 새 문제 → 부드럽게 닫힘 */
+  function commitPullDown() {
+    ptrLock = true;
+    pDy = 0;
+    eAppRoot.style.transition = RM ? "none" : "transform .2s cubic-bezier(.22,1,.36,1)";
+    eAppRoot.style.transform = "translate3d(0," + DN_HOLD + "px,0)";
+    if (ePtr) {
+      ePtr.style.transition = "none";
+      ePtr.style.opacity = "1";
+      ePtr.style.top = Math.round((DN_HOLD - 34) / 2) + "px";
+      ePtr.classList.remove("ready");
+      ePtr.classList.add("loading");
+      if (ePtrLbl) ePtrLbl.textContent = "불러오는 중";
     }
+    if (ePtrRing) { ePtrRing.style.transition = "none"; ePtrRing.style.transform = "scale(1)"; }
+    setTimeout(function () {
+      refreshRandom("in-down");
+      eAppRoot.style.transition = RM ? "none" : "transform .3s cubic-bezier(.22,1,.36,1)";
+      eAppRoot.style.transform = "translate3d(0,0,0)";
+      if (ePtr) { ePtr.style.transition = RM ? "none" : "opacity .2s ease"; ePtr.style.opacity = "0"; }
+      setTimeout(function () {
+        eAppRoot.style.transition = "";
+        eAppRoot.style.transform = "";
+        if (ePtr) ePtr.style.transition = "";
+        resetPtr();
+        ptrLock = false;
+      }, RM ? 0 : 320);
+    }, RM ? 0 : 220);
   }
 
   function clearPullDown() {
-    pDy = 0; pReady = false;
-    if (ePullDown) {
-      ePullDown.classList.remove("show", "ready");
-      ePullDown.hidden = true;
-      ePullDown.style.transform = "";
-      ePullDown.style.top = "";
-    }
+    pDy = 0;
+    eAppRoot.style.transition = "";
+    eAppRoot.style.transform = "";
+    resetPtr();
   }
 
   function on(node, type, fn, opt) { if (node) node.addEventListener(type, fn, opt); }
@@ -909,7 +1048,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   var sx = 0, sy = 0, dx = 0, dy = 0, dragging = false, locked = false, canUp = false;
   on(eCard, "touchstart", function (e) {
     if (!e.touches || e.touches.length !== 1) return;
-    if (aiS.open || hasSel()) { dragging = false; locked = false; canUp = false; return; }
+    if (upLock || ptrLock || aiS.open || hasSel()) { dragging = false; locked = false; canUp = false; return; }
     sx = e.touches[0].clientX; sy = e.touches[0].clientY;
     dx = 0; dy = 0; dragging = true; locked = false;
     canUp = !tappableStart(e.target) && state.view === "one" && !!cur();
@@ -917,6 +1056,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   }, { passive: true });
   on(eCard, "touchmove", function (e) {
     if (!e.touches || e.touches.length !== 1) return;
+    if (upLock) return;
     if (aiS.open) {
       dragging = false; locked = false;
       if (vUp) clearPullUp(true);
@@ -925,8 +1065,8 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     if (vUp) {
       dx = e.touches[0].clientX - sx;
       dy = e.touches[0].clientY - sy;
-      if (dy > -2 || Math.abs(dx) > Math.abs(dy) + 16) { clearPullUp(true); dragging = false; return; }
-      if (stemHasMore()) { clearPullUp(true); dragging = false; return; }
+      if (dy > -2 || Math.abs(dx) > Math.abs(dy) + 16) { dragging = false; clearPullUp(true); return; }
+      if (stemHasMore()) { dragging = false; clearPullUp(true); return; }
       if (e.preventDefault) e.preventDefault();
       paintPullUp(dy);
       return;
@@ -949,17 +1089,17 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     }
     if (locked) {
       if (e.preventDefault) e.preventDefault();
-      eCard.style.transform = "translateX(" + (dx * 0.55) + "px)";
+      eCard.style.transform = "translate3d(" + (dx * 0.55) + "px,0,0)";
       eCard.style.opacity = String(Math.max(0.65, 1 - Math.abs(dx) / 520));
     }
   }, { passive: false });
   on(eCard, "touchend", function () {
+    if (upLock) return;
     var fire = vUp && dy <= -PULL_UP_AT;
     if (vUp) {
-      clearPullUp(true);
       dragging = false; locked = false; canUp = false;
       dx = 0; dy = 0;
-      if (fire) refreshRandom("in-up");
+      if (fire) commitPullUp(); else clearPullUp(true);
       return;
     }
     if (!dragging) return;
@@ -972,7 +1112,10 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     dx = 0; dy = 0; locked = false;
   });
   on(eCard, "touchcancel", function () {
+    if (upLock) return;
     if (vUp) clearPullUp(true);
+    vUp = false;
+    hideUpInd();
     dragging = false; locked = false; canUp = false;
     dx = 0; dy = 0;
     eCard.style.transition = "";
@@ -983,26 +1126,27 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   /* --- 화면 맨 위에서 아래로 당겨서 새 문제(한 개·여러 개 보기 공통) --- */
   on(eAppRoot, "touchstart", function (e) {
     if (!e.touches || e.touches.length !== 1) return;
-    if (aiS.open) { pOn = false; pMode = null; return; }
-    pOn = true; pMode = null;
+    if (ptrLock || aiS.open) { pOn = false; pMode = null; return; }
+    pOn = true; pMode = null; pDy = 0;
     pSx = e.touches[0].clientX; pSy = e.touches[0].clientY;
     pScr = scrollBoxAt(e.target);
   }, { passive: true });
   on(eAppRoot, "touchmove", function (e) {
     if (!pOn || !e.touches || e.touches.length !== 1) return;
+    if (ptrLock) { pOn = false; pMode = null; return; }
     if (aiS.open) { pOn = false; pMode = null; clearPullDown(); return; }
     var x = e.touches[0].clientX, y = e.touches[0].clientY;
     var ddx = x - pSx, ddy = y - pSy;
     if (pMode === null) {
       if (Math.abs(ddx) > Math.abs(ddy) + 6) { pOn = false; return; }
       if (ddy > 12 && Math.abs(ddy) > Math.abs(ddx) + 6) {
-        if (vUp || hasSel() || (pScr && pScr.scrollTop > 0)) { pOn = false; return; }
+        if (vUp || upLock || hasSel() || (pScr && pScr.scrollTop > 0)) { pOn = false; return; }
         pMode = "down";
       } else if (ddy < -12) { pOn = false; return; }
       else return;
     }
     if (pMode === "down") {
-      if (vUp || hasSel() || (pScr && pScr.scrollTop > 0)) { pOn = false; pMode = null; clearPullDown(); return; }
+      if (vUp || hasSel() || (pScr && pScr.scrollTop > 0)) { pOn = false; pMode = null; springAppBack(); return; }
       if (e.preventDefault) e.preventDefault();
       pDy = ddy;
       paintPullDown(ddy);
@@ -1011,13 +1155,14 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   on(eAppRoot, "touchend", function () {
     if (!pOn) return;
     var wasDown = pMode === "down", fire = wasDown && pDy >= PULL_DN_AT;
-    pOn = false; pMode = null; pDy = 0;
-    if (wasDown) clearPullDown();
-    if (fire) refreshRandom("in-down");
+    pOn = false; pMode = null;
+    if (!wasDown) return;
+    if (fire) commitPullDown(); else springAppBack();
   });
   on(eAppRoot, "touchcancel", function () {
+    var wasDown = pMode === "down";
     pOn = false; pMode = null;
-    clearPullDown();
+    if (wasDown && !ptrLock) springAppBack();
   });
 
   on(document, "keydown", function (e) {
