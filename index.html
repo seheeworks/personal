@@ -1047,7 +1047,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
 
   var sx = 0, sy = 0, dx = 0, dy = 0, dragging = false, locked = false, canUp = false;
   on(eCard, "touchstart", function (e) {
-    if (!e.touches || e.touches.length !== 1) return;
+    if (!e.touches || e.touches.length !== 1) { dragging = false; locked = false; canUp = false; return; }
     if (upLock || ptrLock || aiS.open || hasSel()) { dragging = false; locked = false; canUp = false; return; }
     sx = e.touches[0].clientX; sy = e.touches[0].clientY;
     dx = 0; dy = 0; dragging = true; locked = false;
@@ -1125,7 +1125,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
 
   /* --- 화면 맨 위에서 아래로 당겨서 새 문제(한 개·여러 개 보기 공통) --- */
   on(eAppRoot, "touchstart", function (e) {
-    if (!e.touches || e.touches.length !== 1) return;
+    if (!e.touches || e.touches.length !== 1) { pOn = false; pMode = null; return; }
     if (ptrLock || aiS.open) { pOn = false; pMode = null; return; }
     pOn = true; pMode = null; pDy = 0;
     pSx = e.touches[0].clientX; pSy = e.touches[0].clientY;
