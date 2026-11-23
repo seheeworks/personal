@@ -89,6 +89,7 @@
     if (state === "after") {
       await sleep(1000);
       w.__afpk.toast("새 문제를 불러왔어요");
+      setInterval(function () { w.__afpk.toast("새 문제를 불러왔어요"); }, 700);
       await sleep(150);
       st.textContent = "ready:after";
       return;
