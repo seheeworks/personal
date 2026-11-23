@@ -22,10 +22,10 @@ html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--bg);color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",system-ui,sans-serif;
-  font-size:17px;line-height:1.5;overflow:hidden;
+  font-size:17px;line-height:1.5;overflow:hidden;overscroll-behavior:none;
 }
 button{font-family:inherit;cursor:pointer;touch-action:manipulation;border:0;background:none;color:inherit}
-.app{display:flex;flex-direction:column;height:100%;max-width:540px;margin:0 auto}
+.app{display:flex;flex-direction:column;height:100%;max-width:540px;margin:0 auto;position:relative}
 
 /* ---------- 헤더 ---------- */
 header{padding:calc(8px + env(safe-area-inset-top)) 16px 4px;flex:0 0 auto}
@@ -259,6 +259,34 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   .aiSend{padding:0 14px}
 }
 
+/* ---------- 당겨서 새 문제(새로고침) ---------- */
+.card.in-up{animation:inUp .26s cubic-bezier(.22,.9,.3,1) both}
+.card.in-down{animation:inDown .26s cubic-bezier(.22,.9,.3,1) both}
+@keyframes inUp{from{opacity:.3;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes inDown{from{opacity:.3;transform:translateY(-40px)}to{opacity:1;transform:none}}
+.list.in-up{animation:listUp .24s ease-out both}
+.list.in-down{animation:listUp .24s ease-out both}
+@keyframes listUp{from{opacity:.3;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.pullHint{position:absolute;left:50%;z-index:45;height:34px;padding:0 14px 0 5px;border-radius:999px;
+  display:inline-flex;align-items:center;gap:7px;background:rgba(25,31,40,.92);color:#fff;
+  font-size:13px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;pointer-events:none;
+  opacity:0;transform:translate(-50%,0);transition:opacity .14s ease}
+.pullHint.show{opacity:1}
+.pullHint .ico{flex:0 0 auto;width:24px;height:24px;border-radius:999px;background:rgba(255,255,255,.16);
+  display:inline-flex;align-items:center;justify-content:center;font-size:13px;line-height:1;
+  transition:background .15s,color .15s}
+.pullHint.ready .ico{background:#fff;color:var(--ink);animation:spinOnce .42s ease-out both}
+@keyframes spinOnce{from{transform:rotate(-200deg)}to{transform:none}}
+.pullUp{top:50%;bottom:auto;transform:translate(-50%,-50%)}
+.pullDown{top:calc(8px + env(safe-area-inset-top))}
+
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));z-index:95;
+  background:rgba(25,31,40,.94);color:#fff;font-size:13.5px;font-weight:600;letter-spacing:-.01em;
+  padding:9px 16px;border-radius:999px;white-space:nowrap;pointer-events:none;
+  opacity:0;transform:translate(-50%,-10px);transition:opacity .2s ease,transform .22s cubic-bezier(.22,.9,.3,1)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
 @media (max-height:720px){
   .stem{font-size:22px;line-height:1.55;margin:12px 0 10px}
   .ox{height:86px}
@@ -272,7 +300,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
   <header>
     <h1 class="title">AFPK <em>전범위</em> O/X</h1>
     <div class="modrow">
@@ -324,7 +352,12 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     <span class="progTrack"><span class="progBar" id="progBar"></span></span>
     <span class="progNum" id="progNum">0 / 0</span>
   </footer>
+
+  <div class="pullHint pullUp" id="pullUp" hidden aria-hidden="true"><span class="ico">↑</span><span class="lbl">더 당기면 새 문제</span></div>
+  <div class="pullHint pullDown" id="pullDown" hidden aria-hidden="true"><span class="ico">↓</span><span class="lbl">당겨서 새 문제</span></div>
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <button type="button" class="selAsk" id="selAsk" hidden><span id="selAskLbl"></span><b>💬</b></button>
 
@@ -489,10 +522,16 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   var eViewOne = el("viewOne"), eViewMany = el("viewMany");
   var eChipWrong = el("chipWrong"), eChipStar = el("chipStar");
   var eOne = el("onePane"), eMany = el("manyPane"), eList = el("list");
+  var eMainEl = document.querySelector ? document.querySelector("main") : null;
   var eCard = el("card"), eBadge = el("badge"), eStar = el("star");
   var eStem = el("stem"), eFb = el("fb"), eFbTitle = el("fbTitle"), eFbBody = el("fbBody");
   var eO = el("btnO"), eX = el("btnX"), ePrev = el("btnPrev"), eNext = el("btnNext");
   var eProgBar = el("progBar"), eProgNum = el("progNum");
+  var eAppRoot = el("app"), eToast = el("toast"), ePullUp = el("pullUp"), ePullDown = el("pullDown");
+  var ePullUpIco = ePullUp ? ePullUp.querySelector(".ico") : null;
+  var ePullUpLbl = ePullUp ? ePullUp.querySelector(".lbl") : null;
+  var ePullDnIco = ePullDown ? ePullDown.querySelector(".ico") : null;
+  var ePullDnLbl = ePullDown ? ePullDown.querySelector(".lbl") : null;
 
   function renderProg() {
     var total = view.length, num = 0, i;
@@ -574,12 +613,12 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     ePrev.disabled = state.idx[state.mode] <= 0;
     eNext.disabled = state.idx[state.mode] >= view.length - 1;
     if (pending) {
-      eCard.classList.remove("in-next", "in-prev");
+      eCard.classList.remove("in-next", "in-prev", "in-up", "in-down");
       void eCard.offsetWidth;
       var cls = pending;
       eCard.classList.add(cls);
       pending = null;
-      setTimeout(function () { eCard.classList.remove(cls); }, 240);
+      setTimeout(function () { eCard.classList.remove(cls); }, 300);
     }
   }
 
@@ -683,6 +722,158 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     render();
   }
 
+  /* ---------- 새로고침 + 새 문제 랜덤 노출 ---------- */
+  var PULL_UP_AT = 64, PULL_DN_AT = 64;
+  var toastTimer = null;
+
+  function toastShow(msg) {
+    if (!eToast) return;
+    eToast.textContent = msg;
+    eToast.classList.add("on");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { eToast.classList.remove("on"); }, 1600);
+  }
+
+  /* 덱을 새로 섞고, 맨 앞을 '보던 문제와 다른 문제'로 맞춘다.
+     filter === "all"이면 아직 안 푼 문제를 우선 앞에 둔다. */
+  function refreshDeck(mode, prevId) {
+    var deck = buildDeck(mode), i, cand = [];
+    for (i = 0; i < deck.length; i++) {
+      if (prevId && deck[i] === prevId) continue;
+      if (state.filter === "all" && state.answers[deck[i]]) continue;
+      cand.push(i);
+    }
+    if (!cand.length && prevId) {
+      for (i = 0; i < deck.length; i++) if (deck[i] !== prevId) cand.push(i);
+    }
+    if (cand.length) {
+      var k = cand[Math.floor(Math.random() * cand.length)], t = deck[0];
+      deck[0] = deck[k]; deck[k] = t;
+    }
+    state.decks[mode] = deck;
+  }
+
+  /* answers·stars·AI 키(localStorage afpk-ai-qa-v1)는 건드리지 않는다. */
+  function refreshRandom(anim) {
+    var mode = state.mode;
+    var prev = cur(), prevId = prev ? prev.id : null;
+    reveal = false;
+    refreshDeck(mode, prevId);
+    state.idx[mode] = 0;
+    compose();
+    state.idx[mode] = 0;
+    if (state.filter !== "all" && view.length > 1 && prevId && view[0].id === prevId) {
+      var t = view[0]; view[0] = view[1]; view[1] = t;
+    }
+    save();
+    pending = state.view === "one" ? (anim || "in-up") : null;
+    render();
+    if (state.view === "many") {
+      eList.scrollTop = 0;
+      eList.classList.remove("in-up", "in-down");
+      void eList.offsetWidth;
+      eList.classList.add(anim === "in-down" ? "in-down" : "in-up");
+      setTimeout(function () { eList.classList.remove("in-up", "in-down"); }, 300);
+    }
+    toastShow("새 문제를 불러왔어요");
+  }
+
+  function hasSel() {
+    try { return !!(window.getSelection && String(window.getSelection()).trim()); } catch (e) { return false; }
+  }
+
+  function scrollBoxAt(node) {
+    while (node && node !== eAppRoot) {
+      if (node.classList && (node.classList.contains("stem") || node.classList.contains("list"))) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  /* .stem이 스크롤 가능한 긴 지문이면, 아래끝에 닿기 전에는 내부 스크롤이 우선이다. */
+  function stemHasMore() {
+    if (!eStem) return false;
+    if (eStem.scrollHeight <= eStem.clientHeight + 2) return false;
+    return (eStem.scrollTop + eStem.clientHeight) < (eStem.scrollHeight - 2);
+  }
+
+  function tappableStart(node) {
+    while (node && node !== eCard) {
+      var tag = node.tagName;
+      if (tag === "BUTTON" || tag === "A" || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+      if (node.isContentEditable) return true;
+      node = node.parentNode;
+    }
+    return false;
+  }
+
+  /* --- 카드에서 위로 당기기 --- */
+  var vUp = false, upReady = false;
+
+  function paintPullUp(d) {
+    var shift = d * 0.35;
+    if (shift < -56) shift = -56;
+    eCard.style.transform = "translateY(" + shift + "px)";
+    var ready = d <= -PULL_UP_AT;
+    if (ePullUp) {
+      if (ePullUp.hidden) ePullUp.hidden = false;
+      ePullUp.classList.add("show");
+      if (ready !== upReady) {
+        upReady = ready;
+        ePullUp.classList.toggle("ready", ready);
+        if (ePullUpIco) ePullUpIco.textContent = ready ? "↻" : "↑";
+        if (ePullUpLbl) ePullUpLbl.textContent = ready ? "놓으면 새 문제 랜덤" : "더 당기면 새 문제";
+      }
+    }
+  }
+
+  function clearPullUp(smooth) {
+    vUp = false; upReady = false;
+    if (smooth) {
+      eCard.style.transition = "transform .2s cubic-bezier(.22,.9,.3,1)";
+      eCard.style.transform = "";
+      setTimeout(function () { if (!vUp) eCard.style.transition = ""; }, 220);
+    } else {
+      eCard.style.transition = "";
+      eCard.style.transform = "";
+    }
+    eCard.style.opacity = "";
+    if (ePullUp) { ePullUp.classList.remove("show", "ready"); ePullUp.hidden = true; }
+  }
+
+  /* --- 맨 위에서 아래로 당기기(풀투리프레시) --- */
+  var pOn = false, pMode = null, pSx = 0, pSy = 0, pDy = 0, pReady = false, pScr = null;
+
+  function paintPullDown(d) {
+    var shift = d * 0.3;
+    if (shift > 12) shift = 12;
+    var ready = d >= PULL_DN_AT;
+    if (ePullDown) {
+      if (ePullDown.hidden) ePullDown.hidden = false;
+      ePullDown.classList.add("show");
+      var mt = 0;
+      if (eMainEl && eMainEl.getBoundingClientRect) mt = eMainEl.getBoundingClientRect().top || 0;
+      ePullDown.style.top = (mt + 2) + "px";
+      ePullDown.style.transform = "translate(-50%," + shift + "px)";
+      if (ready !== pReady) {
+        pReady = ready;
+        ePullDown.classList.toggle("ready", ready);
+        if (ePullDnIco) ePullDnIco.textContent = ready ? "↻" : "↓";
+        if (ePullDnLbl) ePullDnLbl.textContent = ready ? "놓으면 새로고침" : "당겨서 새 문제";
+      }
+    }
+  }
+
+  function clearPullDown() {
+    pDy = 0; pReady = false;
+    if (ePullDown) {
+      ePullDown.classList.remove("show", "ready");
+      ePullDown.hidden = true;
+      ePullDown.style.transform = "";
+      ePullDown.style.top = "";
+    }
+  }
+
   function on(node, type, fn, opt) { if (node) node.addEventListener(type, fn, opt); }
 
   on(eSeg1, "click", function () { setMode("1"); });
@@ -715,22 +906,46 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     renderList();
   });
 
-  var sx = 0, sy = 0, dx = 0, dragging = false, locked = false;
+  var sx = 0, sy = 0, dx = 0, dy = 0, dragging = false, locked = false, canUp = false;
   on(eCard, "touchstart", function (e) {
     if (!e.touches || e.touches.length !== 1) return;
+    if (aiS.open || hasSel()) { dragging = false; locked = false; canUp = false; return; }
     sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-    dx = 0; dragging = true; locked = false;
+    dx = 0; dy = 0; dragging = true; locked = false;
+    canUp = !tappableStart(e.target) && state.view === "one" && !!cur();
     eCard.style.transition = "none";
   }, { passive: true });
   on(eCard, "touchmove", function (e) {
-    if (!dragging || !e.touches || e.touches.length !== 1) return;
+    if (!e.touches || e.touches.length !== 1) return;
+    if (aiS.open) {
+      dragging = false; locked = false;
+      if (vUp) clearPullUp(true);
+      return;
+    }
+    if (vUp) {
+      dx = e.touches[0].clientX - sx;
+      dy = e.touches[0].clientY - sy;
+      if (dy > -2 || Math.abs(dx) > Math.abs(dy) + 16) { clearPullUp(true); dragging = false; return; }
+      if (stemHasMore()) { clearPullUp(true); dragging = false; return; }
+      if (e.preventDefault) e.preventDefault();
+      paintPullUp(dy);
+      return;
+    }
+    if (!dragging) return;
     dx = e.touches[0].clientX - sx;
-    var dy = e.touches[0].clientY - sy;
+    dy = e.touches[0].clientY - sy;
     if (!locked) {
       if (Math.abs(dx) > Math.abs(dy) + 6) locked = true;
       else if (Math.abs(dy) > Math.abs(dx) + 6) {
+        if (dy <= -12 && canUp && !stemHasMore()) {
+          vUp = true;
+          eCard.style.transition = "none";
+          if (e.preventDefault) e.preventDefault();
+          paintPullUp(dy);
+          return;
+        }
         dragging = false; eCard.style.transition = ""; eCard.style.transform = ""; return;
-      }
+      } else return;
     }
     if (locked) {
       if (e.preventDefault) e.preventDefault();
@@ -739,14 +954,70 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     }
   }, { passive: false });
   on(eCard, "touchend", function () {
+    var fire = vUp && dy <= -PULL_UP_AT;
+    if (vUp) {
+      clearPullUp(true);
+      dragging = false; locked = false; canUp = false;
+      dx = 0; dy = 0;
+      if (fire) refreshRandom("in-up");
+      return;
+    }
     if (!dragging) return;
-    dragging = false;
+    dragging = false; canUp = false;
     eCard.style.transition = "";
     eCard.style.transform = "";
     eCard.style.opacity = "";
     if (locked && dx < -54) go(1);
     else if (locked && dx > 54) go(-1);
-    dx = 0; locked = false;
+    dx = 0; dy = 0; locked = false;
+  });
+  on(eCard, "touchcancel", function () {
+    if (vUp) clearPullUp(true);
+    dragging = false; locked = false; canUp = false;
+    dx = 0; dy = 0;
+    eCard.style.transition = "";
+    eCard.style.transform = "";
+    eCard.style.opacity = "";
+  });
+
+  /* --- 화면 맨 위에서 아래로 당겨서 새 문제(한 개·여러 개 보기 공통) --- */
+  on(eAppRoot, "touchstart", function (e) {
+    if (!e.touches || e.touches.length !== 1) return;
+    if (aiS.open) { pOn = false; pMode = null; return; }
+    pOn = true; pMode = null;
+    pSx = e.touches[0].clientX; pSy = e.touches[0].clientY;
+    pScr = scrollBoxAt(e.target);
+  }, { passive: true });
+  on(eAppRoot, "touchmove", function (e) {
+    if (!pOn || !e.touches || e.touches.length !== 1) return;
+    if (aiS.open) { pOn = false; pMode = null; clearPullDown(); return; }
+    var x = e.touches[0].clientX, y = e.touches[0].clientY;
+    var ddx = x - pSx, ddy = y - pSy;
+    if (pMode === null) {
+      if (Math.abs(ddx) > Math.abs(ddy) + 6) { pOn = false; return; }
+      if (ddy > 12 && Math.abs(ddy) > Math.abs(ddx) + 6) {
+        if (vUp || hasSel() || (pScr && pScr.scrollTop > 0)) { pOn = false; return; }
+        pMode = "down";
+      } else if (ddy < -12) { pOn = false; return; }
+      else return;
+    }
+    if (pMode === "down") {
+      if (vUp || hasSel() || (pScr && pScr.scrollTop > 0)) { pOn = false; pMode = null; clearPullDown(); return; }
+      if (e.preventDefault) e.preventDefault();
+      pDy = ddy;
+      paintPullDown(ddy);
+    }
+  }, { passive: false });
+  on(eAppRoot, "touchend", function () {
+    if (!pOn) return;
+    var wasDown = pMode === "down", fire = wasDown && pDy >= PULL_DN_AT;
+    pOn = false; pMode = null; pDy = 0;
+    if (wasDown) clearPullDown();
+    if (fire) refreshRandom("in-down");
+  });
+  on(eAppRoot, "touchcancel", function () {
+    pOn = false; pMode = null;
+    clearPullDown();
   });
 
   on(document, "keydown", function (e) {
@@ -1808,6 +2079,8 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     setFilter: setFilter,
     setView: setView,
     reshuffle: reshuffle,
+    refresh: refreshRandom,
+    toast: toastShow,
     renderList: renderList,
     key: KEY,
     ai: {
