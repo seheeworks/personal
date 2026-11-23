@@ -282,6 +282,11 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
 .ptr.ready .ring{background:var(--blue);color:#fff}
 .ptr.loading .ring{background:var(--blue);color:#fff}
 .ptr.loading .ring svg{animation:ptrSpin .62s linear infinite}
+.ptr .icDone{display:none}
+.ptr.done{color:#0B8457}
+.ptr.done .ring{background:var(--green);color:#fff}
+.ptr.done .icRef{display:none}
+.ptr.done .icDone{display:block}
 @keyframes ptrSpin{to{transform:rotate(360deg)}}
 
 /* 카드가 위로 밀려 올라가며 카드 아래에 드러나는 인디케이터 */
@@ -300,10 +305,11 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
   .ptr.loading .ring svg{animation:none}
 }
 
-.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));z-index:95;
+/* 헤더(제목·모듈 버튼)를 절대 가리지 않도록 화면 하단에서 올라온다 */
+.toast{position:fixed;left:50%;top:auto;bottom:calc(30px + env(safe-area-inset-bottom));z-index:95;
   background:rgba(25,31,40,.94);color:#fff;font-size:13.5px;font-weight:600;letter-spacing:-.01em;
   padding:9px 16px;border-radius:999px;white-space:nowrap;pointer-events:none;
-  opacity:0;transform:translate(-50%,-10px);transition:opacity .2s ease,transform .22s cubic-bezier(.22,.9,.3,1)}
+  opacity:0;transform:translate(-50%,10px);transition:opacity .2s ease,transform .22s cubic-bezier(.22,.9,.3,1)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 @media (max-height:720px){
@@ -324,6 +330,9 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M19.4 9.1A7.6 7.6 0 1 0 19.6 12"/>
       <path d="M19.8 4.6v4.6h-4.6"/>
+    </svg>
+    <svg class="icDone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12.4l4.6 4.6L19 7.4"/>
     </svg>
   </span>
   <span class="lbl" id="ptrLbl">당겨서 새 문제</span>
@@ -557,6 +566,19 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
   var ePtr = el("ptr"), ePtrRing = el("ptrRing"), ePtrLbl = el("ptrLbl");
   var eUpInd = el("upInd"), eUpIco = el("upIndIco"), eUpLbl = el("upIndLbl");
   var RM = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  /* 아이폰 다이나믹 아일랜드/상태바 영역: header의 padding-top에서 env(safe-area-inset-top)을 읽어낸다 */
+  var eHeader = document.querySelector("#app header");
+  var safeTop = 0;
+  function readSafeTop() {
+    var v = 0;
+    if (eHeader && window.getComputedStyle) {
+      var pt = parseFloat(getComputedStyle(eHeader).paddingTop);
+      if (!isNaN(pt)) v = Math.round(pt - 8);
+    }
+    safeTop = v > 0 ? v : 0;
+    return safeTop;
+  }
 
   function renderProg() {
     var total = view.length, num = 0, i;
@@ -800,7 +822,6 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
       eList.classList.add(anim === "in-down" ? "in-down" : "in-up");
       setTimeout(function () { eList.classList.remove("in-up", "in-down"); }, 300);
     }
-    toastShow("새 문제를 불러왔어요");
   }
 
   function hasSel() {
@@ -834,7 +855,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
 
   /* --- 카드에서 위로 당기기: 카드가 물리적으로 따라 올라간다 --- */
   var vUp = false, upReady = false, upLock = false;
-  var UP_MAX = 106, UP_FIRE = 64, UP_OBJ = 110;
+  var UP_MAX = 155, UP_FIRE = 64, UP_OBJ = 180;
 
   function rubber(amount, max, scale) {
     var o = Math.round(max * (1 - Math.exp(-amount / scale)));
@@ -866,7 +887,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
   function paintPullUp(d) {
     var dist = -d;
     if (dist < 0) dist = 0;
-    var offset = rubber(dist, UP_MAX, 165);
+    var offset = rubber(dist, UP_MAX, 175);
     eCard.style.transition = "none";
     eCard.style.transform = "translate3d(0," + (-offset) + "px,0)";
     paintUpInd(offset, Math.min(1, dist / UP_FIRE), dist >= UP_FIRE);
@@ -895,6 +916,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
   /* 임계값을 넘겨 놓았을 때: 위로 미끄러져 나간 뒤 새 카드가 아래에서 올라와 들어온다 */
   function commitPullUp() {
     upLock = true;
+    vUp = false;
     hideUpInd();
     eCard.style.transition = RM ? "none" : "transform .14s ease-in, opacity .14s ease-in";
     eCard.style.transform = "translate3d(0," + (-UP_OBJ) + "px,0)";
@@ -924,12 +946,19 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
 
   /* --- 맨 위에서 아래로 당기기: 화면 전체(#app)가 물리적으로 밀려 내려온다 --- */
   var pOn = false, pMode = null, pSx = 0, pSy = 0, pDy = 0, pReady = false, pScr = null, ptrLock = false;
-  var DN_MAX = 95, DN_HOLD = 56, DN_OBJ = 108;
+  var DN_MAX = 165, DN_HOLD = 74, DN_OBJ = 108;
+
+  /* 인디케이터 y위치: 상태바/다이나믹 아일랜드는 침범하지 않고, 열린 여백 안에서 부드럽게 따라 내려온다 */
+  function ptrY(offset) {
+    var min = safeTop + 2;
+    var y = Math.round(safeTop + offset * 0.45 - 17);
+    return y < min ? min : y;
+  }
 
   function paintDownInd(offset, p, ready) {
     if (!ePtr) return;
     ePtr.style.opacity = String(Math.min(1, p * 1.15));
-    ePtr.style.top = Math.round((offset - 34) / 2) + "px";
+    ePtr.style.transform = "translate(-50%," + ptrY(offset) + "px)";
     if (ePtrRing) {
       ePtrRing.style.transform = "scale(" + (0.75 + 0.25 * p).toFixed(3) + ") rotate(" + Math.round(180 * p) + "deg)";
     }
@@ -946,15 +975,15 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
   function resetPtr() {
     pReady = false;
     if (!ePtr) return;
-    ePtr.classList.remove("ready", "loading");
+    ePtr.classList.remove("ready", "loading", "done");
     ePtr.style.opacity = "0";
-    ePtr.style.top = "0px";
+    ePtr.style.transform = "translate(-50%,0)";
     if (ePtrRing) { ePtrRing.style.transition = "none"; ePtrRing.style.transform = ""; }
     if (ePtrLbl) ePtrLbl.textContent = "당겨서 새 문제";
   }
 
   function paintPullDown(d) {
-    var offset = rubber(d, DN_MAX, 165);
+    var offset = rubber(d, DN_MAX, 175);
     eAppRoot.style.transition = "none";
     eAppRoot.style.transform = "translate3d(0," + offset + "px,0)";
     paintDownInd(offset, Math.min(1, d / PULL_DN_AT), d >= PULL_DN_AT);
@@ -976,34 +1005,43 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
     }, RM ? 0 : 330);
   }
 
-  /* 임계값을 넘겨 놓았을 때: 56px 안착 → 스피너 → 새 문제 → 부드럽게 닫힘 */
+  /* 임계값을 넘겨 놓았을 때: 74px 안착 → 스피너 → '✓ 새 문제' 완료 표시 → 부드럽게 닫힘 */
+  /* (새로고침 후 상단 검은 알약 토스트는 띄우지 않는다: 제목·모듈 버튼을 가리지 않도록) */
   function commitPullDown() {
     ptrLock = true;
     pDy = 0;
     eAppRoot.style.transition = RM ? "none" : "transform .2s cubic-bezier(.22,1,.36,1)";
     eAppRoot.style.transform = "translate3d(0," + DN_HOLD + "px,0)";
+    readSafeTop();
     if (ePtr) {
       ePtr.style.transition = "none";
       ePtr.style.opacity = "1";
-      ePtr.style.top = Math.round((DN_HOLD - 34) / 2) + "px";
-      ePtr.classList.remove("ready");
+      ePtr.style.transform = "translate(-50%," + ptrY(DN_HOLD) + "px)";
+      ePtr.classList.remove("ready", "done");
       ePtr.classList.add("loading");
       if (ePtrLbl) ePtrLbl.textContent = "불러오는 중";
     }
     if (ePtrRing) { ePtrRing.style.transition = "none"; ePtrRing.style.transform = "scale(1)"; }
     setTimeout(function () {
       refreshRandom("in-down");
+      if (ePtr) {
+        ePtr.classList.remove("loading");
+        ePtr.classList.add("done");
+        if (ePtrLbl) ePtrLbl.textContent = "새 문제";
+      }
+    }, RM ? 0 : 200);
+    setTimeout(function () {
       eAppRoot.style.transition = RM ? "none" : "transform .3s cubic-bezier(.22,1,.36,1)";
       eAppRoot.style.transform = "translate3d(0,0,0)";
-      if (ePtr) { ePtr.style.transition = RM ? "none" : "opacity .2s ease"; ePtr.style.opacity = "0"; }
+      if (ePtr) { ePtr.style.transition = RM ? "none" : "opacity .24s ease"; ePtr.style.opacity = "0"; }
       setTimeout(function () {
         eAppRoot.style.transition = "";
         eAppRoot.style.transform = "";
         if (ePtr) ePtr.style.transition = "";
         resetPtr();
         ptrLock = false;
-      }, RM ? 0 : 320);
-    }, RM ? 0 : 220);
+      }, RM ? 0 : 340);
+    }, RM ? 0 : 500);
   }
 
   function clearPullDown() {
@@ -1176,6 +1214,10 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px;position:relative;overflow:
     else if (k === "o" || k === "O") answer("O");
     else if (k === "x" || k === "X") answer("X");
   });
+
+  readSafeTop();
+  on(window, "resize", readSafeTop);
+  on(window, "orientationchange", function () { setTimeout(readSafeTop, 300); });
 
   load();
   compose();
