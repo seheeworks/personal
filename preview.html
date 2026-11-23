@@ -24,7 +24,9 @@
   var st = document.getElementById("st");
 
   /* keep the 390x844 frame fully visible on any browser window */
+  var FIT = P.get("fit") !== "0";
   function fit() {
+    if (!FIT) { document.getElementById("box").style.transform = "scale(1)"; return; }
     var s = Math.min(1, (window.innerHeight - 40) / 844, (window.innerWidth - 20) / 390);
     document.getElementById("box").style.transform = "scale(" + s + ")";
   }
