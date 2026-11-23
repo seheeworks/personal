@@ -139,18 +139,29 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .progNum{flex:0 0 auto;font-size:12px;font-weight:500;color:var(--sub);font-variant-numeric:tabular-nums}
 
 /* ---------- AI 바로 질문 ---------- */
-.aiBtn{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;height:34px;padding:0 10px;
-  border-radius:11px;background:#EBF2FE;color:var(--blue-deep);font-size:14px;font-weight:700;
-  letter-spacing:-.01em;white-space:nowrap}
-.aiBtn:active{background:#DCE9FD}
-.cardTop .star{margin-left:2px}
-.card.empty .aiBtn{visibility:hidden}
-.fbAsk{display:inline-block;margin:9px 0 0;font-size:14.5px;font-weight:600;color:var(--blue-deep)}
-.fb.no .fbAsk{color:#C4343F}
-.liAiBtn{margin-left:auto;flex:0 0 auto;height:30px;padding:0 9px;border-radius:9px;background:#EBF2FE;
-  color:var(--blue-deep);font-size:13.5px;font-weight:700;white-space:nowrap}
-.liTop .liBadge{max-width:calc(100% - 86px)}
-.liAiBtn:active{background:#DCE9FD}
+.cardTop .star{margin-left:auto}
+.liTop .liBadge{max-width:100%}
+
+/* 지문·해설 끝에 붙는 인라인 질문 아이콘 */
+.qi{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-left:7px;
+  border-radius:999px;background:#EBF2FE;color:var(--blue-deep);vertical-align:-7px;flex:0 0 auto}
+.qi svg{width:17px;height:17px;display:block;pointer-events:none}
+.qi:active{background:#DCE9FD}
+.fb .qi{background:#fff;box-shadow:0 1px 3px rgba(25,31,40,.10)}
+.fb.no .qi{color:#D23C4A}
+.liFb .qi{background:#fff;width:28px;height:28px;vertical-align:-6px}
+.liFb .qi svg{width:16px;height:16px}
+.stem .kw:active,.fb .kw:active,.liStem .kw:active,.liFb .kw:active{opacity:.6}
+
+/* 선택한 표현 질문 칩 */
+.selAsk{position:fixed;z-index:75;display:inline-flex;align-items:center;gap:6px;max-width:250px;height:38px;
+  padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;
+  letter-spacing:-.01em;box-shadow:0 8px 22px rgba(25,31,40,.26);white-space:nowrap;overflow:hidden;
+  transform:translate(-50%,-100%)}
+.selAsk.below{transform:translate(-50%,0)}
+.selAsk span{overflow:hidden;text-overflow:ellipsis}
+.selAsk b{font-size:14px;font-weight:400;line-height:1}
+.selAsk:active{background:#000}
 
 .aiWrap{position:fixed;left:0;right:0;top:0;height:var(--aiH,100svh);z-index:60;
   display:flex;align-items:flex-end;justify-content:center}
@@ -173,16 +184,20 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .aiKeyBtn{flex:0 0 auto;margin-left:auto;height:30px;padding:0 10px;border-radius:9px;background:#F2F4F6;
   color:var(--sub2);font-size:13.5px;font-weight:600}
-.aiKeyBtn.on{background:#EBF2FE;color:var(--blue-deep)}
+.aiKeyBtn.need{background:#EBF2FE;color:var(--blue-deep)}
+.aiKeyBtn.set{width:32px;padding:0;font-size:14px}
+.aiKeyBtn.open{box-shadow:inset 0 0 0 1.5px var(--blue)}
 .aiClose{flex:0 0 auto;width:32px;height:32px;border-radius:9px;font-size:16px;line-height:1;color:var(--sub2)}
 .aiClose:active{background:#F2F4F6}
-.aiPrev{margin:9px 0 0;font-size:14px;line-height:1.45;color:var(--sub);
+.aiPrev{flex:0 0 auto;margin:8px 0 0;font-size:14px;line-height:1.45;color:var(--sub);
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   word-break:keep-all;overflow-wrap:anywhere}
-.aiBody{flex:0 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;display:flex;flex-direction:column}
-.aiBody::-webkit-scrollbar{width:0}
-.aiBody .aiPrev{flex:0 0 auto}
+.aiPrevSel{color:var(--blue-deep);font-weight:600}
+.aiToast{position:absolute;left:50%;top:50px;z-index:3;transform:translate(-50%,-6px);
+  background:rgba(25,31,40,.94);color:#fff;font-size:13px;font-weight:600;letter-spacing:-.01em;
+  padding:8px 14px;border-radius:999px;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease}
+.aiToast.on{opacity:1;transform:translate(-50%,0)}
 .aiPanel{flex:0 0 auto;margin-top:10px;border-radius:16px;background:#F7F8FA;padding:11px 11px 12px}
 .aiSeg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;background:#E3E8EE;border-radius:11px;padding:3px}
 .aiSeg button{height:34px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--sub2)}
@@ -199,12 +214,16 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 .aiHint{margin:9px 0 0;font-size:12.5px;line-height:1.5;color:var(--sub)}
 .aiHint b{color:var(--sub2);font-weight:700}
 .aiHint a{color:var(--blue-deep);font-weight:600;text-decoration:none;word-break:break-all}
-.aiChips{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.aiChips button{flex:0 0 auto;height:34px;padding:0 12px;border-radius:999px;background:#F2F4F6;color:#333D4B;
-  font-size:13.5px;font-weight:600;white-space:nowrap}
+.aiChips{flex:0 0 auto;display:flex;flex-wrap:nowrap;gap:6px;margin:10px -16px 0;padding:0 16px;
+  overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scrollbar-width:none}
+.aiChips::-webkit-scrollbar{display:none}
+.aiChips button{flex:0 0 auto;height:33px;padding:0 13px;border-radius:999px;background:#F2F4F6;color:#333D4B;
+  font-size:13.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
 .aiChips button:active{background:#E7EBF0}
-.aiChat{flex:0 0 auto;min-height:88px;margin-top:10px;
-  display:flex;flex-direction:column;gap:8px;padding-bottom:2px}
+.aiChat{flex:0 1 auto;min-height:0;margin-top:10px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px;padding-bottom:2px}
+.aiChat:empty{display:none;margin:0}
 .aiChat::-webkit-scrollbar{width:0}
 .aiMsg{max-width:88%;border-radius:16px;padding:10px 13px;font-size:15px;line-height:1.55;
   word-break:keep-all;overflow-wrap:anywhere;white-space:pre-wrap}
@@ -279,14 +298,12 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       <article class="card" id="card">
         <div class="cardTop">
           <span class="badge" id="badge"></span>
-          <button type="button" class="aiBtn" id="aiBtn" aria-label="이 문제를 AI에게 질문">💡 질문</button>
           <button type="button" class="star" id="star" aria-label="별표">☆</button>
         </div>
         <p class="stem" id="stem"></p>
         <div class="fb" id="fb" role="status" aria-live="polite">
           <p class="v" id="fbTitle"></p>
           <p class="e" id="fbBody"></p>
-          <button type="button" class="fbAsk" id="fbAsk">이해 안 되면 바로 물어보기 →</button>
         </div>
         <div class="oxrow">
           <button type="button" class="ox" id="btnO" aria-label="O">O</button>
@@ -310,17 +327,18 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   </footer>
 </div>
 
+<button type="button" class="selAsk" id="selAsk" hidden><span id="selAskLbl"></span><b>💬</b></button>
+
 <div class="aiWrap" id="aiWrap" hidden>
   <div class="aiBack" id="aiBack"></div>
   <section class="aiSheet" id="aiSheet" role="dialog" aria-modal="true" aria-label="AI에게 바로 질문">
     <div class="aiGrab"></div>
     <div class="aiHead">
       <span class="aiBadge" id="aiBadge"></span>
-      <button type="button" class="aiKeyBtn" id="aiKeyBtn">키 설정</button>
+      <button type="button" class="aiKeyBtn need" id="aiKeyBtn" aria-label="API 키 설정">키 설정</button>
       <button type="button" class="aiClose" id="aiClose" aria-label="닫기">✕</button>
     </div>
-    <div class="aiBody" id="aiBody">
-    <p class="aiPrev" id="aiPrev"></p>
+    <p class="aiPrev" id="aiPrev"><span class="aiPrevSel" id="aiPrevSel" hidden></span><span id="aiPrevText"></span></p>
     <div class="aiPanel" id="aiKeyPanel" hidden>
       <div class="aiSeg" id="aiProv">
         <button type="button" data-prov="gemini" class="on">Gemini 무료</button>
@@ -336,20 +354,16 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       </div>
       <p class="aiHint" id="aiHint"></p>
     </div>
-    <div class="aiChips" id="aiChips">
-      <button type="button" data-chip="왜 이게 답이야?">왜 이게 답이야?</button>
-      <button type="button" data-chip="쉬운 비유로 설명해 줘">쉬운 비유로 설명해 줘</button>
-      <button type="button" data-chip="시험 함정 포인트">시험 함정 포인트</button>
-    </div>
     <div class="aiChat" id="aiChat" aria-live="polite"></div>
-    </div>
     <p class="aiVoiceHint" id="aiVoiceHint" role="status" aria-live="polite" hidden></p>
+    <div class="aiChips" id="aiChips"></div>
     <div class="aiInputRow">
       <input type="text" id="aiInput" placeholder="궁금한 걸 바로 물어보세요" autocomplete="off" aria-label="질문 입력">
       <button type="button" class="aiIcon aiMic" id="aiMic" aria-label="음성으로 질문하기" title="음성 입력" aria-pressed="false">🎙️</button>
       <button type="button" class="aiIcon" id="aiCopy" aria-label="문제와 해설 복사" title="복사">⧉</button>
       <button type="button" class="aiSend" id="aiSend">전송</button>
     </div>
+    <div class="aiToast" id="aiToast" aria-live="polite"></div>
   </section>
 </div>
 
@@ -531,10 +545,11 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     var ok = a === q.ans;
     eFb.className = "fb show " + (ok ? "ok" : "no");
     eFbTitle.textContent = ok ? "정답이에요" : "아쉬워요 · 정답은 " + q.ans;
-    eFbBody.innerHTML = q.explain;
+    eFbBody.innerHTML = q.explain + askIcon(q.id);
   }
 
   function renderCard() {
+    selHide();
     renderProg();
     var q = cur();
     if (!q) {
@@ -554,7 +569,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     eBadge.textContent = "모듈 " + q.module + " · " + q.subject;
     eStar.className = "star" + (state.stars[q.id] ? " on" : "");
     eStar.textContent = state.stars[q.id] ? "★" : "☆";
-    eStem.innerHTML = q.html;
+    eStem.innerHTML = q.html + askIcon(q.id);
     paintButtons(q);
     paintFeedback(q);
     ePrev.disabled = state.idx[state.mode] <= 0;
@@ -570,6 +585,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   }
 
   function renderList() {
+    selHide();
     renderProg();
     if (!view.length) {
       eList.innerHTML = '<div class="emptyList">' + (state.filter === "wrong"
@@ -581,16 +597,15 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     var out = [], i, q, a, ok;
     for (i = 0; i < view.length; i++) {
       q = view[i]; a = state.answers[q.id]; ok = !!a && a === q.ans;
-      out.push('<article class="li">');
-      out.push('<div class="liTop"><span class="liBadge">모듈 ' + q.module + ' · ' + q.subject + '</span>' +
-        '<button type="button" class="liAiBtn" data-ai="' + q.id + '">💡 질문</button></div>');
-      out.push('<p class="liStem">' + q.html + '</p>');
+      out.push('<article class="li" data-qid="' + q.id + '">');
+      out.push('<div class="liTop"><span class="liBadge">모듈 ' + q.module + ' · ' + q.subject + '</span></div>');
+      out.push('<p class="liStem">' + q.html + askIcon(q.id) + '</p>');
       out.push('<div class="liOx">');
       out.push('<button type="button" class="liBtn' + (a === "O" ? (ok ? " ok" : " no") : (a && q.ans === "O" ? " hint" : "")) + '" data-id="' + q.id + '" data-act="O">O</button>');
       out.push('<button type="button" class="liBtn' + (a === "X" ? (ok ? " ok" : " no") : (a && q.ans === "X" ? " hint" : "")) + '" data-id="' + q.id + '" data-act="X">X</button>');
       out.push('</div>');
       if (a) {
-        out.push('<div class="liFb ' + (ok ? "ok" : "no") + '"><b>' + (ok ? "정답이에요" : "아쉬워요 · 정답은 " + q.ans) + '</b><p>' + q.explain + '</p></div>');
+        out.push('<div class="liFb ' + (ok ? "ok" : "no") + '"><b>' + (ok ? "정답이에요" : "아쉬워요 · 정답은 " + q.ans) + '</b><p>' + q.explain + askIcon(q.id) + '</p></div>');
       }
       out.push('</article>');
     }
@@ -773,15 +788,17 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     openai: '<b>유료 API</b> · <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a>. 쓴 만큼 결제돼요. 키는 이 브라우저에만 저장돼요.'
   };
   var aiCfg = { prov: "gemini", keys: { gemini: "", groq: "", openai: "" } };
-  var aiS = { q: null, msgs: [], busy: false, open: false, loading: false };
+  var aiS = { q: null, msgs: [], busy: false, open: false, loading: false, sel: "" };
 
   var eAiWrap = el("aiWrap"), eAiBack = el("aiBack"), eAiSheet = el("aiSheet");
-  var eAiBtn = el("aiBtn"), eFbAsk = el("fbAsk");
-  var eAiBadge = el("aiBadge"), eAiPrev = el("aiPrev"), eAiClose = el("aiClose"), eAiKeyBtn = el("aiKeyBtn");
+  var eAiBadge = el("aiBadge"), eAiPrev = el("aiPrev"), eAiPrevSel = el("aiPrevSel"), eAiPrevText = el("aiPrevText");
+  var eAiClose = el("aiClose"), eAiKeyBtn = el("aiKeyBtn");
   var eAiPanel = el("aiKeyPanel"), eAiProv = el("aiProv"), eAiKeyInput = el("aiKeyInput");
   var eAiHint = el("aiHint"), eAiChat = el("aiChat"), eAiChips = el("aiChips");
   var eAiInput = el("aiInput"), eAiSend = el("aiSend"), eAiCopy = el("aiCopy");
-  var eApp = document.querySelector ? document.querySelector(".app") : null, eAiBody = el("aiBody");
+  var eAiToast = el("aiToast");
+  var eSelAsk = el("selAsk"), eSelAskLbl = el("selAskLbl");
+  var eApp = document.querySelector ? document.querySelector(".app") : null;
 
   // iOS Safari는 주소창·하단 툴바가 화면 위에 떠 있어서 position:fixed; inset:0 만 쓰면
   // 시트 아랫부분이 툴바에 가린다. 실제로 쓸 수 있는 아래끝(visual viewport · 레이아웃 뷰포트 ·
@@ -860,9 +877,12 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     return (d.textContent || "").replace(/\s+/g, " ").trim();
   }
 
-  function aiCtxText(q) {
+  function aiCtxText(q, selText) {
+    if (selText === undefined) selText = aiS.sel;
+    selText = String(selText || "").replace(/\s+/g, " ").trim();
     return "[문제 정보]\n모듈 " + q.module + " · " + q.subject + (q.topic ? " / " + q.topic : "") +
-      "\nO/X 문제: " + plain(q.html) + "\n정답: " + q.ans + "\n해설: " + plain(q.explain);
+      "\nO/X 문제: " + plain(q.html) + "\n정답: " + q.ans + "\n해설: " + plain(q.explain) +
+      (selText ? "\n수험생이 고른 표현: \"" + selText + "\"" : "");
   }
 
   function paintProv() {
@@ -879,15 +899,43 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   function setKeyPanel(show) {
     if (!eAiPanel) return;
     eAiPanel.hidden = !show;
-    eAiKeyBtn.className = "aiKeyBtn" + (show ? " on" : "");
     if (show) { paintProv(); if (eAiKeyInput) eAiKeyInput.value = ""; }
+    paintKeyBtn();
+  }
+
+  // 키가 저장돼 있으면 🔑 하나로 접고, 아직 없으면 "키 설정"을 눈에 띄게 둔다.
+  function paintKeyBtn() {
+    if (!eAiKeyBtn) return;
+    var has = !!aiCfg.keys[aiCfg.prov];
+    var open = !!(eAiPanel && !eAiPanel.hidden);
+    eAiKeyBtn.textContent = has ? "🔑" : "키 설정";
+    eAiKeyBtn.className = "aiKeyBtn" + (has ? " set" : " need") + (open ? " open" : "");
+    eAiKeyBtn.setAttribute("aria-label", (has ? AI_NAMES[aiCfg.prov] + " 키 저장됨 · " : "") + "API 키 설정");
+    eAiKeyBtn.title = has ? AI_NAMES[aiCfg.prov] + " 키 저장됨 (눌러서 바꾸기)" : "API 키 설정";
+  }
+
+  var aiToastTimer = 0;
+  function aiToast(msg, ms) {
+    if (!eAiToast) return;
+    eAiToast.textContent = msg;
+    eAiToast.className = "aiToast on";
+    if (aiToastTimer) clearTimeout(aiToastTimer);
+    aiToastTimer = setTimeout(function () {
+      aiToastTimer = 0;
+      if (eAiToast) eAiToast.className = "aiToast";
+    }, ms || 1700);
   }
 
   function aiRenderHead() {
     var q = aiS.q;
     if (!q) return;
     eAiBadge.textContent = "모듈 " + q.module + " · " + q.subject;
-    eAiPrev.textContent = plain(q.html);
+    var sel = aiS.sel || "";
+    if (eAiPrevSel) {
+      eAiPrevSel.hidden = !sel;
+      eAiPrevSel.textContent = sel ? "선택한 부분 “" + sel + "” · " : "";
+    }
+    if (eAiPrevText) eAiPrevText.textContent = plain(q.html);
   }
 
   function aiRenderChat() {
@@ -905,29 +953,64 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       t.textContent = "생각 중…";
       eAiChat.appendChild(t);
     }
-    var sc = eAiBody || eAiChat;
-    sc.scrollTop = sc.scrollHeight;
+    eAiChat.scrollTop = eAiChat.scrollHeight;
   }
 
-  function aiGreeting() {
-    aiS.msgs = [{ role: "hint", text: "이 문제, 어디가 헷갈려요? 아래 버튼을 누르면 바로 설명해 드릴게요." }];
+  function escAttr(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  function aiOpenFor(q) {
+  // 제안 칩: 입력줄 바로 위에서 한 줄로 가로 스크롤. 선택한 표현이 있으면 그 표현 중심으로 바뀐다.
+  function aiChipList() {
+    var sel = aiS.sel || "";
+    if (!sel) {
+      return [
+        ["왜 이게 답?", "왜 이게 답인지 짧게 설명해 줘."],
+        ["쉬운 비유", "쉬운 비유 하나로 설명해 줘."],
+        ["함정 포인트", "시험에서 함정으로 나오는 포인트만 짚어 줘."],
+        ["핵심 숫자", "이 문제에서 외워야 할 숫자와 기준만 정리해 줘."]
+      ];
+    }
+    var short = sel.length > 12 ? sel.slice(0, 12) + "…" : sel;
+    return [
+      ["‘" + short + "’ 뜻", "‘" + sel + "’ 이(가) 무슨 뜻인지 이 문제 맥락에서 쉽게 설명해 줘."],
+      ["‘" + short + "’ 포인트", "‘" + sel + "’ 이(가) 시험에서 어떻게 나오는지 함정 포인트로 짚어 줘."],
+      ["왜 이게 답?", "왜 이게 답인지 짧게 설명해 줘."],
+      ["함정 포인트", "시험에서 함정으로 나오는 포인트만 짚어 줘."]
+    ];
+  }
+
+  function aiRenderChips() {
+    if (!eAiChips) return;
+    var list = aiChipList(), out = [], i;
+    for (i = 0; i < list.length; i++) {
+      out.push('<button type="button" data-chip="' + escAttr(list[i][1]) + '">' + escAttr(list[i][0]) + "</button>");
+    }
+    eAiChips.innerHTML = out.join("");
+    eAiChips.scrollLeft = 0;
+  }
+
+  function aiOpenFor(q, selText) {
     if (!q || !eAiWrap) return;
+    var s = selText == null ? "" : String(selText).replace(/\s+/g, " ").trim();
     if (!aiS.q || aiS.q.id !== q.id) {
       voiceAbort();
       aiS.q = q;
       aiS.busy = false;
       aiS.loading = false;
-      aiGreeting();
+      aiS.msgs = [];
     }
+    aiS.sel = s;
+    selHide();
     aiRenderHead();
     aiRenderChat();
+    aiRenderChips();
     setKeyPanel(!aiCfg.keys[aiCfg.prov]);
     eAiWrap.hidden = false;
     aiS.open = true;
     aiFitSoon(260);
+    if (eAiChat) eAiChat.scrollTop = 0;
     if (eAiSend) eAiSend.disabled = false;
     setTimeout(function () { if (aiS.open) eAiWrap.classList.add("open"); }, 16);
   }
@@ -942,19 +1025,122 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
 
   function aiPush(role, text) { aiS.msgs.push({ role: role, text: text }); }
 
+  /* ---------- 지문·해설 끝 질문 아이콘 · 선택한 표현 질문 칩 ---------- */
+  function askIcon(id) {
+    return '<button type="button" class="qi" data-ask="' + escAttr(id) + '" aria-label="이 부분으로 AI에게 질문">' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.3c-4.8 0-8.7 3.2-8.7 7.2 0 2.3 1.3 4.3 3.4 5.6-.2 1.1-.8 2.1-1.7 2.9-.15.13-.04.4.16.37 1.85-.3 3.4-1 4.6-1.95.7.11 1.5.18 2.3.18 4.8 0 8.7-3.2 8.7-7.2S16.8 3.3 12 3.3z"/></svg></button>';
+  }
+
+  var selS = { txt: "", qid: "", kwAt: 0, timer: 0 };
+
+  function selHide() {
+    if (!eSelAsk) return;
+    eSelAsk.hidden = true;
+  }
+
+  function selPlace(rect) {
+    if (!eSelAsk) return;
+    var w = eSelAsk.offsetWidth || 170, h = 38;
+    var vw = window.innerWidth || 390;
+    var cx = rect.left + rect.width / 2;
+    cx = Math.max(w / 2 + 12, Math.min(vw - w / 2 - 12, cx));
+    var below = rect.top < h + 26;
+    eSelAsk.className = "selAsk" + (below ? " below" : "");
+    eSelAsk.style.left = Math.round(cx) + "px";
+    eSelAsk.style.top = Math.round(below ? rect.bottom + 8 : rect.top - 8) + "px";
+  }
+
+  function selShow(txt, qid, rect) {
+    if (!eSelAsk || !rect) return;
+    txt = String(txt || "").replace(/\s+/g, " ").trim();
+    if (!txt) return;
+    selS.txt = txt;
+    selS.qid = qid || "";
+    var short = txt.length > 14 ? txt.slice(0, 14) + "…" : txt;
+    if (eSelAskLbl) eSelAskLbl.textContent = "‘" + short + "’ 질문";
+    eSelAsk.hidden = false;
+    selPlace(rect);
+  }
+
+  function selCtx() {
+    var s = null;
+    try { s = window.getSelection ? window.getSelection() : null; } catch (e) { s = null; }
+    if (!s || !s.rangeCount || s.isCollapsed) return null;
+    var txt = String(s.toString() || "").replace(/\s+/g, " ").trim();
+    if (!txt || txt.length > 240) return null;
+    var n = s.anchorNode, box = n && n.nodeType === 1 ? n : (n ? n.parentNode : null);
+    var hit = false, qid = "";
+    while (box && box !== document.body) {
+      if (box.id === "stem" || box.id === "fbBody") hit = true;
+      if (box.classList && box.classList.contains("li")) {
+        hit = true;
+        qid = box.getAttribute("data-qid") || "";
+      }
+      box = box.parentNode;
+    }
+    if (!hit) return null;
+    if (!qid) { var c = cur(); qid = c ? c.id : ""; }
+    var r = null;
+    try { r = s.getRangeAt(0).getBoundingClientRect(); } catch (e2) { return null; }
+    if (!r || (!r.width && !r.height)) return null;
+    return { txt: txt, qid: qid, rect: r };
+  }
+
+  function selSchedule() {
+    if (selS.timer) clearTimeout(selS.timer);
+    selS.timer = setTimeout(function () {
+      selS.timer = 0;
+      if (aiS.open) return;
+      var c = selCtx();
+      if (c) { selShow(c.txt, c.qid, c.rect); return; }
+      if (Date.now() - selS.kwAt < 800) return;
+      selHide();
+    }, 240);
+  }
+
+  function selOutside(e) {
+    if (!eSelAsk || eSelAsk.hidden) return;
+    var t = e && e.target;
+    if (!t || t.nodeType !== 1) return;
+    if (eSelAsk.contains && eSelAsk.contains(t)) return;
+    if (kwAt(t, document.body)) return;
+    if (t.getAttribute && t.getAttribute("data-ask")) return;
+    selHide();
+  }
+
+  function kwAt(node, root) {
+    var t = node;
+    if (t && t.nodeType !== 1) t = t.parentNode;
+    while (t && t !== root && t.nodeType === 1) {
+      if (t.tagName === "EM" || (t.classList && t.classList.contains("kw"))) return t;
+      t = t.parentNode;
+    }
+    return null;
+  }
+
+  function selAskOpen() {
+    var txt = selS.txt, qid = selS.qid;
+    var q = (qid && byId[qid]) || cur();
+    selHide();
+    try {
+      var s = window.getSelection ? window.getSelection() : null;
+      if (s && s.removeAllRanges) s.removeAllRanges();
+    } catch (e) {}
+    aiOpenFor(q, txt);
+  }
+
   function aiSaveKey() {
     var v = (eAiKeyInput && eAiKeyInput.value ? eAiKeyInput.value : "").replace(/\s+/g, "");
     if (!v) {
-      aiPush("err", "키를 먼저 붙여넣어 주세요.");
-      aiRenderChat();
+      aiToast("키를 붙여넣어 주세요");
+      if (eAiKeyInput) eAiKeyInput.focus();
       return;
     }
     aiCfg.keys[aiCfg.prov] = v;
     saveAiCfg();
-    eAiKeyInput.value = "";
+    if (eAiKeyInput) eAiKeyInput.value = "";
     setKeyPanel(false);
-    aiPush("ai", AI_NAMES[aiCfg.prov] + " 키를 저장했어요. 이제 아래 버튼으로 바로 물어보세요.");
-    aiRenderChat();
+    aiToast(AI_NAMES[aiCfg.prov] + " 키 저장됨");
   }
 
   function aiDelKey() {
@@ -962,8 +1148,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     saveAiCfg();
     if (eAiKeyInput) eAiKeyInput.value = "";
     setKeyPanel(true);
-    aiPush("ai", "이 브라우저에 저장된 " + AI_NAMES[aiCfg.prov] + " 키를 지웠어요.");
-    aiRenderChat();
+    aiToast(AI_NAMES[aiCfg.prov] + " 키 삭제됨");
   }
 
   function aiTurns() {
@@ -972,7 +1157,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       m = aiS.msgs[i];
       if (m.role !== "user" && m.role !== "ai") continue;
       if (m.role === "ai" && !out.length) continue;
-      var text = m.role === "user" && first ? aiCtxText(aiS.q) + "\n\n질문: " + m.text : m.text;
+      var text = m.role === "user" && first ? aiCtxText(aiS.q, aiS.sel) + "\n\n질문: " + m.text : m.text;
       if (m.role === "user") first = false;
       if (out.length && out[out.length - 1].role === m.role) out[out.length - 1].text += "\n" + text;
       else out.push({ role: m.role, text: text });
@@ -1074,18 +1259,18 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   }
 
   function aiSend(text) {
-    var t = (text == null ? (eAiInput ? eAiInput.value : "") : text) || "";
+    var typed = text == null;
+    var t = (typed ? (eAiInput ? eAiInput.value : "") : text) || "";
     t = t.replace(/\s+/g, " ").trim();
     if (!t || aiS.busy || !aiS.q) return;
-    if (text == null && eAiInput) eAiInput.value = "";
     var key = aiCfg.keys[aiCfg.prov];
-    aiPush("user", t);
     if (!key) {
-      aiPush("err", "먼저 " + AI_NAMES[aiCfg.prov] + " API 키를 넣어 주세요. 위 설정에서 1분이면 돼요.");
       setKeyPanel(true);
-      aiRenderChat();
+      aiToast("먼저 " + AI_NAMES[aiCfg.prov] + " 키를 넣어 주세요");
       return;
     }
+    if (typed && eAiInput) eAiInput.value = "";
+    aiPush("user", t);
     aiS.busy = true;
     aiS.loading = true;
     if (eAiSend) eAiSend.disabled = true;
@@ -1533,8 +1718,6 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   on(window, "pagehide", voiceAbort);
   on(window, "beforeunload", voiceAbort);
 
-  on(eAiBtn, "click", function () { aiOpenFor(cur()); });
-  on(eFbAsk, "click", function () { aiOpenFor(cur()); });
   on(eAiClose, "click", aiClose);
   on(eAiBack, "click", aiClose);
   if (window.visualViewport) {
@@ -1561,7 +1744,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
     aiCfg.prov = p;
     saveAiCfg();
     setKeyPanel(!aiCfg.keys[p]);
-    aiRenderChat();
+    paintKeyBtn();
   });
   on(eAiChips, "click", function (e) {
     var t = e && e.target, c = t && t.getAttribute ? t.getAttribute("data-chip") : null;
@@ -1578,11 +1761,39 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   });
   on(eList, "click", function (e) {
     var t = e && e.target;
-    while (t && t !== eList && !(t.getAttribute && t.getAttribute("data-ai"))) t = t.parentNode;
-    var id = t && t !== eList && t.getAttribute ? t.getAttribute("data-ai") : null;
-    if (!id || !byId[id]) return;
-    aiOpenFor(byId[id]);
+    if (!t || t.nodeType !== 1) return;
+    var askId = t.getAttribute("data-ask");
+    if (askId && byId[askId]) { selHide(); aiOpenFor(byId[askId], ""); return; }
+    var kw = kwAt(t, eList);
+    if (!kw) return;
+    var li = kw, qid = "";
+    while (li && li !== eList) {
+      if (li.classList && li.classList.contains("li")) { qid = li.getAttribute("data-qid") || ""; break; }
+      li = li.parentNode;
+    }
+    selS.kwAt = Date.now();
+    selShow(kw.textContent, qid, kw.getBoundingClientRect());
   });
+
+  /* 지문·해설 끝 아이콘, 강조 단어 탭, 텍스트 선택으로 질문하기 */
+  on(eCard, "click", function (e) {
+    var t = e && e.target;
+    if (!t || t.nodeType !== 1) return;
+    var askId = t.getAttribute("data-ask");
+    if (askId) { selHide(); aiOpenFor(byId[askId] || cur(), ""); return; }
+    var kw = kwAt(t, eCard);
+    if (!kw) return;
+    var c = cur();
+    selS.kwAt = Date.now();
+    selShow(kw.textContent, c ? c.id : "", kw.getBoundingClientRect());
+  });
+
+  on(eSelAsk, "click", selAskOpen);
+  on(document, "selectionchange", function () { if (eSelAsk) selSchedule(); });
+  on(window, "scroll", selHide, true);
+  on(window, "resize", selHide);
+  on(document, "mousedown", selOutside, { passive: true });
+  on(document, "touchstart", selOutside, { passive: true });
 
   loadAiCfg();
 
@@ -1612,6 +1823,9 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       cfg: function () { return aiCfg; },
       state: function () { return aiS; },
       key: AI_KEY,
+      sel: { show: selShow, hide: selHide, ctx: selCtx, at: kwAt },
+      chips: aiChipList,
+      toast: aiToast,
       voice: {
         toggle: voiceToggle,
         stop: voiceAbort,
