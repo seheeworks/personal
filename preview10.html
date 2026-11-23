@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AFPK O/X v10 preview</title>
+<style>
+  html,body{margin:0;padding:0;background:#0F1115}
+  .row{display:flex;gap:0;align-items:flex-start}
+  iframe{display:block;width:390px;height:844px;border:0;background:#F2F4F6}
+</style>
+</head>
+<body>
+<div class="row" id="row"></div>
+<script>
+(function(){
+  var W = +((/[?&]w=(\d+)/.exec(location.search) || [])[1] || 390);
+  var KEY = "afpk-all-ox-v1";
+  try { localStorage.removeItem(KEY); } catch (e) {}
+
+  var plans = [
+    { name: "base", act: function (a) {} },
+    { name: "subject", act: function (a) { a.setOrder("subject"); } },
+    { name: "wrong", act: function (a) {
+        a.setOrder("subject");
+        if (a.current() && a.current().ans !== "X") a.go(1);
+        var q = a.current();
+        a.answer(q.ans === "O" ? "X" : "O");   /* 틀린 답: 빨강 + 정답 힌트 + 해설 */
+        a.setFilter("wrong");
+      } },
+    { name: "many", act: function (a) { a.setView("many"); } }
+  ];
+
+  var row = document.getElementById("row");
+
+  plans.forEach(function (p, i) {
+    var f = document.createElement("iframe");
+    f.id = "f" + i;
+    f.style.width = W + "px";
+    f.src = "index.html?p=" + p.name;
+    row.appendChild(f);
+
+    var tries = 0;
+    var t = setInterval(function () {
+      tries++;
+      var a = null;
+      try { a = f.contentWindow && f.contentWindow.__afpk; } catch (e) { a = null; }
+      if (!a) { if (tries > 200) clearInterval(t); return; }
+      clearInterval(t);
+      /* 아이폰 상태바(59px)를 흉내 낸다 */
+      try {
+        var s = f.contentDocument.createElement("style");
+        s.textContent = "header{padding-top:67px !important}";
+        f.contentDocument.head.appendChild(s);
+      } catch (e) {}
+      try { p.act(a); } catch (e) { document.title = "ERR " + p.name + ": " + e; }
+    }, 40);
+  });
+})();
+</script>
+</body>
+</html>
