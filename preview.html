@@ -522,6 +522,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   var eViewOne = el("viewOne"), eViewMany = el("viewMany");
   var eChipWrong = el("chipWrong"), eChipStar = el("chipStar");
   var eOne = el("onePane"), eMany = el("manyPane"), eList = el("list");
+  var eMainEl = document.querySelector ? document.querySelector("main") : null;
   var eCard = el("card"), eBadge = el("badge"), eStar = el("star");
   var eStem = el("stem"), eFb = el("fb"), eFbTitle = el("fbTitle"), eFbBody = el("fbBody");
   var eO = el("btnO"), eX = el("btnX"), ePrev = el("btnPrev"), eNext = el("btnNext");
@@ -844,12 +845,15 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
   var pOn = false, pMode = null, pSx = 0, pSy = 0, pDy = 0, pReady = false, pScr = null;
 
   function paintPullDown(d) {
-    var shift = d * 0.6;
-    if (shift > 56) shift = 56;
+    var shift = d * 0.3;
+    if (shift > 12) shift = 12;
     var ready = d >= PULL_DN_AT;
     if (ePullDown) {
       if (ePullDown.hidden) ePullDown.hidden = false;
       ePullDown.classList.add("show");
+      var mt = 0;
+      if (eMainEl && eMainEl.getBoundingClientRect) mt = eMainEl.getBoundingClientRect().top || 0;
+      ePullDown.style.top = (mt + 2) + "px";
       ePullDown.style.transform = "translate(-50%," + shift + "px)";
       if (ready !== pReady) {
         pReady = ready;
@@ -866,6 +870,7 @@ main{flex:1 1 auto;min-height:0;padding:8px 14px 6px}
       ePullDown.classList.remove("show", "ready");
       ePullDown.hidden = true;
       ePullDown.style.transform = "";
+      ePullDown.style.top = "";
     }
   }
 
