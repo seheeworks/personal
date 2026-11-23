@@ -39,7 +39,7 @@
   f.id = "f";
   f.style.width = W + "px";
   f.style.height = "844px";
-  f.src = "index.html?p=" + p;
+  f.src = "index.html?p=" + p + "&cb=" + Date.now();
   document.body.appendChild(f);
 
   var tries = 0;
