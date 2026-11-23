@@ -63,7 +63,7 @@
 
     /* stretch one step of the refresh sequence so a screenshot can catch it */
     w.setTimeout = function (fn, ms) {
-      if (state === "loading" && ms === 200) ms = 20000;
+      if (state === "loading" && (ms === 200 || ms === 500)) ms = 20000;
       if (state === "done" && ms === 500) ms = 20000;
       return realSetTimeout.call(w, fn, ms);
     };
