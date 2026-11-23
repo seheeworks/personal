@@ -46,19 +46,19 @@ header{padding:calc(8px + env(safe-area-inset-top)) 16px 6px;flex:0 0 auto}
 .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(25,31,40,.10)}
 /* 필터(전체·틀린 것만·별표만) + 출제 방식(랜덤·과목순) 한 줄 */
 .frow{display:flex;align-items:center;gap:8px}
-.fseg{flex:1 1 auto;min-width:0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;
+.fseg{flex:1 1 auto;min-width:0;display:grid;grid-template-columns:0.85fr 1.3fr 0.85fr;gap:3px;
   background:#E5E8EB;border-radius:11px;padding:3px}
-.fseg button{height:34px;min-width:0;border-radius:8px;font-size:13.5px;font-weight:600;color:#6B7684;
+.fseg button{height:34px;min-width:0;padding:0 4px;border-radius:8px;font-size:13.5px;font-weight:600;color:#6B7684;
   letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   transition:background .15s,color .15s,box-shadow .15s}
 .fseg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(25,31,40,.10)}
 .fseg button.on.accent{color:var(--blue-deep)}
-.oseg{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3px;background:#E5E8EB;border-radius:11px;padding:3px}
-.oseg button{height:34px;display:flex;align-items:center;gap:4px;padding:0 9px;border-radius:8px;
+.oseg{flex:0 0 auto;display:grid;grid-template-columns:auto auto;gap:3px;background:#E5E8EB;border-radius:11px;padding:3px}
+.oseg button{height:34px;display:flex;align-items:center;gap:3px;padding:0 7px;border-radius:8px;
   font-size:13.5px;font-weight:600;color:#6B7684;letter-spacing:-.01em;white-space:nowrap;
   transition:background .15s,color .15s,box-shadow .15s}
 .oseg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(25,31,40,.10)}
-.oseg svg{width:14px;height:14px;flex:0 0 auto;display:block}
+.oseg svg{width:13px;height:13px;flex:0 0 auto;display:block}
 /* 과목순일 때만 열리는 과목 칩 줄 */
 .subrow{display:flex;gap:6px;margin-top:8px;overflow-x:auto;overflow-y:hidden;
   -webkit-overflow-scrolling:touch;scrollbar-width:none;padding:1px 0 2px;overscroll-behavior-x:contain}
