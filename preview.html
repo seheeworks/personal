@@ -75,6 +75,7 @@
 
     if (state === "toast") {
       w.__afpk.toast("새 문제를 불러왔어요");
+      setInterval(function () { w.__afpk.toast("새 문제를 불러왔어요"); }, 700);
       await sleep(120);
       st.textContent = "ready:toast";
       return;
